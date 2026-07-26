@@ -1,6 +1,6 @@
 abstract interface class IStorageService {
   /// Upload a file and return its public URL
-  Future<String> uploadFile({
+  Future<StorageUploadResult> uploadFile({
     required String bucket,
     required List<int> bytes,
     required String mimeType,

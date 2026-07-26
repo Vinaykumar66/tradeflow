@@ -1,77 +1,91 @@
-import 'package:minio_dart/minio_dart.dart';
+// lib/features/storage/data/cloudflare_r2_storage_service.dart
+
+import 'dart:typed_data';
+
+import 'package:minio/minio.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/interfaces/i_storage_service.dart';
 
 class CloudflareR2StorageService implements IStorageService {
-  final _uuid = constUuid();
-  Minio? _client;
-  Minio get _minio {
-    _client ??= Minio(
-      endPoint: AppConfig.r2Endpoint.replaceAll('https://', ''),
+  final _uuid = const Uuid();
+  late final Minio _client;
+
+  CloudflareR2StorageService() {
+    _client = Minio(
+      endPoint: AppConfig.r2Endpoint
+          .replaceAll('https://', '')
+          .replaceAll('http://', ''),
       accessKey: AppConfig.r2AccessKey,
       secretKey: AppConfig.r2SecretKey,
       useSSL: true,
       port: 443,
     );
-    return _client!;
   }
-}
 
-@override
-Future<void> deleteFile(String url) async {
-  try {
-    final path = url.replaceAll('${AppConfig.r2PublicUrl}/', '');
-    final parts = path.split('/');
-    await _minio.removeObject(parts.first, parts.sublist(1).join('/'));
-  } catch (_) {}
-}
+  @override
+  Future<StorageUploadResult> uploadFile({
+    required String bucket,
+    required List<int> bytes,
+    required String mimeType,
+    String? customPath,
+  }) async {
+    final ext = _ext(mimeType);
+    final path = customPath ?? '${_uuid.v4()}$ext';
 
-@override
-Future<String> getSignedUrl(
-        {required String bucket,
-        required String path,
-        required Duration expiresIn}) =>
-    _minio.presignedGetObject(bucket, path, expiry: expiresIn.inSeconds);
+    final data = Uint8List.fromList(bytes);
 
-String _ext(String m) => switch(m){
-  'image/jpeg' => '.jpg', 'image/png' => '.png',
-  'image/webp' = '.webp', 'application/pdf' => '.pdf', _ => '',
-};
+    await _client.putObject(
+      bucket,
+      path,
+      Stream.value(data),
+      size: data.length,
+      metadata: {'Content-Type': mimeType},
+    );
 
-@override
-Future<StorageUploadResult> uploadFile({
-  required String bucket,
-  required List<int> bytes,
-  required String mimeType,
-  String? customPath,
-}) async {
-  final ext = _ext(mimeType);
-  final path = customPath ?? '${_uuid.v4()}$ext';
+    return StorageUploadResult(
+      url: '${_publicUrlForBucket(bucket)}/$path',
+      fileSizeBytes: bytes.length,
+    );
+  }
 
-  await _minio.putObject(
-    bucket,
-    path,
-    Stream.value(bytes),
-    size: bytes.length,
-    metadata: {'Content-Type': mimeType},
-  );
+  @override
+  Future<void> deleteFile(String url) async {
+    try {
+      final path = url.contains('.r2.dev/')
+          ? url.split('.r2.dev/').last
+          : url.split('/').last;
+      final parts = path.split('/');
+      final bucket = parts.first;
+      final key = parts.sublist(1).join('/');
+      await _client.removeObject(bucket, key);
+    } catch (_) {}
+  }
 
-  // Pick the correct public URL for this bucket
-  final publicUrl = _publicUrlForBucket(bucket);
+  @override
+  Future<String> getSignedUrl({
+    required String bucket,
+    required String path,
+    required Duration expiresIn,
+  }) async {
+    return _client.presignedGetObject(
+      bucket,
+      path,
+      expires: expiresIn.inSeconds,
+    );
+  }
 
-  return StorageUploadResult(
-    url: '$publicUrl/$path',
-    fileSizeBytes: bytes.length,
-  );
-}
+  String _publicUrlForBucket(String bucket) => switch (bucket) {
+        AppConfig.bucketProductImages => AppConfig.productImagesPublicUrl,
+        AppConfig.bucketBusinessLogos => AppConfig.businessLogosPublicUrl,
+        _ => throw Exception('No public URL for private bucket: $bucket'),
+      };
 
-// Returns the correct public base URL for each bucket
-String _publicUrlForBucket(String bucket) {
-  return switch (bucket) {
-    AppConfig.bucketProductImages => AppConfig.productImagesPublicUrl,
-    AppConfig.bucketBusinessLogos => AppConfig.businessLogosPublicUrl,
-    // attachments is private - getSignedUrl() used instead of public URL
-    _ => throw Exception('No public URL for private bucket: $bucket'),
-  };
+  String _ext(String mime) => switch (mime) {
+        'image/jpeg' => '.jpg',
+        'image/png' => '.png',
+        'image/webp' => '.webp',
+        'application/pdf' => '.pdf',
+        _ => '',
+      };
 }

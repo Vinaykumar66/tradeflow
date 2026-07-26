@@ -12,11 +12,13 @@ abstract class SupabaseTables {
   static const String invoiceItems = 'invoice_items';
   static const String payments = 'payments';
   static const String attachments = 'attachments';
+  static const String auditLogs = 'audit_logs';
   static const String storageUsage = 'storage_usage';
+  // static const String storageUsage = 'storage_usage';
 }
-
-abstract class SupabaseBuckets {
-  static const String productImages = 'product-images';
-  static const String businessLogos = 'business-logos';
-  static const String attachments = 'attachments';
-}
+//bucket names are in appconfig files hence commented
+// abstract class SupabaseBuckets {
+//   static const String productImages = 'product-images';
+//   static const String businessLogos = 'business-logos';
+//   static const String attachments = 'attachments';
+// }
