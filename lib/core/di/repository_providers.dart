@@ -1,12 +1,20 @@
-// SINGLE SWITCH POINT - change implementations here to switch databases
-import 'package:riverpod/riverpod.dart';
+// SINGLE SWITCH POINT - change implementations here to switch databases.
+// Zero changes needed anywhere else in the app.
+//
+// Current stack:
+//   Auth + Database : Supabase
+//   File Storage    : Cloudflare R2 (zero bandwidth cost)
+//   Audit           : Supabase audit_logs table + PostgreSQL triggers
+//   Storage tracking: Supabase storage_usage table
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-// import '../audit/audit_service.dart';
+import '../audit/audit_service.dart';
 import '../interfaces/i_audit_service.dart';
 import '../interfaces/i_auth_service.dart';
 import '../interfaces/i_business_repository.dart';
 import '../interfaces/i_storage_service.dart';
 import '../interfaces/i_user_repository.dart';
+import '../storage/storage_tracking_service.dart';
 import '../../features/auth/data/supabase_auth_service.dart';
 import '../../features/auth/data/user_repository.dart';
 import '../../features/business/data/business_repository.dart';
@@ -15,13 +23,23 @@ import '../../features/storage/data/cloudflare_r2_storage_service.dart';
 part 'repository_providers.g.dart';
 
 @riverpod
-IAuthService authService(Ref ref) => SupabaseAuthService();
+IAuthService authService(AuthServiceRef ref) => SupabaseAuthService();
+
 @riverpod
-IUserRepository userRepository(Ref ref) => UserRepository();
+IUserRepository userRepository(UserRepositoryRef ref) => UserRepository();
 @riverpod
-IBusinessRepository businessRepository(Ref ref) => BusinessRepository();
+IBusinessRepository businessRepository(BusinessRepositoryRef ref) =>
+    BusinessRepository();
 @riverpod
-IStorageService storageService(Ref ref) => CloudflareR2StorageService();
+IStorageService storageService(StorageServiceRef ref) =>
+    CloudflareR2StorageService();
+@riverpod
+StorageTrackingService storageTrackingService(StorageTrackingServiceRef ref) =>
+    StorageTrackingService();
+
+@riverpod
+IAuditService auditService(AuditServiceRef ref) => AuditService();
+
 // @riverpod
 // IAuditService auditService(Ref ref) => AuditService();
 

@@ -75,5 +75,41 @@ final storageServiceProvider = AutoDisposeProvider<IStorageService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef StorageServiceRef = AutoDisposeProviderRef<IStorageService>;
+String _$storageTrackingServiceHash() =>
+    r'92abd06cfbe82a04b585e853c0e057997707e573';
+
+/// See also [storageTrackingService].
+@ProviderFor(storageTrackingService)
+final storageTrackingServiceProvider =
+    AutoDisposeProvider<StorageTrackingService>.internal(
+  storageTrackingService,
+  name: r'storageTrackingServiceProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$storageTrackingServiceHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef StorageTrackingServiceRef
+    = AutoDisposeProviderRef<StorageTrackingService>;
+String _$auditServiceHash() => r'c3c75f8e00244a53b378d82ecbe66eaf55098904';
+
+/// See also [auditService].
+@ProviderFor(auditService)
+final auditServiceProvider = AutoDisposeProvider<IAuditService>.internal(
+  auditService,
+  name: r'auditServiceProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$auditServiceHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AuditServiceRef = AutoDisposeProviderRef<IAuditService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

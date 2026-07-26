@@ -8,7 +8,7 @@ abstract interface class IAuditService {
       required String userName,
       required String businessId});
   Future<void> logSensitiveView(
-      {required String userid,
+      {required String userId,
       required String userName,
       required String businessId,
       required String tableName,
