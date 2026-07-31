@@ -1,6 +1,7 @@
 enum LicenseTier { starter, basic, pro }
 
 extension LicenseTierX on LicenseTier {
+  bool get hasNoStorage => storageLimitBytes <= 0;
   String get value => name;
   static LicenseTier fromString(String v) => LicenseTier.values
       .firstWhere((t) => t.name == v, orElse: () => LicenseTier.starter);
@@ -13,9 +14,15 @@ extension LicenseTierX on LicenseTier {
 
   // ── STORAGE ──────────────────────────────────────────────────
   int get storageLimitBytes => switch (this) {
-        LicenseTier.starter => 100 * 1024 * 1024, // 100 MB
+        LicenseTier.starter => 0, //100 * 1024 * 1024, // 100 MB
         LicenseTier.basic => 500 * 1024 * 1024, // 500 MB
         LicenseTier.pro => 2048 * 1024 * 1024, // 2 GB
+      };
+
+  String get storageLimitLabel => switch (this) {
+        LicenseTier.starter => 'No Storage',
+        LicenseTier.basic => '500 MB',
+        LicenseTier.pro => '2 GB (+ Rs.99/GB extra)',
       };
 
   // ── INVOICE QUOTA ────────────────────────────────────────────

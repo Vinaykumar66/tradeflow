@@ -37,7 +37,7 @@ Future<Business?> activeBusiness(ActiveBusinessRef ref) async {
 }
 
 // UpdateBusinessNotifier: saves changes to the business profile
-// Called from OnboardingScreen and BusinessSettingsScreen (later days)
+// Called from OnboardingScreen and BusinessSettingsScreen
 @riverpod
 class UpdateBusinessNotifier extends _$UpdateBusinessNotifier {
   // Initial state: idle, no update in progress

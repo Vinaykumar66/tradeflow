@@ -6,7 +6,7 @@ part of 'repository_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authServiceHash() => r'a590a6fd430bb90544644c508b7a7112fb8157e7';
+String _$authServiceHash() => r'e185731eab0c14852c0628315cd283c4c6977b95';
 
 /// See also [authService].
 @ProviderFor(authService)
@@ -22,7 +22,7 @@ final authServiceProvider = AutoDisposeProvider<IAuthService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AuthServiceRef = AutoDisposeProviderRef<IAuthService>;
-String _$userRepositoryHash() => r'361a5db19c86cb086e61e43b0df3e68781171298';
+String _$userRepositoryHash() => r'a18c072bf78984248bd127332d7883f4092e0e81';
 
 /// See also [userRepository].
 @ProviderFor(userRepository)
@@ -40,7 +40,7 @@ final userRepositoryProvider = AutoDisposeProvider<IUserRepository>.internal(
 // ignore: unused_element
 typedef UserRepositoryRef = AutoDisposeProviderRef<IUserRepository>;
 String _$businessRepositoryHash() =>
-    r'1e5595cd4013c339dfb594f60800f294a145b42b';
+    r'96ac3c42c1f43759db9c35ae77b32f76f697c94e';
 
 /// See also [businessRepository].
 @ProviderFor(businessRepository)
@@ -58,7 +58,7 @@ final businessRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef BusinessRepositoryRef = AutoDisposeProviderRef<IBusinessRepository>;
-String _$storageServiceHash() => r'3af64c1f7364f73dccb80bf28359891b19c02a22';
+String _$storageServiceHash() => r'd56847b9ed74bc2d09fffddd2c46ad433ce3dff3';
 
 /// See also [storageService].
 @ProviderFor(storageService)
@@ -76,7 +76,7 @@ final storageServiceProvider = AutoDisposeProvider<IStorageService>.internal(
 // ignore: unused_element
 typedef StorageServiceRef = AutoDisposeProviderRef<IStorageService>;
 String _$storageTrackingServiceHash() =>
-    r'92abd06cfbe82a04b585e853c0e057997707e573';
+    r'c9564066b21a22ca2926566102eaf0d5eb942c8a';
 
 /// See also [storageTrackingService].
 @ProviderFor(storageTrackingService)
@@ -95,7 +95,7 @@ final storageTrackingServiceProvider =
 // ignore: unused_element
 typedef StorageTrackingServiceRef
     = AutoDisposeProviderRef<StorageTrackingService>;
-String _$auditServiceHash() => r'c3c75f8e00244a53b378d82ecbe66eaf55098904';
+String _$auditServiceHash() => r'5a6edffc36c4a23d360f33ebf8d814a66cdeaa95';
 
 /// See also [auditService].
 @ProviderFor(auditService)
@@ -111,5 +111,24 @@ final auditServiceProvider = AutoDisposeProvider<IAuditService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AuditServiceRef = AutoDisposeProviderRef<IAuditService>;
+String _$permissionRepositoryHash() =>
+    r'4cf10e30d8b5116c6f658407222619d4e7f857c5';
+
+/// See also [permissionRepository].
+@ProviderFor(permissionRepository)
+final permissionRepositoryProvider =
+    AutoDisposeProvider<IPermissionRepository>.internal(
+  permissionRepository,
+  name: r'permissionRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$permissionRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef PermissionRepositoryRef = AutoDisposeProviderRef<IPermissionRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

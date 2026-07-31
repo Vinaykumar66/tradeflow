@@ -19,6 +19,8 @@ import '../../features/auth/data/supabase_auth_service.dart';
 import '../../features/auth/data/user_repository.dart';
 import '../../features/business/data/business_repository.dart';
 import '../../features/storage/data/cloudflare_r2_storage_service.dart';
+import '../../core/interfaces/i_permission_repository.dart';
+import '../../features/admin/data/permission_repository.dart';
 
 part 'repository_providers.g.dart';
 
@@ -39,6 +41,10 @@ StorageTrackingService storageTrackingService(StorageTrackingServiceRef ref) =>
 
 @riverpod
 IAuditService auditService(AuditServiceRef ref) => AuditService();
+
+@riverpod
+IPermissionRepository permissionRepository(PermissionRepositoryRef ref) =>
+    PermissionRepository();
 
 // @riverpod
 // IAuditService auditService(Ref ref) => AuditService();

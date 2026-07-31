@@ -44,6 +44,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   // Tax ID field: GSTIN for India, TRN for UAE, VAT Reg No for others (optional)
   final _taxIdCtrl = TextEditingController();
 
+  // final _gstinCtrl = TextEditingController();
+
   // Business phone number (optional)
   final _phoneCtrl = TextEditingController();
 
@@ -68,6 +70,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   void dispose() {
     // Dispose all controllers to release memory when screen is removed
+
+    // _gstinCtrl.dispose();
     _taxIdCtrl.dispose();
     _phoneCtrl.dispose();
     _addressCtrl.dispose();
@@ -273,12 +277,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ── HEADER ────────────────────────────────────────────────────
-              Text(
+              const Text(
                 'Tell us about your business',
                 style: AppTextStyles.h2, // from app_text_styles.dart
               ),
               const SizedBox(height: 8),
-              Text(
+              const Text(
                 'This helps personalise invoices and reports. '
                 'You can update these anytime from Settings.',
                 style: AppTextStyles.bodyMedium,
@@ -337,6 +341,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               // Label and hint change based on selected country (see _taxIdLabel getter)
               // India shows GSTIN with strict regex validation
               // UAE shows TRN, others show generic Tax ID
+
               TextFormField(
                 controller: _taxIdCtrl,
                 // Force uppercase for GSTIN (India) since it must be uppercase

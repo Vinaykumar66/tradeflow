@@ -3,6 +3,7 @@ import '../../../core/interfaces/i_business_repository.dart';
 import '../../../core/supabase/supabase_client.dart';
 import '../../../shared/models/business.dart';
 import '../../../shared/models/business_member.dart';
+import '../../admin/data/permission_repository.dart';
 
 class BusinessRepository implements IBusinessRepository {
   @override
@@ -32,6 +33,9 @@ class BusinessRepository implements IBusinessRepository {
       'email': ownerEmail,
       'role_value': 'admin'
     });
+
+    // Seed default permissions for all 3 roles
+    await PermissionRepository().seedDefaultPermissions(b.id);
     return b;
   }
 

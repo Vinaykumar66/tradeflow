@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'permission_config_screen.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
@@ -9,8 +11,20 @@ class AdminScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Admin'),
       ),
-      body: Center(
-        child: Text('Admin - coming soon'),
+      body: ListView(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.admin_panel_settings_outlined),
+            title: const Text('Permission Settings'),
+            subtitle: const Text('Control what each role can see and do'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => const PermissionConfigScreen())),
+          ),
+          const Divider(),
+        ],
       ),
     );
   }
