@@ -21,8 +21,14 @@ import '../../features/business/data/business_repository.dart';
 import '../../features/storage/data/cloudflare_r2_storage_service.dart';
 import '../../core/interfaces/i_permission_repository.dart';
 import '../../features/admin/data/permission_repository.dart';
+import '../../core/interfaces/i_product_repository.dart';
+import '../../features/catalog/data/product_repository.dart';
 
 part 'repository_providers.g.dart';
+
+@riverpod
+IProductRepository productRepository(ProductRepositoryRef ref) =>
+    ProductRepository();
 
 @riverpod
 IAuthService authService(AuthServiceRef ref) => SupabaseAuthService();

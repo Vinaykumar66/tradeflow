@@ -6,6 +6,24 @@ part of 'repository_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$productRepositoryHash() => r'16aa90254404e45bf40bc34b012725d2afef3e62';
+
+/// See also [productRepository].
+@ProviderFor(productRepository)
+final productRepositoryProvider =
+    AutoDisposeProvider<IProductRepository>.internal(
+  productRepository,
+  name: r'productRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$productRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ProductRepositoryRef = AutoDisposeProviderRef<IProductRepository>;
 String _$authServiceHash() => r'e185731eab0c14852c0628315cd283c4c6977b95';
 
 /// See also [authService].

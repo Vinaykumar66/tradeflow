@@ -11,6 +11,7 @@ import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/invoices/presentation/invoices_screen.dart';
 import '../../features/reports/presentation/reports_screen.dart';
 import '../../features/admin/presentation/admin_screen.dart';
+import '../../features/admin/presentation/permission_settings_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../shared/widgets/app_shell.dart';
 import 'router_notifier.dart';
@@ -28,6 +29,7 @@ abstract class AppRoutes {
   static const String reports = '/reports';
   static const String admin = '/admin';
   static const String profile = '/profile';
+  static const String permissionSettings = '/permission-settings';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];
@@ -76,6 +78,10 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
               path: AppRoutes.profile,
               builder: (_, __) => const ProfileScreen()),
+          GoRoute(
+            path: AppRoutes.permissionSettings,
+            builder: (_, __) => const PermissionSettingsScreen(),
+          ),
         ],
       ),
     ],
