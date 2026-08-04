@@ -31,7 +31,7 @@ class BusinessRepository implements IBusinessRepository {
       'business_id': b.id,
       'name': ownerName,
       'email': ownerEmail,
-      'role_value': 'admin'
+      'role_value': 'owner'
     });
 
     // Seed default permissions for all 3 roles

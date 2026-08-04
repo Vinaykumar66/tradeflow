@@ -23,7 +23,7 @@ import '../../../core/router/app_router.dart'; // AppRoutes.dashboard constant
 import '../../../core/theme/app_colors.dart'; // AppColors constants
 import '../../../core/theme/app_text_styles.dart'; // AppTextStyles constants
 import '../../../core/utils/country_data.dart'; // CountryData, kSupportedCountries
-import '../../auth/application/auth_providers.dart'; // activeBusinessIdProvider
+// import '../../auth/application/auth_providers.dart'; // activeBusinessIdProvider
 import '../application/business_providers.dart'; // userBusinessListProvider, updateBusinessNotifierProvider
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -117,7 +117,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       // Regex validates the exact GSTIN format
       if (!RegExp(r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$')
           .hasMatch(v.trim())) {
-        return 'Invalid GSTIN format. Example: 22AAAAA0000A1Z5';
+        return 'Invalid GSTIN format. Example: 29AAAAA0000A1Z5';
       }
     }
     // Other countries: no strict format validation, any text is accepted
@@ -233,7 +233,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     // Set the active business ID in Riverpod state
     // activeBusinessIdProvider is a StateNotifier from auth_providers.dart
     if (businessId != null) {
-      ref.read(activeBusinessIdProvider.notifier).set(businessId);
+      // ref.read(activeBusinessIdProvider.notifier).set(businessId); commented on 04.08.2026
+      ref.invalidate(activeBusinessProvider);
     }
     // Navigate to dashboard using GoRouter
     // context.go() replaces the current route (cannot go back to onboarding)

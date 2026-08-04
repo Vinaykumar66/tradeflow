@@ -6,7 +6,7 @@ part of 'business_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userBusinessListHash() => r'37fa4a81287ea2cb011da1536249d32f65325c11';
+String _$userBusinessListHash() => r'1b30773b0230552cdaed79004d9a26b953cb6669';
 
 /// See also [userBusinessList].
 @ProviderFor(userBusinessList)
@@ -24,7 +24,7 @@ final userBusinessListProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef UserBusinessListRef = AutoDisposeFutureProviderRef<List<Business>>;
-String _$activeBusinessHash() => r'c4e7973d94a5c8579776aea1ab38031e39a076fa';
+String _$activeBusinessHash() => r'38c06cf4c5d3f18f7b5cd83c4393994bc7259949';
 
 /// See also [activeBusiness].
 @ProviderFor(activeBusiness)
@@ -41,8 +41,25 @@ final activeBusinessProvider = AutoDisposeFutureProvider<Business?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ActiveBusinessRef = AutoDisposeFutureProviderRef<Business?>;
+String _$activeBusinessIdHash() => r'6502fadbef4a27692bc7d7d8ae95b46503d2d704';
+
+/// See also [activeBusinessId].
+@ProviderFor(activeBusinessId)
+final activeBusinessIdProvider = AutoDisposeFutureProvider<String?>.internal(
+  activeBusinessId,
+  name: r'activeBusinessIdProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$activeBusinessIdHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ActiveBusinessIdRef = AutoDisposeFutureProviderRef<String?>;
 String _$updateBusinessNotifierHash() =>
-    r'05020f66f6a045ff187b9bfdf4d137d243214ced';
+    r'b4c69c2d76edac37921278d647759a056c02581c';
 
 /// See also [UpdateBusinessNotifier].
 @ProviderFor(UpdateBusinessNotifier)

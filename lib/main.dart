@@ -143,3 +143,8 @@ Do it in this order:
 Total time: 2 hours if you have not published yet. 3 to 4 hours if you need to handle R2 bucket migration for existing uploaded files.
 The short answer: do it now before you have real users and real uploaded files. After launch it becomes progressively harder, but still manageable.
 */
+
+
+// git add .
+// git commit -m "Rename project to YourNewName"
+// git push

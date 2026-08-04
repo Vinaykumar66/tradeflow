@@ -7,8 +7,9 @@ import '../../core/di/repository_providers.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/admin/application/permission_providers.dart';
-import '../../features/auth/application/auth_providers.dart';
-import '../../features/business/application/business_providers.dart';
+import '../../features/auth/application/auth_providers.dart' as auth_providers;
+import '../../features/business/application/business_providers.dart'
+    as business_providers;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 class _Tab {
@@ -29,6 +30,12 @@ const _allTabs = [
       screenKey: AppScreenKeys.dashboard,
       icon: Icons.home_outlined,
       activeIcon: Icons.home_rounded),
+  _Tab(
+      path: AppRoutes.catalog,
+      label: 'Catalog',
+      screenKey: AppScreenKeys.catalog, // add this key to AppScreenKeys
+      icon: Icons.storefront_outlined,
+      activeIcon: Icons.storefront_rounded),
   _Tab(
       path: AppRoutes.inventory,
       label: 'Inventory',
@@ -66,7 +73,7 @@ class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.child});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bizAsync = ref.watch(activeBusinessProvider);
+    final bizAsync = ref.watch(business_providers.activeBusinessProvider);
     final bizName = bizAsync.valueOrNull?.name ?? 'TradeFlow';
 
 //Filter tabs by current user's view permissions
@@ -108,17 +115,21 @@ class AppShell extends ConsumerWidget {
             onPressed: () async {
               //Audit layer : log logout before signing out
               //if we signout first audit write may fail
-              final user = ref.read(currentAppUserProvider).asData?.value;
-              final biz = ref.read(activeBusinessIdProvider) ?? '';
+              final user =
+                  ref.read(auth_providers.currentAppUserProvider).asData?.value;
+              final biz =
+                  ref.read(business_providers.activeBusinessIdProvider) ?? '';
               if (user != null) {
                 await ref.read(auditServiceProvider).logLogout(
                       userId: user.id,
                       userName: user.name,
-                      businessId: biz,
+                      businessId: biz.toString(),
                     );
               }
               //signout after audit is confirmed written
-              await ref.read(loginNotifierProvider.notifier).signOut();
+              await ref
+                  .read(auth_providers.loginNotifierProvider.notifier)
+                  .signOut();
               //GoRouter redirect handles navigation to /login
             },
           ),

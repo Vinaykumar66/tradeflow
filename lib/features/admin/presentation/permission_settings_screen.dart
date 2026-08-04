@@ -112,7 +112,7 @@ class _RolePermissionTabState extends ConsumerState<_RolePermissionTab> {
           .from('role_permissions')
           .select('screen_key, action, allowed')
           .eq('business_id', bizId)
-          .eq('role', widget.role);
+          .eq('role_value', widget.role);
 
       final map = <String, bool>{};
 
@@ -151,12 +151,12 @@ class _RolePermissionTabState extends ConsumerState<_RolePermissionTab> {
       await supabase.from('role_permissions').upsert(
         {
           'business_id': bizId,
-          'role': widget.role,
+          'role_value': widget.role,
           'screen_key': screenKey,
           'action': action,
           'allowed': value,
         },
-        onConflict: 'business_id,role,screen_key,action',
+        onConflict: 'business_id,role_value,screen_key,action',
       );
     } catch (e) {
       // Revert on error

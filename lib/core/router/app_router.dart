@@ -14,6 +14,11 @@ import '../../features/admin/presentation/admin_screen.dart';
 import '../../features/admin/presentation/permission_settings_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../shared/widgets/app_shell.dart';
+import '../../features/catalog/presentation/catalog_screen.dart';
+import '../../features/catalog/presentation/add_edit_product_screen.dart';
+import '../../features/catalog/presentation/barcode_scanner_screen.dart';
+import '../../shared/models/product.dart';
+
 import 'router_notifier.dart';
 
 part 'app_router.g.dart';
@@ -30,18 +35,36 @@ abstract class AppRoutes {
   static const String admin = '/admin';
   static const String profile = '/profile';
   static const String permissionSettings = '/permission-settings';
+  static const String catalog = '/catalog';
+  static const String addProduct = '/catalog/add';
+  static const String editProduct = '/catalog/edit';
+  static const String barcodeScanner = '/barcode-scanner';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];
 
 @riverpod
 GoRouter appRouter(Ref ref) {
+  // Watch auth state so router rebuilds on auth change
+  // Use watch not read — this tells Riverpod to rebuild the router
+  // provider when auth changes, which refreshes GoRouter correctly
+  final authState = ref.watch(supabaseAuthStateProvider);
+  // Create notifier once using ref.watch
+  // Do not create RouterNotifier inside the function body
+  // Use keepAlive to prevent disposal during navigation
+  ref.keepAlive();
   final notifier = RouterNotifier(ref);
   return GoRouter(
     initialLocation: AppRoutes.login,
     refreshListenable: notifier,
     debugLogDiagnostics: true,
     redirect: (context, state) {
+      // Wait for auth to finish loading
+      // If auth state is still loading return null — do not redirect yet
+      // This prevents the loop caused by redirecting before auth settles
+      if (authState is AsyncLoading) {
+        return null;
+      }
       final user = ref.read(currentSupabaseUserProvider);
       final isPublic = _publicRoutes.contains(state.matchedLocation);
       if (user == null && !isPublic) return AppRoutes.login;
@@ -82,6 +105,24 @@ GoRouter appRouter(Ref ref) {
             path: AppRoutes.permissionSettings,
             builder: (_, __) => const PermissionSettingsScreen(),
           ),
+          GoRoute(
+              path: AppRoutes.catalog,
+              builder: (_, __) => const CatalogScreen(),
+              routes: [
+                GoRoute(
+                    path: 'add',
+                    builder: (_, s) => AddEditProductScreen(
+                        product: null,
+                        initialBarcode:
+                            s.extra is String ? s.extra as String : null)),
+                GoRoute(
+                    path: 'edit',
+                    builder: (_, s) => AddEditProductScreen(
+                        product: s.extra as Product?, initialBarcode: null)),
+              ]),
+          GoRoute(
+              path: AppRoutes.barcodeScanner,
+              builder: (_, __) => const BarcodeScannerScreen()),
         ],
       ),
     ],
