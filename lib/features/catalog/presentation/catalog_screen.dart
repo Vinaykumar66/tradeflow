@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tradeflow/shared/widgets/barcode_handler.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../features/auth/application/auth_providers.dart';
@@ -111,7 +112,8 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
             )),
             const SizedBox(width: 8),
             IconButton.filled(
-                onPressed: () => context.push(AppRoutes.barcodeScanner),
+                onPressed: () => BarcodeHandler.scanAndNavigate(
+                    context: context, ref: ref, title: 'Scan Product'),
                 icon: const Icon(Icons.qr_code_scanner)),
           ]),
         ),
