@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tradeflow/core/router/app_router.dart';
 import 'package:tradeflow/features/business/application/business_providers.dart'
     as activeBusinessProvider;
 import 'package:tradeflow/shared/models/business.dart';
@@ -16,6 +17,7 @@ import '../../../shared/models/product.dart';
 import '../../../shared/widgets/field_guard.dart';
 import '../../../shared/widgets/storage_guard.dart';
 import '../application/catalog_providers.dart';
+import 'package:go_router/go_router.dart';
 
 class AddEditProductScreen extends ConsumerStatefulWidget {
   final Product? product;
@@ -159,16 +161,24 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
   }
 
   Future<void> _onSubmit() async {
-    if (!_formKey.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) return;
+
+    // ── FIX 1: Get bizId safely from already-loaded provider ─────────────
+    final biz =
+        ref.read(activeBusinessProvider.activeBusinessProvider).asData?.value;
+    final bizId = biz?.id ?? '';
+
+    // Guard: never save with empty bizId — will be blocked by RLS silently
+    if (bizId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Business not found. Please restart the app.'),
+          backgroundColor: Colors.red));
       return;
     }
-    final bizId = ref
-            .read(activeBusinessProvider.activeBusinessProvider)
-            .asData
-            ?.value
-            ?.id ??
-        '';
+
     final uid = ref.read(AuthProvider.currentSupabaseUserProvider)?.id ?? '';
+
+    // Upload image — only runs if user picked one
     final String? imageUrl = await _uploadImage(bizId);
 
     // Convert Rs. display values back to paise for storage
@@ -193,16 +203,77 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
       taxRate: double.tryParse(_taxCtrl.text) ?? 18.0,
       stockQty: int.tryParse(_stockCtrl.text) ?? 0,
       reorderLevel: int.tryParse(_reorderCtrl.text) ?? 10,
-      description: _descCtrl.text.trim().isEmpty ? ' ' : _descCtrl.text.trim(),
+      description: _descCtrl.text.trim().isEmpty ? '' : _descCtrl.text.trim(),
       imageUrl: imageUrl,
       trackInventory: _trackInventory,
       expiryDate: _expiryDate,
       createdAt: widget.product?.createdAt ?? DateTime.now(),
       createdBy: widget.product?.createdBy ?? uid,
     );
-    await ref.read(saveProductNotifierProvider.notifier).save(product);
-    if (mounted) Navigator.pop(context);
+
+    debugPrint('Saving product: ${product.name} for bizId: $bizId');
+
+    // ── FIX 2: Wrap save in try/catch so errors are shown to user ────────
+    try {
+      await ref.read(saveProductNotifierProvider.notifier).save(product);
+      debugPrint('Product saved successfully');
+      // if (mounted) Navigator.pop(context);
+      if (mounted) context.go(AppRoutes.catalog);
+    } catch (e) {
+      debugPrint('Product save error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Failed to save product: $e'),
+            backgroundColor: Colors.red));
+      }
+    }
   }
+
+  // Future<void> _onSubmit() async {
+  //   if (!_formKey.currentState!.validate()) {
+  //     return;
+  //   }
+  //   final bizId = ref
+  //           .read(activeBusinessProvider.activeBusinessProvider)
+  //           .asData
+  //           ?.value
+  //           ?.id ??
+  //       '';
+  //   final uid = ref.read(AuthProvider.currentSupabaseUserProvider)?.id ?? '';
+  //   final String? imageUrl = await _uploadImage(bizId);
+
+  //   // Convert Rs. display values back to paise for storage
+  //   final cost = ((double.tryParse(_costCtrl.text) ?? 0) * 100).toInt();
+  //   final sell = ((double.tryParse(_sellCtrl.text) ?? 0) * 100).toInt();
+  //   final mrp = ((double.tryParse(_mrpCtrl.text) ?? 0) * 100).toInt();
+
+  //   final product = Product(
+  //     id: _isEditing ? widget.product!.id : '',
+  //     businessId: bizId,
+  //     name: _nameCtrl.text.trim(),
+  //     sku: _skuCtrl.text.trim(),
+  //     barcode:
+  //         _barcodeCtrl.text.trim().isEmpty ? null : _barcodeCtrl.text.trim(),
+  //     category:
+  //         _categoryCtrl.text.trim().isEmpty ? null : _categoryCtrl.text.trim(),
+  //     brand: _brandCtrl.text.trim().isEmpty ? null : _brandCtrl.text.trim(),
+  //     unit: _unitCtrl.text.trim(),
+  //     costPrice: cost,
+  //     sellingPrice: sell,
+  //     mrp: mrp,
+  //     taxRate: double.tryParse(_taxCtrl.text) ?? 18.0,
+  //     stockQty: int.tryParse(_stockCtrl.text) ?? 0,
+  //     reorderLevel: int.tryParse(_reorderCtrl.text) ?? 10,
+  //     description: _descCtrl.text.trim().isEmpty ? ' ' : _descCtrl.text.trim(),
+  //     imageUrl: imageUrl,
+  //     trackInventory: _trackInventory,
+  //     expiryDate: _expiryDate,
+  //     createdAt: widget.product?.createdAt ?? DateTime.now(),
+  //     createdBy: widget.product?.createdBy ?? uid,
+  //   );
+  //   await ref.read(saveProductNotifierProvider.notifier).save(product);
+  //   if (mounted) Navigator.pop(context);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -317,10 +388,13 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
                 // AUDIT: log when sensitive cost price field is accessed
                 final user =
                     ref.read(AuthProvider.currentAppUserProvider).asData?.value;
-                final biz =
-                    ref.read(activeBusinessProvider.activeBusinessIdProvider)
-                            as String? ??
-                        '';
+                final biz = ref
+                        .read(activeBusinessProvider.activeBusinessProvider)
+                        .asData
+                        ?.value
+                        ?.id ??
+                    '';
+                '';
                 if (user != null && widget.product != null) {
                   await ref.read(auditServiceProvider).logSensitiveView(
                         userId: user.id,

@@ -72,7 +72,8 @@ extension ProdutX on Product {
         'expiry_date': expiryDate?.toIso8601String(),
         'is_active': isActive,
         'track_inventory': trackInventory,
-        'created_at': createdBy,
+        'created_at': createdAt?.toIso8601String(),
+        'created_by': createdBy,
       };
 //Formatted price helpers to convert non decimal format to decimal format
   String get formatterSellingPrice =>

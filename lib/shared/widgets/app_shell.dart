@@ -159,180 +159,304 @@ class _DrawerLayout extends ConsumerWidget {
     const collapsedWidth = 64.0;
     const expandedWidth = 240.0;
 
-    return Scaffold(
-      // ── APP BAR ────────────────────────────────────────────────────────
-      appBar: AppBar(
-        title: Text(bizName),
-        // Override default leading so hamburger is always visible
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          tooltip: isExpanded ? 'Collapse Menu' : 'Expand Menu',
-          onPressed: () =>
-              ref.read(sidebarExpandedProvider.notifier).state = !isExpanded,
-        ),
-        actions: [
-          // Show toggle button only on mobile — switches back to bottom tabs
-          if (!isWideScreen)
-            IconButton(
-              icon: const Icon(Icons.tab_outlined),
-              tooltip: 'Switch to Bottom Tabs',
-              onPressed: () =>
-                  ref.read(navLayoutProvider.notifier).state = false,
+    return isWideScreen
+        ? Scaffold(
+            // ── APP BAR ────────────────────────────────────────────────────────
+            appBar: AppBar(
+              title: Text(bizName),
+              // Override default leading so hamburger is always visible
+              automaticallyImplyLeading: false,
+              leading: IconButton(
+                icon: const Icon(Icons.menu),
+                tooltip: isExpanded ? 'Collapse Menu' : 'Expand Menu',
+                onPressed: () => ref
+                    .read(sidebarExpandedProvider.notifier)
+                    .state = !isExpanded,
+              ),
+              actions: [
+                // Show toggle button only on mobile — switches back to bottom tabs
+                if (!isWideScreen)
+                  IconButton(
+                    icon: const Icon(Icons.tab_outlined),
+                    tooltip: 'Switch to Bottom Tabs',
+                    onPressed: () =>
+                        ref.read(navLayoutProvider.notifier).state = false,
+                  ),
+                IconButton(
+                    icon: const Icon(Icons.account_circle_outlined),
+                    onPressed: () => context.push(AppRoutes.profile)),
+                IconButton(
+                    icon: const Icon(Icons.logout),
+                    tooltip: 'Log out',
+                    onPressed: () => _logout(context, ref)),
+              ],
             ),
-          IconButton(
-              icon: const Icon(Icons.account_circle_outlined),
-              onPressed: () => context.push(AppRoutes.profile)),
-          IconButton(
-              icon: const Icon(Icons.logout),
-              tooltip: 'Log out',
-              onPressed: () => _logout(context, ref)),
-        ],
-      ),
 
-      // ── BODY: Sidebar + Content in a Row ─────────────────────────────
-      body: Row(children: [
-        // ── PERSISTENT SIDEBAR ──────────────────────────────────────────
-        AnimatedContainer(
-            duration: const Duration(milliseconds: 220),
-            curve: Curves.easeInOut,
-            // Animate between collapsed and expanded widths
-            width: isExpanded ? expandedWidth : collapsedWidth,
-            decoration: BoxDecoration(color: AppColors.surface, boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 8,
-                  offset: const Offset(2, 0)),
-            ]),
-            child: Column(children: [
-              // ── SIDEBAR HEADER ────────────────────────────────────────
+            // ── BODY: Sidebar + Content in a Row ─────────────────────────────
+            body: Row(children: [
+              // ── PERSISTENT SIDEBAR ──────────────────────────────────────────
               AnimatedContainer(
                   duration: const Duration(milliseconds: 220),
-                  height: 80,
-                  color: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Row(
-                      mainAxisAlignment: isExpanded
-                          ? MainAxisAlignment.start
-                          : MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.store_outlined,
-                            color: Colors.white, size: 28),
-                        // Show business name only when expanded
-                        if (isExpanded) ...[
-                          const SizedBox(width: 12),
-                          Expanded(
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                Text(bizName,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1),
-                                const Text('TradeFlow',
-                                    style: TextStyle(
-                                        color: Colors.white60, fontSize: 11)),
-                              ])),
-                        ],
-                      ])),
+                  curve: Curves.easeInOut,
+                  // Animate between collapsed and expanded widths
+                  width: isExpanded ? expandedWidth : collapsedWidth,
+                  decoration:
+                      BoxDecoration(color: AppColors.surface, boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 8,
+                        offset: const Offset(2, 0)),
+                  ]),
+                  child: Column(children: [
+                    // ── SIDEBAR HEADER ────────────────────────────────────────
+                    // AnimatedContainer(
+                    //     duration: const Duration(milliseconds: 220),
+                    //     height: 80,
+                    //     color: AppColors.primary,
+                    //     padding: const EdgeInsets.symmetric(horizontal: 12),
+                    //     child:
+                    //     Row(
+                    //         mainAxisAlignment: isExpanded
+                    //             ? MainAxisAlignment.start
+                    //             : MainAxisAlignment.center,
+                    //         children: [
+                    //           // const Icon(Icons.store_outlined,
+                    //           //     color: Colors.white, size: 28),
+                    //           // Show business name only when expanded
+                    //           if (isExpanded) ...[
+                    //             const SizedBox(width: 12),
+                    //             Expanded(
+                    //                 child: Column(
+                    //                     mainAxisAlignment: MainAxisAlignment.center,
+                    //                     crossAxisAlignment: CrossAxisAlignment.start,
+                    //                     children: [
+                    //                   Text(bizName,
+                    //                       style: const TextStyle(
+                    //                           color: Colors.white,
+                    //                           fontSize: 14,
+                    //                           fontWeight: FontWeight.bold),
+                    //                       overflow: TextOverflow.ellipsis,
+                    //                       maxLines: 1),
+                    //                   const Text('TradeFlow',
+                    //                       style: TextStyle(
+                    //                           color: Colors.white60, fontSize: 11)),
+                    //                 ])),
+                    //           ],
+                    //         ]),
+                    //         ),
 
-              // ── NAV ITEMS ─────────────────────────────────────────────
-              Expanded(
-                  child: ListView(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      children: visibleTabs.asMap().entries.map((entry) {
-                        final i = entry.key;
-                        final tab = entry.value;
-                        final isSelected = i == selectedIndex;
+                    // ── NAV ITEMS ─────────────────────────────────────────────
+                    Expanded(
+                        child: ListView(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            children: visibleTabs.asMap().entries.map((entry) {
+                              final i = entry.key;
+                              final tab = entry.value;
+                              final isSelected = i == selectedIndex;
 
-                        return Tooltip(
-                            // Show tooltip with label when collapsed
-                            // so user knows what each icon does
-                            message: isExpanded ? '' : tab.label,
-                            preferBelow: false,
-                            waitDuration: const Duration(milliseconds: 500),
-                            child: InkWell(
-                                onTap: () => context.go(tab.path),
-                                borderRadius: BorderRadius.circular(8),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 2),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: isExpanded ? 12 : 0,
-                                      vertical: 10),
-                                  decoration: BoxDecoration(
-                                      // Highlight selected item
-                                      color: isSelected
-                                          ? AppColors.primary
-                                              .withValues(alpha: 0.12)
-                                          : Colors.transparent,
+                              return Tooltip(
+                                  // Show tooltip with label when collapsed
+                                  // so user knows what each icon does
+                                  message: isExpanded ? '' : tab.label,
+                                  preferBelow: false,
+                                  waitDuration:
+                                      const Duration(milliseconds: 500),
+                                  child: InkWell(
+                                      onTap: () => context.go(tab.path),
                                       borderRadius: BorderRadius.circular(8),
-                                      // Left accent border for selected item
-                                      border: isSelected
-                                          ? Border(
-                                              left: BorderSide(
-                                                  color: AppColors.primary,
-                                                  width: 3))
-                                          : null),
-                                  child: Row(
-                                      mainAxisAlignment: isExpanded
-                                          ? MainAxisAlignment.start
-                                          : MainAxisAlignment.center,
-                                      children: [
-                                        // Icon — always visible
-                                        Icon(
-                                            isSelected
-                                                ? tab.activeIcon
-                                                : tab.icon,
-                                            size: 22,
+                                      child: AnimatedContainer(
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 2),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: isExpanded ? 12 : 0,
+                                            vertical: 10),
+                                        decoration: BoxDecoration(
+                                            // Highlight selected item
                                             color: isSelected
                                                 ? AppColors.primary
-                                                : Colors.grey.shade600),
-                                        // Label — only when expanded
-                                        if (isExpanded) ...[
-                                          const SizedBox(width: 14),
-                                          Expanded(
-                                              child: Text(tab.label,
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight: isSelected
-                                                          ? FontWeight.bold
-                                                          : FontWeight.normal,
-                                                      color: isSelected
-                                                          ? AppColors.primary
-                                                          : Colors.black87),
-                                                  overflow:
-                                                      TextOverflow.ellipsis)),
-                                        ],
-                                      ]),
-                                )));
-                      }).toList())),
+                                                    .withValues(alpha: 0.12)
+                                                : Colors.transparent,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            // Left accent border for selected item
+                                            border: isSelected
+                                                ? Border(
+                                                    left: BorderSide(
+                                                        color:
+                                                            AppColors.primary,
+                                                        width: 3))
+                                                : null),
+                                        child: Row(
+                                            mainAxisAlignment: isExpanded
+                                                ? MainAxisAlignment.start
+                                                : MainAxisAlignment.center,
+                                            children: [
+                                              // Icon — always visible
+                                              Icon(
+                                                  isSelected
+                                                      ? tab.activeIcon
+                                                      : tab.icon,
+                                                  size: 22,
+                                                  color: isSelected
+                                                      ? AppColors.primary
+                                                      : Colors.grey.shade600),
+                                              // Label — only when expanded
+                                              if (isExpanded) ...[
+                                                const SizedBox(width: 14),
+                                                Expanded(
+                                                    child: Text(tab.label,
+                                                        style: TextStyle(
+                                                            fontSize: 13,
+                                                            fontWeight:
+                                                                isSelected
+                                                                    ? FontWeight
+                                                                        .bold
+                                                                    : FontWeight
+                                                                        .normal,
+                                                            color: isSelected
+                                                                ? AppColors
+                                                                    .primary
+                                                                : Colors
+                                                                    .black87),
+                                                        overflow: TextOverflow
+                                                            .ellipsis)),
+                                              ],
+                                            ]),
+                                      )));
+                            }).toList())),
 
-              // ── SIDEBAR FOOTER ────────────────────────────────────────
-              const Divider(height: 1),
-              Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: isExpanded
-                      ? Text('TradeFlow v1.0',
+                    // ── SIDEBAR FOOTER ────────────────────────────────────────
+                    const Divider(height: 1),
+                    Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: isExpanded
+                            ? Text('TradeFlow v1.0',
+                                style: TextStyle(
+                                    fontSize: 11, color: Colors.grey.shade400))
+                            : Icon(Icons.info_outline,
+                                size: 16, color: Colors.grey.shade400)),
+                  ])),
+
+              // ── VERTICAL DIVIDER ────────────────────────────────────────────
+              const VerticalDivider(width: 1, thickness: 1),
+
+              // ── MAIN CONTENT AREA ───────────────────────────────────────────
+              // Expands to fill remaining space beside the sidebar
+              Expanded(child: child),
+            ]),
+          )
+        : Scaffold(
+            // ── APP BAR ────────────────────────────────────────────────────────
+            appBar: AppBar(
+              title: Text(bizName),
+              // Hamburger icon opens/closes drawer
+              leading: Builder(
+                  builder: (ctx) => IconButton(
+                        icon: const Icon(Icons.menu),
+                        tooltip: 'Navigation Menu',
+                        onPressed: () => Scaffold.of(ctx).openDrawer(),
+                      )),
+              actions: [
+                // Show toggle button only on mobile — switches back to bottom tabs
+                if (!isWideScreen)
+                  IconButton(
+                    icon: const Icon(Icons.tab_outlined),
+                    tooltip: 'Switch to Bottom Tabs',
+                    onPressed: () =>
+                        ref.read(navLayoutProvider.notifier).state = false,
+                  ),
+                IconButton(
+                    icon: const Icon(Icons.account_circle_outlined),
+                    onPressed: () => context.push(AppRoutes.profile)),
+                IconButton(
+                    icon: const Icon(Icons.logout),
+                    tooltip: 'Log out',
+                    onPressed: () => _logout(context, ref)),
+              ],
+            ),
+
+            // ── SIDE DRAWER ────────────────────────────────────────────────────
+            drawer: SafeArea(
+              child: Drawer(
+                width: 280,
+                child: Column(children: [
+                  // Drawer header with business name
+                  // DrawerHeader(
+                  //     decoration: BoxDecoration(color: AppColors.primary),
+                  //     child: Column(
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
+                  //         mainAxisAlignment: MainAxisAlignment.end,
+                  //         children: [
+                  //           const Icon(Icons.store_outlined,
+                  //               color: Colors.white, size: 36),
+                  //           const SizedBox(height: 8),
+                  //           Text(bizName,
+                  //               style: const TextStyle(
+                  //                   color: Colors.white,
+                  //                   fontSize: 20,
+                  //                   fontWeight: FontWeight.bold)),
+                  //           const Text('TradeFlow',
+                  //               style: TextStyle(
+                  //                   color: Colors.white60, fontSize: 12)),
+                  //         ])),
+
+                  // Navigation items
+                  Expanded(
+                      child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: visibleTabs.asMap().entries.map((entry) {
+                      final i = entry.key;
+                      final tab = entry.value;
+                      final isSelected = i == selectedIndex;
+                      return ListTile(
+                        // Highlight selected item
+                        tileColor: isSelected
+                            ? AppColors.primary.withValues(alpha: 0.1)
+                            : null,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 2),
+                        leading: Icon(isSelected ? tab.activeIcon : tab.icon,
+                            color: isSelected
+                                ? AppColors.primary
+                                : Colors.grey.shade600),
+                        title: Text(tab.label,
+                            style: TextStyle(
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : Colors.black87)),
+                        // Left accent bar for selected item
+                        selected: isSelected,
+                        selectedColor: AppColors.primary,
+                        onTap: () {
+                          // Close drawer then navigate
+                          Navigator.of(context).pop();
+                          context.go(tab.path);
+                        },
+                      );
+                    }).toList(),
+                  )),
+
+                  // Bottom section — version or extra info
+                  const Divider(),
+                  Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text('TradeFlow v1.0',
                           style: TextStyle(
-                              fontSize: 11, color: Colors.grey.shade400))
-                      : Icon(Icons.info_outline,
-                          size: 16, color: Colors.grey.shade400)),
-            ])),
+                              fontSize: 11, color: Colors.grey.shade400))),
+                ]),
+              ),
+            ),
 
-        // ── VERTICAL DIVIDER ────────────────────────────────────────────
-        const VerticalDivider(width: 1, thickness: 1),
-
-        // ── MAIN CONTENT AREA ───────────────────────────────────────────
-        // Expands to fill remaining space beside the sidebar
-        Expanded(child: child),
-      ]),
-    );
+            // Main content
+            body: child,
+          );
   }
 }
 
@@ -482,6 +606,62 @@ Future<void> _logout(BuildContext context, WidgetRef ref) async {
         .logLogout(userId: user.id, userName: user.name, businessId: bizId);
   }
   await ref.read(loginNotifierProvider.notifier).signOut();
+}
+
+void _showCustomHeightDrawer(BuildContext context) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Drawer",
+    barrierColor: Colors.black54, // Dim background
+    transitionDuration: const Duration(milliseconds: 250),
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return Align(
+        alignment: Alignment.topLeft, // Change to Alignment.topCenter or Left
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.75, // 75% width
+          height: 400, // <--- SET YOUR CUSTOM REDUCED HEIGHT HERE
+          margin: const EdgeInsets.only(
+              top: 56, left: 0), // Offset below AppBar if needed
+          child: Material(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(16),
+              bottomRight: Radius.circular(16),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const DrawerHeader(
+                  child: Text('Custom Height Drawer'),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.home),
+                  title: const Text('Home'),
+                  onTap: () => Navigator.pop(context),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: const Text('Settings'),
+                  onTap: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      // Slide-in animation from the left
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(-1.0, 0.0),
+          end: Offset.zero,
+        ).animate(animation),
+        child: child,
+      );
+    },
+  );
 }
 
 // import 'package:flutter/material.dart';
