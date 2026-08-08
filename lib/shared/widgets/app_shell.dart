@@ -566,6 +566,7 @@ class _ScrollableBottomNav extends StatelessWidget {
                               ? AppColors.primary.withValues(alpha: 0.12)
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(12)),
+                      clipBehavior: Clip.hardEdge,
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

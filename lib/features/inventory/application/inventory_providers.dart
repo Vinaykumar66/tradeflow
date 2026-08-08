@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tradeflow/features/business/application/business_providers.dart';
 import '../../../core/di/repository_providers.dart';
 import '../../../features/auth/application/auth_providers.dart';
 import '../../../shared/models/product.dart';
@@ -7,7 +8,7 @@ part 'inventory_providers.g.dart';
 
 @riverpod
 Stream<List<Product>> inventoryList(InventoryListRef ref) {
-  final biz = ref.watch(activeBusinessIdProvider);
+  final biz = ref.watch(activeBusinessProvider).asData?.value?.id;
   if (biz == null) {
     return const Stream.empty();
   }
@@ -16,7 +17,7 @@ Stream<List<Product>> inventoryList(InventoryListRef ref) {
 
 @riverpod
 Stream<List<Product>> lowStockProducts(LowStockProductsRef ref) {
-  final biz = ref.watch(activeBusinessIdProvider);
+  final biz = ref.watch(activeBusinessProvider).asData?.value?.id;
   if (biz == null) {
     return const Stream.empty();
   }
@@ -25,7 +26,7 @@ Stream<List<Product>> lowStockProducts(LowStockProductsRef ref) {
 
 @riverpod
 Stream<List<Product>> expiringProducts(ExpiringProductsRef ref) {
-  final biz = ref.watch(activeBusinessIdProvider);
+  final biz = ref.watch(activeBusinessProvider).asData?.value?.id;
   if (biz == null) {
     return const Stream.empty();
   }

@@ -6,7 +6,7 @@ part of 'inventory_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$inventoryListHash() => r'9103b1f40873097df640406283b1ae720328bc3f';
+String _$inventoryListHash() => r'09a56a06cade06cfc07d584fbdbb86d0ddf4df12';
 
 /// See also [inventoryList].
 @ProviderFor(inventoryList)
@@ -23,7 +23,7 @@ final inventoryListProvider = AutoDisposeStreamProvider<List<Product>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef InventoryListRef = AutoDisposeStreamProviderRef<List<Product>>;
-String _$lowStockProductsHash() => r'72282da6fe7830b7df2d879cf856d1c8e33fa679';
+String _$lowStockProductsHash() => r'ed15d5303acfc55b8374f6c178f39b67692cf8d5';
 
 /// See also [lowStockProducts].
 @ProviderFor(lowStockProducts)
@@ -41,7 +41,7 @@ final lowStockProductsProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef LowStockProductsRef = AutoDisposeStreamProviderRef<List<Product>>;
-String _$expiringProductsHash() => r'5268ebe0c3b684e393464defcb2ad6c9a8019c40';
+String _$expiringProductsHash() => r'724355440c753188260926391831560e2dd2f39f';
 
 /// See also [expiringProducts].
 @ProviderFor(expiringProducts)
@@ -59,7 +59,7 @@ final expiringProductsProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ExpiringProductsRef = AutoDisposeStreamProviderRef<List<Product>>;
-String _$filterInventoryHash() => r'0b576877930f506745ec2b1ef325cb10f8c192f3';
+String _$filterInventoryHash() => r'b19eb5944d5f06af4bf9421b91e0f7f33b4cad2f';
 
 /// See also [filterInventory].
 @ProviderFor(filterInventory)
@@ -94,7 +94,7 @@ final inventoryFilterProvider =
 
 typedef _$InventoryFilter = AutoDisposeNotifier<String>;
 String _$updateStockNotifierHash() =>
-    r'06b7d753fb98da0f32381e893a21b8ad15adcd6b';
+    r'471fae636bfcf435a30c7e0090a3f8240cf07a0e';
 
 /// See also [UpdateStockNotifier].
 @ProviderFor(UpdateStockNotifier)

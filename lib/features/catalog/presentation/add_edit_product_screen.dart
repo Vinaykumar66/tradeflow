@@ -57,6 +57,8 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
   void initState() {
     super.initState();
     if (_isEditing) _prefill(widget.product!);
+    // Pre-fill barcode when scanning adds a new product
+    // widget.initialBarcode comes from extra: code in BarcodeHandler
     if (widget.initialBarcode != null)
       _barcodeCtrl.text = widget.initialBarcode!;
   }

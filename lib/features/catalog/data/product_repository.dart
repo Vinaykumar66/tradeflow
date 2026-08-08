@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/table_constants.dart';
@@ -30,6 +31,12 @@ class ProductRepository implements IProductRepository {
   @override
   Future<Product?> getProductByBarcode(
       String businessId, String barcode) async {
+    // Guard — never query with empty businessId
+    if (businessId.isEmpty) {
+      debugPrint('getProductByBarcode: empty businessId — skipping');
+      return null;
+    }
+
     final d = await supabase
         .from(SupabaseTables.products)
         .select()

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -16,8 +17,8 @@ import '../../features/profile/presentation/profile_screen.dart';
 import '../../shared/widgets/app_shell.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/add_edit_product_screen.dart';
-import '../../features/catalog/presentation/barcode_scanner_screen.dart';
 import '../../shared/models/product.dart';
+import '../../shared/widgets/barcode_scanner_screen.dart';
 
 import 'router_notifier.dart';
 
@@ -123,6 +124,10 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
               path: AppRoutes.barcodeScanner,
               builder: (_, __) => const BarcodeScannerScreen()),
+          GoRoute(
+              path: AppRoutes.barcodeScanner,
+              pageBuilder: (context, state) => const MaterialPage(
+                  fullscreenDialog: true, child: BarcodeScannerScreen())),
         ],
       ),
     ],
