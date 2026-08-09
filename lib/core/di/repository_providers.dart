@@ -23,6 +23,8 @@ import '../../core/interfaces/i_permission_repository.dart';
 import '../../features/admin/data/permission_repository.dart';
 import '../../core/interfaces/i_product_repository.dart';
 import '../../features/catalog/data/product_repository.dart';
+import '../../core/interfaces/i_customer_repository.dart';
+import '../../features/customers/data/customer_repository.dart';
 
 part 'repository_providers.g.dart';
 
@@ -51,6 +53,10 @@ IAuditService auditService(AuditServiceRef ref) => AuditService();
 @riverpod
 IPermissionRepository permissionRepository(PermissionRepositoryRef ref) =>
     PermissionRepository();
+
+@riverpod
+ICustomerRepository customerRepository(CustomerRepositoryRef ref) =>
+    CustomerRepository();
 
 // @riverpod
 // IAuditService auditService(Ref ref) => AuditService();

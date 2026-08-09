@@ -6,7 +6,7 @@ part of 'inventory_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$inventoryListHash() => r'09a56a06cade06cfc07d584fbdbb86d0ddf4df12';
+String _$inventoryListHash() => r'1e7241ee7e739a9e755eb708a1a837b317805666';
 
 /// See also [inventoryList].
 @ProviderFor(inventoryList)
@@ -23,7 +23,7 @@ final inventoryListProvider = AutoDisposeStreamProvider<List<Product>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef InventoryListRef = AutoDisposeStreamProviderRef<List<Product>>;
-String _$lowStockProductsHash() => r'ed15d5303acfc55b8374f6c178f39b67692cf8d5';
+String _$lowStockProductsHash() => r'16a745dffbf037d1c6227afe672587115ae28895';
 
 /// See also [lowStockProducts].
 @ProviderFor(lowStockProducts)
@@ -41,7 +41,7 @@ final lowStockProductsProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef LowStockProductsRef = AutoDisposeStreamProviderRef<List<Product>>;
-String _$expiringProductsHash() => r'724355440c753188260926391831560e2dd2f39f';
+String _$expiringProductsHash() => r'5beae6d0bc6e9da55509f39c5b7ef8347f572446';
 
 /// See also [expiringProducts].
 @ProviderFor(expiringProducts)

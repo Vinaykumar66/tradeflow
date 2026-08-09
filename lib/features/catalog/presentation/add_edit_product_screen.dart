@@ -280,22 +280,43 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
   @override
   Widget build(BuildContext context) {
     final isSaving = ref.watch(saveProductNotifierProvider) is AsyncLoading;
+    final sym = ref
+            .watch(activeBusinessProvider.activeBusinessProvider)
+            .asData
+            ?.value
+            ?.currencySymbol ??
+        'Rs.';
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Product' : 'Add Product'),
+        iconTheme: const IconThemeData(
+          color: Color(0xFF0E4375), // Changes only the back button color
+        ),
+        // foregroundColor:  ,
+        backgroundColor: Color(0xF0FFFFFF),
+        title: Text(
+            // style: TextStyle(color: Color(0xFF0E4375)),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+            _isEditing ? 'Edit Product' : 'Add Product'),
         actions: [
           TextButton(
-            onPressed: (isSaving || _uploading) ? null : _onSubmit,
-            child: (isSaving || _uploading)
-                ? const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.white))
-                : const Text('SAVE',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold)),
-          )
+              onPressed: (isSaving || _uploading) ? null : _onSubmit,
+              child: (isSaving || _uploading)
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white))
+                  : Text('SAVE',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(color: AppColors.primary))
+              // style: TextStyle(
+              //     color: ., fontWeight: FontWeight.bold)),
+              )
         ],
       ),
       body: Form(
@@ -374,7 +395,8 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
           const SizedBox(height: 20),
 
           // Pricing
-          Text('Pricing (Rs.)', style: AppTextStyles.h3),
+          // Text('Pricing (Rs.)', style: AppTextStyles.h3),
+          Text('Pricing ($sym)', style: AppTextStyles.h3),
           const SizedBox(height: 12),
 
           // Cost price - FieldGuard hides from Salesperson
@@ -383,7 +405,8 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
             fieldKey: AppFieldKeys.productCostPrice,
             readOnlyChild: ListTile(
                 title: const Text('Cost Price'),
-                trailing: Text('Rs. ${_costCtrl.text}',
+                // trailing: Text('Rs. ${_costCtrl.text}',
+                trailing: Text('$sym. ${_costCtrl.text}',
                     style: const TextStyle(color: Colors.grey))),
             child: GestureDetector(
               onTap: () async {
@@ -409,14 +432,17 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
                 }
               },
               child:
-                  _f(_costCtrl, 'Cost Price (Rs.)', type: TextInputType.number),
+                  // _f(_costCtrl, 'Cost Price (Rs.)', type: TextInputType.number),
+                  _f(_costCtrl, 'Cost Price ($sym.)',
+                      type: TextInputType.number),
             ),
           ),
-          _f(_sellCtrl, 'Selling Price (Rs.) *',
+          // _f(_sellCtrl, 'Selling Price (Rs.) *',
+          _f(_sellCtrl, 'Selling Price ($sym.) *',
               type: TextInputType.number,
               validator: (v) =>
                   v!.trim().isEmpty ? 'Selling price required' : null),
-          _f(_mrpCtrl, 'MRP (Rs.)', type: TextInputType.number),
+          _f(_mrpCtrl, 'MRP ($sym.)', type: TextInputType.number),
           const SizedBox(height: 20),
 
           // Tax

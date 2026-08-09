@@ -6,6 +6,7 @@ import '../../features/auth/application/auth_providers.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/signup_screen.dart';
 import '../../features/business/presentation/onboarding_screen.dart';
+import '../../features/customers/presentation/add_edit_customer_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/inventory/presentation/inventory_screen.dart';
 import '../../features/customers/presentation/customers_screen.dart';
@@ -19,7 +20,6 @@ import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/add_edit_product_screen.dart';
 import '../../shared/models/product.dart';
 import '../../shared/widgets/barcode_scanner_screen.dart';
-
 import 'router_notifier.dart';
 
 part 'app_router.g.dart';
@@ -40,6 +40,9 @@ abstract class AppRoutes {
   static const String addProduct = '/catalog/add';
   static const String editProduct = '/catalog/edit';
   static const String barcodeScanner = '/barcode-scanner';
+  static const String addCustomer = '/customers/add';
+  static const String editCustomer = '/customers/edit';
+  static const String customerDetail = '/customers/detail';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];
@@ -88,9 +91,29 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
               path: AppRoutes.inventory,
               builder: (_, __) => const InventoryScreen()),
+
+          // GoRoute(
+          //     path: AppRoutes.customers,
+          //     builder: (_, __) => const CustomersScreen()),
+
           GoRoute(
               path: AppRoutes.customers,
-              builder: (_, __) => const CustomersScreen()),
+              builder: (_, __) => const CustomersScreen(),
+              routes: [
+                GoRoute(
+                    path: 'add',
+                    builder: (_, __) =>
+                        const AddEditCustomerScreen(customer: null)),
+                // GoRoute(
+                //     path: 'edit',
+                //     builder: (_, s) =>
+                //         AddEditCustomerScreen(customer: s.extra as Customer?)),
+                // GoRoute(
+                //     path: 'detail',
+                //     builder: (_, s) =>
+                //         CustomerDetailScreen(customer: s.extra as Customer)),
+              ]),
+
           GoRoute(
               path: AppRoutes.invoices,
               builder: (_, __) => const InvoicesScreen()),

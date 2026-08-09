@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../features/auth/application/auth_providers.dart';
+// import '../../../../features/auth/application/auth_providers.dart';
+import '../../../business/application/business_providers.dart';
 import '../../../../shared/models/product.dart';
 import '../../application/inventory_providers.dart';
 
@@ -15,7 +16,7 @@ class StockUpdateSheet extends ConsumerStatefulWidget {
           isScrollControlled: true,
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-          builder: (_) => StockUpdateSheet(product: product));
+          builder: (context) => StockUpdateSheet(product: product));
 
   @override
   ConsumerState<StockUpdateSheet> createState() => _StockUpdateSheetState();
@@ -53,12 +54,43 @@ class _StockUpdateSheetState extends ConsumerState<StockUpdateSheet> {
   }
 
   Future<void> _save() async {
-    final bizId = ref.read(activeBusinessIdProvider) ?? '';
-    await ref
-        .read(updateStockNotifierProvider.notifier)
-        .update(bizId: bizId, productId: widget.product.id, newQty: _qty);
-    if (mounted) Navigator.pop(context);
+    // activeBusinessProvider is already loaded — inventory screen uses it
+    // Extract id directly instead of going through the derived FutureProvider
+    final bizId = ref.read(activeBusinessProvider).asData?.value?.id ?? '';
+    // debugPrint(
+    //     'StockUpdate: bizId=$bizId productId=${widget.product.id} newQty=$_qty');
+    // Guard — never call Supabase with empty bizId
+    if (bizId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Business not found. Please restart the app.'),
+          backgroundColor: Colors.red));
+      return;
+    }
+
+    try {
+      await ref
+          .read(updateStockNotifierProvider.notifier)
+          .update(bizId: bizId, productId: widget.product.id, newQty: _qty);
+
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Failed to update stock: $e'),
+            backgroundColor: Colors.red));
+      }
+    }
   }
+
+  // Future<void> _save() async {
+  //   // final bizId = ref.read(activeBusinessIdProvider) ?? '';
+  //   final bizId = ref.read(activeBusinessProvider).asData?.value?.id ?? '';
+
+  //   await ref
+  //       .read(updateStockNotifierProvider.notifier)
+  //       .update(bizId: bizId, productId: widget.product.id, newQty: _qty);
+  //   if (mounted) Navigator.pop(context);
+  // }
 
   @override
   Widget build(BuildContext context) {

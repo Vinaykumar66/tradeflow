@@ -143,16 +143,22 @@ class _InventoryTile extends StatelessWidget {
             ExpiryBadge(product: product),
           ]),
         ]),
-        trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text('${product.stockQty}',
-                  style: TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold, color: color)),
-              Text(product.unit ?? 'pcs',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey))
-            ]),
+        trailing: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerRight,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text('${product.stockQty}',
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: color)),
+                Text(product.unit ?? 'pcs',
+                    style: const TextStyle(fontSize: 12, color: Colors.grey))
+              ]),
+        ),
         onTap: () => StockUpdateSheet.show(context, product),
       ),
     );

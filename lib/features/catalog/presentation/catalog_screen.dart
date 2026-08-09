@@ -201,6 +201,9 @@ class _ProductTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sym =
+        ref.watch(activeBusinessProvider).asData?.value?.currencySymbol ??
+            'Rs.';
     return Slidable(
         startActionPane: ActionPane(motion: const DrawerMotion(), children: [
           SlidableAction(
@@ -265,7 +268,7 @@ class _ProductTile extends StatelessWidget {
               trailing: Text(
                   // ── FIX 4: sellingPrice is in paise — divide by 100
                   // or keep as int if your model stores full rupees
-                  'Rs.${product.sellingPrice}',
+                  '$sym${product.sellingPrice}',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary,

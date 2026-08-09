@@ -62,10 +62,12 @@ class _PermissionSettingsScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Permission Settings'),
+        backgroundColor: Color(0xF0FFFFFF),
+        title: const Text(
+            style: TextStyle(color: Colors.black), 'Permission Settings'),
         // ── TAB BAR in AppBar bottom ─────────────────────────────────────
         bottom: TabBar(
-          labelColor: Color.from(alpha: 24, red: 10, green: 10, blue: 10),
+          // labelColor: Color.from(alpha: 24, red: 10, green: 10, blue: 10),
 
           controller: _tabController, // ← explicit controller
           tabs: const [

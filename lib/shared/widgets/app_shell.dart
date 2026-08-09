@@ -201,7 +201,7 @@ class _DrawerLayout extends ConsumerWidget {
                   // Animate between collapsed and expanded widths
                   width: isExpanded ? expandedWidth : collapsedWidth,
                   decoration:
-                      BoxDecoration(color: AppColors.surface, boxShadow: [
+                      BoxDecoration(color: AppColors.primaryDark, boxShadow: [
                     BoxShadow(
                         color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 8,
@@ -284,8 +284,7 @@ class _DrawerLayout extends ConsumerWidget {
                                             border: isSelected
                                                 ? Border(
                                                     left: BorderSide(
-                                                        color:
-                                                            AppColors.primary,
+                                                        color: AppColors.border,
                                                         width: 3))
                                                 : null),
                                         child: Row(
@@ -300,8 +299,8 @@ class _DrawerLayout extends ConsumerWidget {
                                                       : tab.icon,
                                                   size: 22,
                                                   color: isSelected
-                                                      ? AppColors.primary
-                                                      : Colors.grey.shade600),
+                                                      ? AppColors.surface
+                                                      : Colors.white),
                                               // Label — only when expanded
                                               if (isExpanded) ...[
                                                 const SizedBox(width: 14),
@@ -317,9 +316,9 @@ class _DrawerLayout extends ConsumerWidget {
                                                                         .normal,
                                                             color: isSelected
                                                                 ? AppColors
-                                                                    .primary
-                                                                : Colors
-                                                                    .black87),
+                                                                    .surface
+                                                                : Colors.grey
+                                                                    .shade500),
                                                         overflow: TextOverflow
                                                             .ellipsis)),
                                               ],

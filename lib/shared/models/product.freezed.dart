@@ -32,19 +32,20 @@ mixin _$Product {
   @JsonKey(name: 'image_url')
   String? get imageUrl => throw _privateConstructorUsedError;
   String? get unit =>
-      throw _privateConstructorUsedError; //Prices in Paise(integer) - Rs. 99.50 = 9950
+      throw _privateConstructorUsedError; // Prices in paise (integer) — e.g. 99.50 = 9950
+// Currency symbol comes from businesses.currency_symbol
   @JsonKey(name: 'cost_price')
   int get costPrice => throw _privateConstructorUsedError;
   @JsonKey(name: 'selling_price')
   int get sellingPrice => throw _privateConstructorUsedError;
   @JsonKey(name: 'mrp')
-  int get mrp => throw _privateConstructorUsedError; //Tax
+  int get mrp => throw _privateConstructorUsedError; // Tax
   @JsonKey(name: 'tax_rate')
   double get taxRate => throw _privateConstructorUsedError;
   @JsonKey(name: 'tax_type')
-  String get TaxType => throw _privateConstructorUsedError;
+  String get taxType => throw _privateConstructorUsedError;
   @JsonKey(name: 'tax_inclusive')
-  bool get taxInclusive => throw _privateConstructorUsedError; //Inventory
+  bool get taxInclusive => throw _privateConstructorUsedError; // Inventory
   @JsonKey(name: 'stock_qty')
   int get stockQty => throw _privateConstructorUsedError;
   @JsonKey(name: 'reorder_level')
@@ -93,7 +94,7 @@ abstract class $ProductCopyWith<$Res> {
       @JsonKey(name: 'selling_price') int sellingPrice,
       @JsonKey(name: 'mrp') int mrp,
       @JsonKey(name: 'tax_rate') double taxRate,
-      @JsonKey(name: 'tax_type') String TaxType,
+      @JsonKey(name: 'tax_type') String taxType,
       @JsonKey(name: 'tax_inclusive') bool taxInclusive,
       @JsonKey(name: 'stock_qty') int stockQty,
       @JsonKey(name: 'reorder_level') int reorderLevel,
@@ -135,7 +136,7 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
     Object? sellingPrice = null,
     Object? mrp = null,
     Object? taxRate = null,
-    Object? TaxType = null,
+    Object? taxType = null,
     Object? taxInclusive = null,
     Object? stockQty = null,
     Object? reorderLevel = null,
@@ -204,9 +205,9 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
           ? _value.taxRate
           : taxRate // ignore: cast_nullable_to_non_nullable
               as double,
-      TaxType: null == TaxType
-          ? _value.TaxType
-          : TaxType // ignore: cast_nullable_to_non_nullable
+      taxType: null == taxType
+          ? _value.taxType
+          : taxType // ignore: cast_nullable_to_non_nullable
               as String,
       taxInclusive: null == taxInclusive
           ? _value.taxInclusive
@@ -274,7 +275,7 @@ abstract class _$$ProductImplCopyWith<$Res> implements $ProductCopyWith<$Res> {
       @JsonKey(name: 'selling_price') int sellingPrice,
       @JsonKey(name: 'mrp') int mrp,
       @JsonKey(name: 'tax_rate') double taxRate,
-      @JsonKey(name: 'tax_type') String TaxType,
+      @JsonKey(name: 'tax_type') String taxType,
       @JsonKey(name: 'tax_inclusive') bool taxInclusive,
       @JsonKey(name: 'stock_qty') int stockQty,
       @JsonKey(name: 'reorder_level') int reorderLevel,
@@ -314,7 +315,7 @@ class __$$ProductImplCopyWithImpl<$Res>
     Object? sellingPrice = null,
     Object? mrp = null,
     Object? taxRate = null,
-    Object? TaxType = null,
+    Object? taxType = null,
     Object? taxInclusive = null,
     Object? stockQty = null,
     Object? reorderLevel = null,
@@ -383,9 +384,9 @@ class __$$ProductImplCopyWithImpl<$Res>
           ? _value.taxRate
           : taxRate // ignore: cast_nullable_to_non_nullable
               as double,
-      TaxType: null == TaxType
-          ? _value.TaxType
-          : TaxType // ignore: cast_nullable_to_non_nullable
+      taxType: null == taxType
+          ? _value.taxType
+          : taxType // ignore: cast_nullable_to_non_nullable
               as String,
       taxInclusive: null == taxInclusive
           ? _value.taxInclusive
@@ -449,7 +450,7 @@ class _$ProductImpl implements _Product {
       @JsonKey(name: 'selling_price') this.sellingPrice = 0,
       @JsonKey(name: 'mrp') this.mrp = 0,
       @JsonKey(name: 'tax_rate') this.taxRate = 18.0,
-      @JsonKey(name: 'tax_type') this.TaxType = 'GST',
+      @JsonKey(name: 'tax_type') this.taxType = 'GST',
       @JsonKey(name: 'tax_inclusive') this.taxInclusive = false,
       @JsonKey(name: 'stock_qty') this.stockQty = 0,
       @JsonKey(name: 'reorder_level') this.reorderLevel = 0,
@@ -486,7 +487,8 @@ class _$ProductImpl implements _Product {
   final String? imageUrl;
   @override
   final String? unit;
-//Prices in Paise(integer) - Rs. 99.50 = 9950
+// Prices in paise (integer) — e.g. 99.50 = 9950
+// Currency symbol comes from businesses.currency_symbol
   @override
   @JsonKey(name: 'cost_price')
   final int costPrice;
@@ -496,17 +498,17 @@ class _$ProductImpl implements _Product {
   @override
   @JsonKey(name: 'mrp')
   final int mrp;
-//Tax
+// Tax
   @override
   @JsonKey(name: 'tax_rate')
   final double taxRate;
   @override
   @JsonKey(name: 'tax_type')
-  final String TaxType;
+  final String taxType;
   @override
   @JsonKey(name: 'tax_inclusive')
   final bool taxInclusive;
-//Inventory
+// Inventory
   @override
   @JsonKey(name: 'stock_qty')
   final int stockQty;
@@ -537,7 +539,7 @@ class _$ProductImpl implements _Product {
 
   @override
   String toString() {
-    return 'Product(id: $id, name: $name, businessId: $businessId, sku: $sku, category: $category, barcode: $barcode, brand: $brand, description: $description, imageUrl: $imageUrl, unit: $unit, costPrice: $costPrice, sellingPrice: $sellingPrice, mrp: $mrp, taxRate: $taxRate, TaxType: $TaxType, taxInclusive: $taxInclusive, stockQty: $stockQty, reorderLevel: $reorderLevel, reorderQty: $reorderQty, expiryDate: $expiryDate, isActive: $isActive, trackInventory: $trackInventory, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy)';
+    return 'Product(id: $id, name: $name, businessId: $businessId, sku: $sku, category: $category, barcode: $barcode, brand: $brand, description: $description, imageUrl: $imageUrl, unit: $unit, costPrice: $costPrice, sellingPrice: $sellingPrice, mrp: $mrp, taxRate: $taxRate, taxType: $taxType, taxInclusive: $taxInclusive, stockQty: $stockQty, reorderLevel: $reorderLevel, reorderQty: $reorderQty, expiryDate: $expiryDate, isActive: $isActive, trackInventory: $trackInventory, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy)';
   }
 
   @override
@@ -565,7 +567,7 @@ class _$ProductImpl implements _Product {
                 other.sellingPrice == sellingPrice) &&
             (identical(other.mrp, mrp) || other.mrp == mrp) &&
             (identical(other.taxRate, taxRate) || other.taxRate == taxRate) &&
-            (identical(other.TaxType, TaxType) || other.TaxType == TaxType) &&
+            (identical(other.taxType, taxType) || other.taxType == taxType) &&
             (identical(other.taxInclusive, taxInclusive) ||
                 other.taxInclusive == taxInclusive) &&
             (identical(other.stockQty, stockQty) ||
@@ -606,7 +608,7 @@ class _$ProductImpl implements _Product {
         sellingPrice,
         mrp,
         taxRate,
-        TaxType,
+        taxType,
         taxInclusive,
         stockQty,
         reorderLevel,
@@ -651,7 +653,7 @@ abstract class _Product implements Product {
       @JsonKey(name: 'selling_price') final int sellingPrice,
       @JsonKey(name: 'mrp') final int mrp,
       @JsonKey(name: 'tax_rate') final double taxRate,
-      @JsonKey(name: 'tax_type') final String TaxType,
+      @JsonKey(name: 'tax_type') final String taxType,
       @JsonKey(name: 'tax_inclusive') final bool taxInclusive,
       @JsonKey(name: 'stock_qty') final int stockQty,
       @JsonKey(name: 'reorder_level') final int reorderLevel,
@@ -686,7 +688,8 @@ abstract class _Product implements Product {
   @JsonKey(name: 'image_url')
   String? get imageUrl;
   @override
-  String? get unit; //Prices in Paise(integer) - Rs. 99.50 = 9950
+  String? get unit; // Prices in paise (integer) — e.g. 99.50 = 9950
+// Currency symbol comes from businesses.currency_symbol
   @override
   @JsonKey(name: 'cost_price')
   int get costPrice;
@@ -695,16 +698,16 @@ abstract class _Product implements Product {
   int get sellingPrice;
   @override
   @JsonKey(name: 'mrp')
-  int get mrp; //Tax
+  int get mrp; // Tax
   @override
   @JsonKey(name: 'tax_rate')
   double get taxRate;
   @override
   @JsonKey(name: 'tax_type')
-  String get TaxType;
+  String get taxType;
   @override
   @JsonKey(name: 'tax_inclusive')
-  bool get taxInclusive; //Inventory
+  bool get taxInclusive; // Inventory
   @override
   @JsonKey(name: 'stock_qty')
   int get stockQty;
