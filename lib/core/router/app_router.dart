@@ -20,6 +20,14 @@ import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/add_edit_product_screen.dart';
 import '../../shared/models/product.dart';
 import '../../shared/widgets/barcode_scanner_screen.dart';
+import '../../features/customers/presentation/customer_detail_screen.dart';
+import '../../features/customers/presentation/customer_ledger_screen.dart';
+import '../../shared/models/customer.dart';
+import '../../features/invoices/presentation/invoices_screen.dart';
+import '../../features/invoices/presentation/create_invoice_screen.dart';
+import '../../features/customers/presentation/customer_picker_screen.dart';
+import '../../features/invoices/presentation/invoice_detail_screen.dart';
+
 import 'router_notifier.dart';
 
 part 'app_router.g.dart';
@@ -43,6 +51,10 @@ abstract class AppRoutes {
   static const String addCustomer = '/customers/add';
   static const String editCustomer = '/customers/edit';
   static const String customerDetail = '/customers/detail';
+  static const String customerLedger = '/customers/ledger';
+  static const String createInvoice = '/invoices/create';
+  static const String invoiceDetail = '/invoices/detail';
+  static const String customerPicker = '/customers/picker';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];
@@ -95,6 +107,10 @@ GoRouter appRouter(Ref ref) {
           // GoRoute(
           //     path: AppRoutes.customers,
           //     builder: (_, __) => const CustomersScreen()),
+// Customer picker as a full-screen route
+          GoRoute(
+              path: AppRoutes.customerPicker,
+              builder: (_, __) => const CustomerPickerScreen()),
 
           GoRoute(
               path: AppRoutes.customers,
@@ -104,19 +120,39 @@ GoRouter appRouter(Ref ref) {
                     path: 'add',
                     builder: (_, __) =>
                         const AddEditCustomerScreen(customer: null)),
-                // GoRoute(
-                //     path: 'edit',
-                //     builder: (_, s) =>
-                //         AddEditCustomerScreen(customer: s.extra as Customer?)),
-                // GoRoute(
-                //     path: 'detail',
-                //     builder: (_, s) =>
-                //         CustomerDetailScreen(customer: s.extra as Customer)),
+                GoRoute(
+                    path: 'edit',
+                    builder: (_, s) =>
+                        AddEditCustomerScreen(customer: s.extra as Customer?)),
+                GoRoute(
+                    path: 'detail',
+                    builder: (_, s) =>
+                        CustomerDetailScreen(customer: s.extra as Customer)),
+                GoRoute(
+                    path: 'ledger',
+                    builder: (_, s) =>
+                        CustomerLedgerScreen(customer: s.extra as Customer)),
               ]),
-
           GoRoute(
               path: AppRoutes.invoices,
-              builder: (_, __) => const InvoicesScreen()),
+              builder: (_, __) => const InvoicesScreen(),
+              routes: [
+                GoRoute(
+                    path: 'create',
+                    builder: (_, __) => const CreateInvoiceScreen()),
+                GoRoute(
+                    path: 'detail',
+                    builder: (_, s) =>
+                        InvoiceDetailScreen(invoice: s.extra as Invoice)),
+                GoRoute(
+                    path: 'payment',
+                    builder: (_, s) =>
+                        RecordPaymentScreen(invoice: s.extra as Invoice)),
+              ]),
+
+          // GoRoute(
+          //     path: AppRoutes.invoices,
+          //     builder: (_, __) => const InvoicesScreen()),
           GoRoute(
               path: AppRoutes.reports,
               builder: (_, __) => const ReportsScreen()),
@@ -144,9 +180,9 @@ GoRouter appRouter(Ref ref) {
                     builder: (_, s) => AddEditProductScreen(
                         product: s.extra as Product?, initialBarcode: null)),
               ]),
-          GoRoute(
-              path: AppRoutes.barcodeScanner,
-              builder: (_, __) => const BarcodeScannerScreen()),
+          // GoRoute(
+          //     path: AppRoutes.barcodeScanner,
+          //     builder: (_, __) => const BarcodeScannerScreen()),
           GoRoute(
               path: AppRoutes.barcodeScanner,
               pageBuilder: (context, state) => const MaterialPage(

@@ -6,7 +6,7 @@ part of 'customer_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$customerListHash() => r'355123fc3dad496f063fb7707932339b0cc8966d';
+String _$customerListHash() => r'c3d618e7a6db4202cc4baeca2ead8e9620bd0d4c';
 
 /// See also [customerList].
 @ProviderFor(customerList)
@@ -22,7 +22,7 @@ final customerListProvider = AutoDisposeStreamProvider<List<Customer>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CustomerListRef = AutoDisposeStreamProviderRef<List<Customer>>;
-String _$overdueCustomersHash() => r'3461203a40fe4b16468c02d6909c7588263bb586';
+String _$overdueCustomersHash() => r'6ff1fc6f2ee2e785d3f7865315c8f7b12d74d0e9';
 
 /// See also [overdueCustomers].
 @ProviderFor(overdueCustomers)

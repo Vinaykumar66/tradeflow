@@ -2,19 +2,32 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/di/repository_providers.dart';
 import '../../../features/auth/application/auth_providers.dart';
 import '../../../shared/models/customer.dart';
+import '../../business/application/business_providers.dart';
 
 part 'customer_providers.g.dart';
 
 @riverpod
-Stream<List<Customer>> customerList(CustomerListRef ref) {
-  final biz = ref.watch(activeBusinessIdProvider);
-  if (biz == null) return const Stream.empty();
-  return ref.watch(customerRepositoryProvider).streamCustomers(biz);
+Stream<List<Customer>> customerList(CustomerListRef ref) async* {
+  final bizAsync = ref.watch(activeBusinessProvider);
+  final bizId = bizAsync.asData?.value?.id;
+
+  if (bizId == null) {
+    // Emit empty list immediately instead of never emitting
+    // This moves provider to AsyncData([]) not AsyncLoading
+    yield [];
+    return;
+  }
+
+  // Stream all products for this business
+  // Supabase realtime — updates when products are added/edited
+  yield* ref.read(customerRepositoryProvider).streamCustomers(bizId);
+  //   return const Stream.empty();
+  // return ref.watch(customerRepositoryProvider).streamCustomers(biz);
 }
 
 @riverpod
 Stream<List<Customer>> overdueCustomers(OverdueCustomersRef ref) {
-  final biz = ref.watch(activeBusinessIdProvider);
+  final biz = ref.watch(activeBusinessProvider).asData?.value?.id;
   if (biz == null) return const Stream.empty();
   return ref.watch(customerRepositoryProvider).streamOverdueCustomers(biz);
 }

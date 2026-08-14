@@ -17,7 +17,7 @@ Stream<List<Product>> productList(ProductListRef ref) async* {
   final bizAsync = ref.watch(activeBusinessProvider);
   final bizId = bizAsync.asData?.value?.id;
 
-  debugPrint('productListProvider: bizId=$bizId');
+  // debugPrint('productListProvider: bizId=$bizId');
 
   if (bizId == null) {
     // Emit empty list immediately instead of never emitting

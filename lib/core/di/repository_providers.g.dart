@@ -6,6 +6,24 @@ part of 'repository_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$invoiceRepositoryHash() => r'aa60d2b77cf41a8682bd29223666982d8494568a';
+
+/// See also [invoiceRepository].
+@ProviderFor(invoiceRepository)
+final invoiceRepositoryProvider =
+    AutoDisposeProvider<IInvoiceRepository>.internal(
+  invoiceRepository,
+  name: r'invoiceRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$invoiceRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef InvoiceRepositoryRef = AutoDisposeProviderRef<IInvoiceRepository>;
 String _$productRepositoryHash() => r'16aa90254404e45bf40bc34b012725d2afef3e62';
 
 /// See also [productRepository].

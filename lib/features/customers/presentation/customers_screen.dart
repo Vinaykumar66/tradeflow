@@ -34,6 +34,7 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
   @override
   Widget build(BuildContext context) {
     final customersAsync = ref.watch(filteredCustomersProvider);
+    // debugPrint('customersAsync: $customersAsync');
     final overdueList = ref.watch(overdueCustomersProvider).valueOrNull ?? [];
     final showOverdue = ref.watch(showOverdueOnlyProvider);
     final bizId = ref.watch(activeBusinessIdProvider) ?? '';

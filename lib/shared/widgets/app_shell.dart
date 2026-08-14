@@ -282,10 +282,17 @@ class _DrawerLayout extends ConsumerWidget {
                                                 BorderRadius.circular(8),
                                             // Left accent border for selected item
                                             border: isSelected
-                                                ? Border(
+                                                ? const Border(
                                                     left: BorderSide(
                                                         color: AppColors.border,
-                                                        width: 3))
+                                                        width: 3),
+                                                    // right: BorderSide(
+                                                    //     color: AppColors.border,
+                                                    //     width: 1),
+                                                    // bottom: BorderSide(
+                                                    //     color: AppColors.border,
+                                                    //     width: 3),
+                                                  )
                                                 : null),
                                         child: Row(
                                             mainAxisAlignment: isExpanded
@@ -301,9 +308,9 @@ class _DrawerLayout extends ConsumerWidget {
                                                   color: isSelected
                                                       ? AppColors.surface
                                                       : Colors.white),
-                                              // Label — only when expanded
+                                              // show label — only when expanded
                                               if (isExpanded) ...[
-                                                const SizedBox(width: 14),
+                                                const SizedBox(width: 20),
                                                 Expanded(
                                                     child: Text(tab.label,
                                                         style: TextStyle(

@@ -25,8 +25,14 @@ import '../../core/interfaces/i_product_repository.dart';
 import '../../features/catalog/data/product_repository.dart';
 import '../../core/interfaces/i_customer_repository.dart';
 import '../../features/customers/data/customer_repository.dart';
+import '../../core/interfaces/i_invoice_repository.dart';
+import '../../features/invoices/data/invoice_repository.dart';
 
 part 'repository_providers.g.dart';
+
+@riverpod
+IInvoiceRepository invoiceRepository(InvoiceRepositoryRef ref) =>
+    InvoiceRepository();
 
 @riverpod
 IProductRepository productRepository(ProductRepositoryRef ref) =>

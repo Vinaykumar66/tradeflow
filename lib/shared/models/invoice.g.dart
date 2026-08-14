@@ -1,0 +1,99 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'invoice.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$InvoiceImpl _$$InvoiceImplFromJson(Map<String, dynamic> json) =>
+    _$InvoiceImpl(
+      id: json['id'] as String,
+      businessId: json['business_id'] as String,
+      customerId: json['customer_id'] as String?,
+      invoiceNumber: json['invoice_number'] as String,
+      status: json['status'] as String? ?? 'draft',
+      issueDate: DateTime.parse(json['issue_date'] as String),
+      dueDate: json['due_date'] == null
+          ? null
+          : DateTime.parse(json['due_date'] as String),
+      subtotal: (json['subtotal'] as num?)?.toInt() ?? 0,
+      discountAmount: (json['discount_amount'] as num?)?.toInt() ?? 0,
+      taxAmount: (json['tax_amount'] as num?)?.toInt() ?? 0,
+      total: (json['total'] as num?)?.toInt() ?? 0,
+      amountPaid: (json['amount_paid'] as num?)?.toInt() ?? 0,
+      currencyCode: json['currency_code'] as String? ?? 'INR',
+      currencySymbol: json['currency_symbol'] as String? ?? 'Rs.',
+      useLakhFormat: json['use_lakh_format'] as bool? ?? true,
+      notes: json['notes'] as String?,
+      terms: json['terms'] as String?,
+      createdBy: json['created_by'] as String?,
+      createdAt: json['created_at'] == null
+          ? null
+          : DateTime.parse(json['created_at'] as String),
+      updatedAt: json['updated_at'] == null
+          ? null
+          : DateTime.parse(json['updated_at'] as String),
+    );
+
+Map<String, dynamic> _$$InvoiceImplToJson(_$InvoiceImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'business_id': instance.businessId,
+      'customer_id': instance.customerId,
+      'invoice_number': instance.invoiceNumber,
+      'status': instance.status,
+      'issue_date': instance.issueDate.toIso8601String(),
+      'due_date': instance.dueDate?.toIso8601String(),
+      'subtotal': instance.subtotal,
+      'discount_amount': instance.discountAmount,
+      'tax_amount': instance.taxAmount,
+      'total': instance.total,
+      'amount_paid': instance.amountPaid,
+      'currency_code': instance.currencyCode,
+      'currency_symbol': instance.currencySymbol,
+      'use_lakh_format': instance.useLakhFormat,
+      'notes': instance.notes,
+      'terms': instance.terms,
+      'created_by': instance.createdBy,
+      'created_at': instance.createdAt?.toIso8601String(),
+      'updated_at': instance.updatedAt?.toIso8601String(),
+    };
+
+_$InvoiceItemImpl _$$InvoiceItemImplFromJson(Map<String, dynamic> json) =>
+    _$InvoiceItemImpl(
+      id: json['id'] as String,
+      invoiceId: json['invoice_id'] as String,
+      businessId: json['business_id'] as String,
+      productId: json['product_id'] as String?,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      quantity: (json['quantity'] as num?)?.toDouble() ?? 1.0,
+      unit: json['unit'] as String? ?? 'pcs',
+      unitPrice: (json['unit_price'] as num?)?.toInt() ?? 0,
+      discountPct: (json['discount_pct'] as num?)?.toDouble() ?? 0.0,
+      taxRate: (json['tax_rate'] as num?)?.toDouble() ?? 0.0,
+      taxInclusive: json['tax_inclusive'] as bool? ?? false,
+      taxAmount: (json['tax_amount'] as num?)?.toInt() ?? 0,
+      lineTotal: (json['line_total'] as num?)?.toInt() ?? 0,
+      sortOrder: (json['sort_order'] as num?)?.toInt() ?? 0,
+    );
+
+Map<String, dynamic> _$$InvoiceItemImplToJson(_$InvoiceItemImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'invoice_id': instance.invoiceId,
+      'business_id': instance.businessId,
+      'product_id': instance.productId,
+      'name': instance.name,
+      'description': instance.description,
+      'quantity': instance.quantity,
+      'unit': instance.unit,
+      'unit_price': instance.unitPrice,
+      'discount_pct': instance.discountPct,
+      'tax_rate': instance.taxRate,
+      'tax_inclusive': instance.taxInclusive,
+      'tax_amount': instance.taxAmount,
+      'line_total': instance.lineTotal,
+      'sort_order': instance.sortOrder,
+    };

@@ -157,7 +157,8 @@ class _AddEditCustomerScreenState extends ConsumerState<AddEditCustomerScreen> {
             ),
           ),
           const SizedBox(height: 20),
-// Credit terms
+
+          // Credit terms
           Text('Credit Terms', style: AppTextStyles.h3),
           const SizedBox(height: 12),
 

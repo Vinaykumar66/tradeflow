@@ -14,6 +14,7 @@ abstract class SupabaseTables {
   static const String attachments = 'attachments';
   static const String auditLogs = 'audit_logs';
   static const String storageUsage = 'storage_usage';
+
   // static const String storageUsage = 'storage_usage';
 }
 //bucket names are in appconfig files hence commented
