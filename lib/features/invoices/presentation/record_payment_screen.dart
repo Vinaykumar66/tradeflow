@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/supabase/supabase_client.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../shared/models/invoice.dart';
+import '../../../features/auth/application/auth_providers.dart';
 
 class RecordPaymentScreen extends ConsumerStatefulWidget {
   final Invoice invoice;
@@ -40,6 +41,7 @@ class _RecordPaymentScreenState extends ConsumerState<RecordPaymentScreen> {
     setState(() => _saving = true);
     try {
       final inv = widget.invoice;
+      final uid = ref.read(currentSupabaseUserProvider)?.id;
       // Insert into payments table
       await supabase.from('payments').insert({
         'business_id': inv.businessId,
@@ -47,8 +49,9 @@ class _RecordPaymentScreenState extends ConsumerState<RecordPaymentScreen> {
         'customer_id': inv.customerId,
         'amount': amount,
         'method': _method,
-        'notes': _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text,
+        'reference': _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text,
         'paid_at': DateTime.now().toIso8601String(),
+        'created_by': uid,
       });
       // Update invoice amount_paid and status
       final newPaid = inv.amountPaid + amount;
@@ -125,7 +128,8 @@ class _RecordPaymentScreenState extends ConsumerState<RecordPaymentScreen> {
         const SizedBox(height: 16),
         TextFormField(
             controller: _noteCtrl,
-            decoration: const InputDecoration(labelText: 'Notes (optional)')),
+            decoration:
+                const InputDecoration(labelText: 'Reference (optional)')),
         const SizedBox(height: 24),
         SizedBox(
             width: double.infinity,

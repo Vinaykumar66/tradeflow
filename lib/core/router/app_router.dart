@@ -15,6 +15,7 @@ import '../../features/reports/presentation/reports_screen.dart';
 import '../../features/admin/presentation/admin_screen.dart';
 import '../../features/admin/presentation/permission_settings_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../shared/models/invoice.dart';
 import '../../shared/widgets/app_shell.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/add_edit_product_screen.dart';
@@ -27,6 +28,7 @@ import '../../features/invoices/presentation/invoices_screen.dart';
 import '../../features/invoices/presentation/create_invoice_screen.dart';
 import '../../features/customers/presentation/customer_picker_screen.dart';
 import '../../features/invoices/presentation/invoice_detail_screen.dart';
+import '../../features/invoices/presentation/record_payment_screen.dart';
 
 import 'router_notifier.dart';
 
@@ -55,6 +57,7 @@ abstract class AppRoutes {
   static const String createInvoice = '/invoices/create';
   static const String invoiceDetail = '/invoices/detail';
   static const String customerPicker = '/customers/picker';
+  static const String recordPayment = '/invoices/payment';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];

@@ -1,9 +1,3 @@
-// lib/features/invoices/presentation/invoice_detail_screen.dart
-//
-// Shows one invoice's full line items and totals (Day 28), with the
-// Print button wired to the printer registry (Day 35) and a Record
-// Payment action (Day 29).
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +10,8 @@ import '../../../shared/models/invoice.dart';
 import '../application/invoice_providers.dart';
 import 'widgets/invoice_status_badge.dart';
 // import 'widgets/print_format_picker_sheet.dart';
+import '../../../features/invoices/presentation/record_payment_screen.dart';
+import '../../../features/invoices/data/invoice_pdf_generators.dart';
 
 class InvoiceDetailScreen extends ConsumerWidget {
   final Invoice invoice;
@@ -32,18 +28,24 @@ class InvoiceDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(invoice.invoiceNumber),
         actions: [
+          // commented this for now and will be added again on day 33
+          // IconButton(
+          //     icon: const Icon(Icons.print_outlined),
+          //     tooltip: 'Tap to print with default printer. '
+          //         'Long-press to choose a format.',
+          //     onPressed: () => _print(context, ref, invoice, override: null),
+          //     onLongPress: () async {
+          //       final chosen = await PrintFormatPickerSheet.show(
+          //           context, biz?.defaultPrintFormat ?? kPrintFormatLaser);
+          //       if (chosen != null && context.mounted) {
+          //         _print(context, ref, invoice, override: chosen);
+          //       }
+          //     }),
+//added temporarily, this will be replaced by above commented icon button later
           IconButton(
               icon: const Icon(Icons.print_outlined),
-              tooltip: 'Tap to print with default printer. '
-                  'Long-press to choose a format.',
-              onPressed: () => _print(context, ref, invoice, override: null),
-              onLongPress: () async {
-                final chosen = await PrintFormatPickerSheet.show(
-                    context, biz?.defaultPrintFormat ?? kPrintFormatLaser);
-                if (chosen != null && context.mounted) {
-                  _print(context, ref, invoice, override: chosen);
-                }
-              }),
+              tooltip: 'Print invoice',
+              onPressed: () => _print(context, ref, invoice)),
         ],
       ),
       body: ListView(padding: const EdgeInsets.all(16), children: [
@@ -143,16 +145,33 @@ class InvoiceDetailScreen extends ConsumerWidget {
 
   String _fmtDate(DateTime d) => '${d.day}/${d.month}/${d.year}';
 
-  Future<void> _print(BuildContext context, WidgetRef ref, Invoice inv,
-      {String? override}) async {
+//   Future<void> _print(BuildContext context, WidgetRef ref, Invoice inv,
+//       {String? override}) async {
+//     final biz = ref.read(activeBusinessProvider).asData?.value;
+//     if (biz == null) return;
+
+//     final formatKey = override ?? biz.defaultPrintFormat;
+//     final printer = invoicePrinterFor(formatKey);
+
+//     try {
+//       await printer.print(InvoicePrintJob(invoice: inv, business: biz));
+//     } catch (e) {
+//       if (context.mounted) {
+//         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+//             content: Text('Print failed: $e'), backgroundColor: Colors.red));
+//       }
+//     }
+//   }
+// }
+
+// added temporarilly above method will again be restored after day 33
+
+  Future<void> _print(BuildContext context, WidgetRef ref, Invoice inv) async {
     final biz = ref.read(activeBusinessProvider).asData?.value;
     if (biz == null) return;
 
-    final formatKey = override ?? biz.defaultPrintFormat;
-    final printer = invoicePrinterFor(formatKey);
-
     try {
-      await printer.print(InvoicePrintJob(invoice: inv, business: biz));
+      await InvoicePdfGenerator.generate(invoice: inv, business: biz);
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -161,7 +180,6 @@ class InvoiceDetailScreen extends ConsumerWidget {
     }
   }
 }
-
 // import 'package:flutter/material.dart';
 
 // class InvoiceDetailScreen extends StatelessWidget {
