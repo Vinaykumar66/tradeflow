@@ -158,6 +158,136 @@ class _InvoiceListProviderElement
   String? get status => (origin as InvoiceListProvider).status;
 }
 
+String _$invoiceDetailHash() => r'7c4d10c2f908ee338a92781cde3ebc2d6469c29b';
+
+/// See also [invoiceDetail].
+@ProviderFor(invoiceDetail)
+const invoiceDetailProvider = InvoiceDetailFamily();
+
+/// See also [invoiceDetail].
+class InvoiceDetailFamily extends Family<AsyncValue<Invoice?>> {
+  /// See also [invoiceDetail].
+  const InvoiceDetailFamily();
+
+  /// See also [invoiceDetail].
+  InvoiceDetailProvider call(
+    String invoiceId,
+  ) {
+    return InvoiceDetailProvider(
+      invoiceId,
+    );
+  }
+
+  @override
+  InvoiceDetailProvider getProviderOverride(
+    covariant InvoiceDetailProvider provider,
+  ) {
+    return call(
+      provider.invoiceId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'invoiceDetailProvider';
+}
+
+/// See also [invoiceDetail].
+class InvoiceDetailProvider extends AutoDisposeFutureProvider<Invoice?> {
+  /// See also [invoiceDetail].
+  InvoiceDetailProvider(
+    String invoiceId,
+  ) : this._internal(
+          (ref) => invoiceDetail(
+            ref as InvoiceDetailRef,
+            invoiceId,
+          ),
+          from: invoiceDetailProvider,
+          name: r'invoiceDetailProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$invoiceDetailHash,
+          dependencies: InvoiceDetailFamily._dependencies,
+          allTransitiveDependencies:
+              InvoiceDetailFamily._allTransitiveDependencies,
+          invoiceId: invoiceId,
+        );
+
+  InvoiceDetailProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.invoiceId,
+  }) : super.internal();
+
+  final String invoiceId;
+
+  @override
+  Override overrideWith(
+    FutureOr<Invoice?> Function(InvoiceDetailRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: InvoiceDetailProvider._internal(
+        (ref) => create(ref as InvoiceDetailRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        invoiceId: invoiceId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<Invoice?> createElement() {
+    return _InvoiceDetailProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is InvoiceDetailProvider && other.invoiceId == invoiceId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, invoiceId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin InvoiceDetailRef on AutoDisposeFutureProviderRef<Invoice?> {
+  /// The parameter `invoiceId` of this provider.
+  String get invoiceId;
+}
+
+class _InvoiceDetailProviderElement
+    extends AutoDisposeFutureProviderElement<Invoice?> with InvoiceDetailRef {
+  _InvoiceDetailProviderElement(super.provider);
+
+  @override
+  String get invoiceId => (origin as InvoiceDetailProvider).invoiceId;
+}
+
 String _$invoiceStatusFilterHash() =>
     r'02a1f7d0fab979d987903b195b5354e8aa523f97';
 

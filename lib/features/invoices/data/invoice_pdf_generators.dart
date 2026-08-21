@@ -6,6 +6,20 @@ import '../../../shared/models/customer.dart';
 import '../../../shared/models/business.dart';
 
 class InvoicePdfGenerator {
+  static const _titles = {
+    kDocTypeInvoice: 'INVOICE',
+    kDocTypeProforma: 'PROFORMA INVOICE',
+    kDocTypeEstimate: 'ESTIMATE',
+    kDocTypeQuotation: 'QUOTATION',
+  };
+
+  static const _disclaimers = {
+    kDocTypeProforma: 'This is a proforma invoice, not a tax invoice.',
+    kDocTypeEstimate: 'This is an estimate only, not a demand for payment.',
+    kDocTypeQuotation:
+        'This quotation is valid for 30 days from the issue date.',
+  };
+
   /// Generate and share/print the invoice PDF.
   static Future<void> generate({
     required Invoice invoice,
@@ -42,11 +56,17 @@ class InvoicePdfGenerator {
                   if (biz.gstin != null) pw.Text('GSTIN: ${biz.gstin}'),
                 ]),
             pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
-              pw.Text('INVOICE',
+              pw.Text(_titles[inv.documentType] ?? 'INVOICE',
                   style: pw.TextStyle(
                       fontSize: 24,
                       fontWeight: pw.FontWeight.bold,
                       color: PdfColors.blue900)),
+
+              // pw.Text('INVOICE',
+              //     style: pw.TextStyle(
+              //         fontSize: 24,
+              //         fontWeight: pw.FontWeight.bold,
+              //         color: PdfColors.blue900)),
               pw.Text(inv.invoiceNumber,
                   style: pw.TextStyle(fontSize: 14, color: PdfColors.grey700)),
               pw.Text('Date: ${_fmtDate(inv.issueDate)}'),
@@ -119,6 +139,15 @@ class InvoicePdfGenerator {
                       bold: true, color: PdfColors.red),
                 ],
               ])),
+
+      if (_disclaimers[inv.documentType] != null) ...[
+        pw.SizedBox(height: 12),
+        pw.Text(_disclaimers[inv.documentType]!,
+            style: pw.TextStyle(
+                fontSize: 9,
+                fontStyle: pw.FontStyle.italic,
+                color: PdfColors.grey700)),
+      ],
 
       // Notes
       if (inv.notes != null) ...[

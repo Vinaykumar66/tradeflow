@@ -2,17 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/supabase/supabase_client.dart';
 import '../../../../shared/models/product.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/router/app_router.dart';
+import '../../../../core/di/repository_providers.dart';
 
 class ProductPickerSheet extends ConsumerStatefulWidget {
   final String bizId;
   final void Function(Product) onSelect;
-  const ProductPickerSheet(
-      {super.key, required this.bizId, required this.onSelect});
+  final String? initialQuery;
+  const ProductPickerSheet({
+    super.key,
+    required this.bizId,
+    required this.onSelect,
+    this.initialQuery,
+  });
 
   static Future<void> show({
     required BuildContext context,
     required String bizId,
     required void Function(Product) onSelect,
+    String? initialQuery,
   }) =>
       showModalBottomSheet(
           context: context,
@@ -20,7 +29,10 @@ class ProductPickerSheet extends ConsumerStatefulWidget {
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
           builder: (ctx) => ProviderScope(
-              child: ProductPickerSheet(bizId: bizId, onSelect: onSelect)));
+              child: ProductPickerSheet(
+                  bizId: bizId,
+                  onSelect: onSelect,
+                  initialQuery: initialQuery)));
 
   @override
   ConsumerState<ProductPickerSheet> createState() => _ProductPickerSheetState();
@@ -33,8 +45,57 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
 
   @override
   void initState() {
-    super.initState();
-    _search(''); // load all initially
+    if (widget.initialQuery != null && widget.initialQuery!.isNotEmpty) {
+      _searchCtrl.text = widget.initialQuery!;
+      _search(widget.initialQuery!);
+    } else {
+      _search(''); // load all, as before
+    }
+  }
+
+  Future<void> _scanBarcode() async {
+    final code = await context.push<String?>(AppRoutes.barcodeScanner);
+    if (code == null || !mounted) return;
+    final product = await ref
+        .read(productRepositoryProvider)
+        .getProductByBarcode(widget.bizId, code);
+
+    if (!mounted) return;
+
+    if (product != null) {
+      Navigator.pop(context);
+      widget.onSelect(product);
+      return;
+    }
+
+    try {
+      // Exact match on barcode — not the fuzzy multi-field search used
+      // for typed queries. limit(1) instead of maybeSingle() so this
+      // never throws if two products somehow share a barcode.
+      final rows = await supabase
+          .from('products')
+          .select()
+          .eq('business_id', widget.bizId)
+          .eq('barcode', code)
+          .eq('is_active', true)
+          .limit(1);
+
+      if (!mounted) return;
+
+      if (rows.isNotEmpty) {
+        final product = Product.fromJson(rows.first);
+        Navigator.pop(context);
+        widget.onSelect(product);
+        return; // added directly — skip the fallback below
+      }
+    } catch (e) {
+      debugPrint('Barcode lookup error: $e');
+    }
+
+    // No product has this barcode (or the lookup failed) — fall back
+    // to search results so the user sees "no match" instead of nothing.
+    _searchCtrl.text = code;
+    _search(code);
   }
 
   Future<void> _search(String query) async {
@@ -80,6 +141,7 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
                   decoration: BoxDecoration(
                       color: Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(2))),
+              //adding a new code to have barcode scanner search
               Padding(
                   padding: const EdgeInsets.all(12),
                   child: TextField(
@@ -88,30 +150,54 @@ class _ProductPickerSheetState extends ConsumerState<ProductPickerSheet> {
                       decoration: InputDecoration(
                           hintText: 'Search product name, SKU or scan barcode…',
                           prefixIcon: const Icon(Icons.search),
+                          // Scan icon — reuses the same shared scanner as Catalog
+                          suffixIcon: IconButton(
+                              icon: const Icon(Icons.qr_code_scanner),
+                              tooltip: 'Scan barcode',
+                              onPressed: _scanBarcode),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10))),
                       onChanged: (v) => _search(v))),
+//commented instead of replacing with new code just for refence
+              // Padding(
+              //     padding: const EdgeInsets.all(12),
+              //     child: TextField(
+              //         controller: _searchCtrl,
+              //         autofocus: true,
+              //         decoration: InputDecoration(
+              //             hintText: 'Search product name, SKU or scan barcode…',
+              //             prefixIcon: const Icon(Icons.search),
+              //             border: OutlineInputBorder(
+              //                 borderRadius: BorderRadius.circular(10))),
+              //         onChanged: (v) => _search(v))),
               if (_loading)
                 const Expanded(
                     child: Center(child: CircularProgressIndicator()))
               else
                 Expanded(
-                    child: ListView.builder(
-                        controller: ctrl,
-                        itemCount: _results.length,
-                        itemBuilder: (_, i) {
-                          final p = _results[i];
-                          return ListTile(
-                              title: Text(p.name),
-                              subtitle: Text(
-                                  'SKU: ${p.sku}  |  Stock: ${p.stockQty}'),
-                              trailing: Text(
-                                  (p.sellingPrice / 100).toStringAsFixed(2)),
-                              onTap: () {
-                                Navigator.pop(context);
-                                widget.onSelect(p);
-                              });
-                        })),
+                    child: _results.isEmpty
+                        ? Center(
+                            child: Text(
+                                _searchCtrl.text.isEmpty
+                                    ? 'No products yet'
+                                    : 'No match for "${_searchCtrl.text}"',
+                                style: const TextStyle(color: Colors.grey)))
+                        : ListView.builder(
+                            controller: ctrl,
+                            itemCount: _results.length,
+                            itemBuilder: (_, i) {
+                              final p = _results[i];
+                              return ListTile(
+                                  title: Text(p.name),
+                                  subtitle: Text(
+                                      'SKU: ${p.sku}  |  Stock: ${p.stockQty}'),
+                                  trailing: Text((p.sellingPrice / 100)
+                                      .toStringAsFixed(2)),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    widget.onSelect(p);
+                                  });
+                            })),
             ]));
   }
 }

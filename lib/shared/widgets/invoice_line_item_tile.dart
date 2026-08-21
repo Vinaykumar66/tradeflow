@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../shared/models/invoice.dart';
 
-class InvoiceLineItemTile extends StatelessWidget {
+class InvoiceLineItemTile extends StatefulWidget {
   final InvoiceItem item;
   final String sym;
   final bool lakh;
@@ -19,8 +19,46 @@ class InvoiceLineItemTile extends StatelessWidget {
   });
 
   @override
+  State<InvoiceLineItemTile> createState() => _InvoiceLineItemTileState();
+}
+
+class _InvoiceLineItemTileState extends State<InvoiceLineItemTile> {
+  late final TextEditingController _qtyCtrl;
+  @override
+  void initState() {
+    super.initState();
+    _qtyCtrl = TextEditingController(text: widget.item.quantity.toString());
+  }
+
+// Runs whenever the parent passes a new `item` — e.g. a barcode
+  // scan incrementing quantity. Only overwrite the field if the
+  // value actually differs from what's already shown, so we never
+  // fight the user's cursor while they're mid-keystroke.
+  final FocusNode _qtyFocusNode = FocusNode();
+  @override
+  void didUpdateWidget(covariant InvoiceLineItemTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_qtyFocusNode.hasFocus) {
+      final newText = widget.item.quantity.toString();
+
+      if (_qtyCtrl.text != newText) {
+        _qtyCtrl.text = newText;
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _qtyFocusNode.dispose();
+    _qtyCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final fmt = (int v) => CurrencyFormatter.format(v, sym: sym, lakh: lakh);
+    // final item = widget.item;
+    final fmt = (int v) =>
+        CurrencyFormatter.format(v, sym: widget.sym, lakh: widget.lakh);
     return Card(
         margin: const EdgeInsets.only(bottom: 8),
         child: Padding(
@@ -29,50 +67,69 @@ class InvoiceLineItemTile extends StatelessWidget {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
               Expanded(
-                  child: Text(item.name,
+                  child: Text(widget.item.name,
                       style: const TextStyle(fontWeight: FontWeight.w600))),
               IconButton(
                   icon: const Icon(Icons.delete_outline,
                       color: Colors.red, size: 18),
-                  onPressed: onDelete),
+                  onPressed: widget.onDelete),
             ]),
             const SizedBox(height: 8),
             Row(children: [
               // Quantity stepper
               _label('Qty'),
               const SizedBox(width: 8),
-              SizedBox(
-                  width: 72,
-                  child: TextFormField(
-                      initialValue: item.quantity.toString(),
-                      keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
-                      decoration: const InputDecoration(
-                          isDense: true,
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
-                      onChanged: (v) {
-                        final q = double.tryParse(v);
-                        if (q != null && q > 0)
-                          onUpdate(item.copyWith(quantity: q));
-                      })),
+//removed sized box to make the field flexible
+              IntrinsicWidth(
+                child: TextFormField(
+                    controller: _qtyCtrl,
+                    focusNode: _qtyFocusNode,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    decoration: const InputDecoration(
+                        isDense: true,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
+                    onChanged: (v) {
+                      final q = double.tryParse(v);
+                      if (q != null && q > 0)
+                        widget.onUpdate(widget.item.copyWith(quantity: q));
+                    }),
+              ),
+              // SizedBox(
+              //     width: 72,
+              //     child: TextFormField(
+              //         initialValue: item.quantity.toString(),
+              //         keyboardType:
+              //             const TextInputType.numberWithOptions(decimal: true),
+              //         decoration: const InputDecoration(
+              //             isDense: true,
+              //             contentPadding:
+              //                 EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
+              //         onChanged: (v) {
+              //           final q = double.tryParse(v);
+              //           if (q != null && q > 0)
+              //             onUpdate(item.copyWith(quantity: q));
+              //         })),
               const SizedBox(width: 16),
               // Unit price
               _label('Unit Price'),
               const SizedBox(width: 8),
-              SizedBox(
-                  width: 100,
-                  child: TextFormField(
-                      initialValue: (item.unitPrice / 100).toStringAsFixed(2),
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          isDense: true,
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
-                      onChanged: (v) {
-                        final price = ((double.tryParse(v) ?? 0) * 100).round();
-                        onUpdate(item.copyWith(unitPrice: price));
-                      })),
+              IntrinsicWidth(
+                child: TextFormField(
+                    // textAlign: TextAlign.end,
+                    initialValue:
+                        (widget.item.unitPrice / 100).toStringAsFixed(2),
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                        isDense: true,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
+                    onChanged: (v) {
+                      final price = ((double.tryParse(v) ?? 0) * 100).round();
+                      widget.onUpdate(widget.item.copyWith(unitPrice: price));
+                    }),
+              ),
             ]),
             const SizedBox(height: 4),
             Row(children: [
@@ -82,7 +139,7 @@ class InvoiceLineItemTile extends StatelessWidget {
               SizedBox(
                   width: 60,
                   child: TextFormField(
-                      initialValue: item.taxRate.toString(),
+                      initialValue: widget.item.taxRate.toString(),
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                           isDense: true,
@@ -90,17 +147,18 @@ class InvoiceLineItemTile extends StatelessWidget {
                               EdgeInsets.symmetric(horizontal: 8, vertical: 8)),
                       onChanged: (v) {
                         final r = double.tryParse(v) ?? 0;
-                        onUpdate(item.copyWith(taxRate: r));
+                        widget.onUpdate(widget.item.copyWith(taxRate: r));
                       })),
               const SizedBox(width: 8),
               // Tax inclusive toggle
               const Text('Incl.', style: TextStyle(fontSize: 12)),
               Switch(
-                  value: item.taxInclusive,
-                  onChanged: (v) => onUpdate(item.copyWith(taxInclusive: v))),
+                  value: widget.item.taxInclusive,
+                  onChanged: (v) =>
+                      widget.onUpdate(widget.item.copyWith(taxInclusive: v))),
               const Spacer(),
               // Line total
-              Text(fmt(item.lineTotal),
+              Text(fmt(widget.item.lineTotal),
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 15)),
             ]),

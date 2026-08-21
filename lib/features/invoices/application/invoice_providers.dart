@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/di/repository_providers.dart';
 import '../../../features/business/application/business_providers.dart';
 import '../../../shared/models/invoice.dart';
+
 part 'invoice_providers.g.dart';
 
 @riverpod
@@ -42,6 +43,14 @@ class SaveInvoiceNotifier extends _$SaveInvoiceNotifier {
     state = result;
     return result.asData?.value;
   }
+}
+
+//get saved invoice detail
+@riverpod
+Future<Invoice?> invoiceDetail(InvoiceDetailRef ref, String invoiceId) async {
+  final bizId = ref.watch(activeBusinessProvider).asData?.value?.id;
+  if (bizId == null) return null;
+  return ref.read(invoiceRepositoryProvider).getInvoice(bizId, invoiceId);
 }
 
 //Update status notifier

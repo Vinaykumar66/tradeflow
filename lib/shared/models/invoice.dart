@@ -10,6 +10,10 @@ const kStatusSent = 'sent';
 const kStatusPaid = 'paid';
 const kStatusPartial = 'partial';
 const kStatusCancelled = 'cancelled';
+const kDocTypeInvoice = 'invoice';
+const kDocTypeProforma = 'proforma';
+const kDocTypeEstimate = 'estimate';
+const kDocTypeQuotation = 'quotation';
 
 @freezed
 abstract class Invoice with _$Invoice {
@@ -18,6 +22,9 @@ abstract class Invoice with _$Invoice {
     @JsonKey(name: 'business_id') required String businessId,
     @JsonKey(name: 'customer_id') String? customerId,
     @JsonKey(name: 'invoice_number') required String invoiceNumber,
+    @JsonKey(name: 'document_type')
+    @Default(kDocTypeInvoice)
+    String documentType,
     @Default('draft') String status,
     @JsonKey(name: 'issue_date') required DateTime issueDate,
     @JsonKey(name: 'due_date') DateTime? dueDate,

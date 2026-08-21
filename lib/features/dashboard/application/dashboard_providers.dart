@@ -105,7 +105,7 @@ Future<int> _sumOverdue(String bizId) async {
   final now = DateTime.now().toIso8601String();
   final rows = await supabase
       .from('invoices')
-      .select('total, amount_paid')
+      .select('total, paid_amount')
       .eq('business_id', bizId)
       .lt('due_date', now)
       .not('status', 'in', '(${kStatusPaid},${kStatusCancelled})');
@@ -114,7 +114,7 @@ Future<int> _sumOverdue(String bizId) async {
       (s, r) =>
           s +
           (((r['total'] as num?)?.toInt() ?? 0) -
-              ((r['amount_paid'] as num?)?.toInt() ?? 0)));
+              ((r['paid_amount'] as num?)?.toInt() ?? 0)));
 }
 
 Future<int> _countInvoices(String bizId, String from) async {

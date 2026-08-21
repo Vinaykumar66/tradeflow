@@ -27,6 +27,8 @@ mixin _$Invoice {
   String? get customerId => throw _privateConstructorUsedError;
   @JsonKey(name: 'invoice_number')
   String get invoiceNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'document_type')
+  String get documentType => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
   @JsonKey(name: 'issue_date')
   DateTime get issueDate => throw _privateConstructorUsedError;
@@ -81,6 +83,7 @@ abstract class $InvoiceCopyWith<$Res> {
       @JsonKey(name: 'business_id') String businessId,
       @JsonKey(name: 'customer_id') String? customerId,
       @JsonKey(name: 'invoice_number') String invoiceNumber,
+      @JsonKey(name: 'document_type') String documentType,
       String status,
       @JsonKey(name: 'issue_date') DateTime issueDate,
       @JsonKey(name: 'due_date') DateTime? dueDate,
@@ -120,6 +123,7 @@ class _$InvoiceCopyWithImpl<$Res, $Val extends Invoice>
     Object? businessId = null,
     Object? customerId = freezed,
     Object? invoiceNumber = null,
+    Object? documentType = null,
     Object? status = null,
     Object? issueDate = null,
     Object? dueDate = freezed,
@@ -154,6 +158,10 @@ class _$InvoiceCopyWithImpl<$Res, $Val extends Invoice>
       invoiceNumber: null == invoiceNumber
           ? _value.invoiceNumber
           : invoiceNumber // ignore: cast_nullable_to_non_nullable
+              as String,
+      documentType: null == documentType
+          ? _value.documentType
+          : documentType // ignore: cast_nullable_to_non_nullable
               as String,
       status: null == status
           ? _value.status
@@ -239,6 +247,7 @@ abstract class _$$InvoiceImplCopyWith<$Res> implements $InvoiceCopyWith<$Res> {
       @JsonKey(name: 'business_id') String businessId,
       @JsonKey(name: 'customer_id') String? customerId,
       @JsonKey(name: 'invoice_number') String invoiceNumber,
+      @JsonKey(name: 'document_type') String documentType,
       String status,
       @JsonKey(name: 'issue_date') DateTime issueDate,
       @JsonKey(name: 'due_date') DateTime? dueDate,
@@ -276,6 +285,7 @@ class __$$InvoiceImplCopyWithImpl<$Res>
     Object? businessId = null,
     Object? customerId = freezed,
     Object? invoiceNumber = null,
+    Object? documentType = null,
     Object? status = null,
     Object? issueDate = null,
     Object? dueDate = freezed,
@@ -310,6 +320,10 @@ class __$$InvoiceImplCopyWithImpl<$Res>
       invoiceNumber: null == invoiceNumber
           ? _value.invoiceNumber
           : invoiceNumber // ignore: cast_nullable_to_non_nullable
+              as String,
+      documentType: null == documentType
+          ? _value.documentType
+          : documentType // ignore: cast_nullable_to_non_nullable
               as String,
       status: null == status
           ? _value.status
@@ -391,6 +405,7 @@ class _$InvoiceImpl implements _Invoice {
       @JsonKey(name: 'business_id') required this.businessId,
       @JsonKey(name: 'customer_id') this.customerId,
       @JsonKey(name: 'invoice_number') required this.invoiceNumber,
+      @JsonKey(name: 'document_type') this.documentType = kDocTypeInvoice,
       this.status = 'draft',
       @JsonKey(name: 'issue_date') required this.issueDate,
       @JsonKey(name: 'due_date') this.dueDate,
@@ -425,6 +440,9 @@ class _$InvoiceImpl implements _Invoice {
   @override
   @JsonKey(name: 'invoice_number')
   final String invoiceNumber;
+  @override
+  @JsonKey(name: 'document_type')
+  final String documentType;
   @override
   @JsonKey()
   final String status;
@@ -486,7 +504,7 @@ class _$InvoiceImpl implements _Invoice {
 
   @override
   String toString() {
-    return 'Invoice(id: $id, businessId: $businessId, customerId: $customerId, invoiceNumber: $invoiceNumber, status: $status, issueDate: $issueDate, dueDate: $dueDate, subtotal: $subtotal, discountAmount: $discountAmount, taxAmount: $taxAmount, total: $total, amountPaid: $amountPaid, currencyCode: $currencyCode, currencySymbol: $currencySymbol, useLakhFormat: $useLakhFormat, notes: $notes, terms: $terms, createdBy: $createdBy, createdAt: $createdAt, updatedAt: $updatedAt, items: $items)';
+    return 'Invoice(id: $id, businessId: $businessId, customerId: $customerId, invoiceNumber: $invoiceNumber, documentType: $documentType, status: $status, issueDate: $issueDate, dueDate: $dueDate, subtotal: $subtotal, discountAmount: $discountAmount, taxAmount: $taxAmount, total: $total, amountPaid: $amountPaid, currencyCode: $currencyCode, currencySymbol: $currencySymbol, useLakhFormat: $useLakhFormat, notes: $notes, terms: $terms, createdBy: $createdBy, createdAt: $createdAt, updatedAt: $updatedAt, items: $items)';
   }
 
   @override
@@ -501,6 +519,8 @@ class _$InvoiceImpl implements _Invoice {
                 other.customerId == customerId) &&
             (identical(other.invoiceNumber, invoiceNumber) ||
                 other.invoiceNumber == invoiceNumber) &&
+            (identical(other.documentType, documentType) ||
+                other.documentType == documentType) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.issueDate, issueDate) ||
                 other.issueDate == issueDate) &&
@@ -539,6 +559,7 @@ class _$InvoiceImpl implements _Invoice {
         businessId,
         customerId,
         invoiceNumber,
+        documentType,
         status,
         issueDate,
         dueDate,
@@ -580,6 +601,7 @@ abstract class _Invoice implements Invoice {
       @JsonKey(name: 'business_id') required final String businessId,
       @JsonKey(name: 'customer_id') final String? customerId,
       @JsonKey(name: 'invoice_number') required final String invoiceNumber,
+      @JsonKey(name: 'document_type') final String documentType,
       final String status,
       @JsonKey(name: 'issue_date') required final DateTime issueDate,
       @JsonKey(name: 'due_date') final DateTime? dueDate,
@@ -612,6 +634,9 @@ abstract class _Invoice implements Invoice {
   @override
   @JsonKey(name: 'invoice_number')
   String get invoiceNumber;
+  @override
+  @JsonKey(name: 'document_type')
+  String get documentType;
   @override
   String get status;
   @override
