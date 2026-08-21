@@ -26,9 +26,11 @@ abstract class Product with _$Product {
     @JsonKey(name: 'selling_price') @Default(0) int sellingPrice,
     @JsonKey(name: 'mrp') @Default(0) int mrp,
     // Tax
+    @JsonKey(name: 'tax_Id') @Default('GSTIN') String taxCodeId,
     @JsonKey(name: 'tax_rate') @Default(18.0) double taxRate,
     @JsonKey(name: 'tax_type') @Default('GST') String taxType,
     @JsonKey(name: 'tax_inclusive') @Default(false) bool taxInclusive,
+
     // Inventory
     @JsonKey(name: 'stock_qty') @Default(0) int stockQty,
     @JsonKey(name: 'reorder_level') @Default(0) int reorderLevel,
@@ -72,6 +74,7 @@ extension ProductX on Product {
         'tax_rate': taxRate,
         'tax_type': taxType,
         'tax_inclusive': taxInclusive,
+        'tax_Code_Id': taxCodeId,
         'stock_qty': stockQty,
         'reorder_level': reorderLevel,
         'reorder_qty': reorderQty,

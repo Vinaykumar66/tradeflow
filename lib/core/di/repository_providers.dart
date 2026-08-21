@@ -27,6 +27,8 @@ import '../../core/interfaces/i_customer_repository.dart';
 import '../../features/customers/data/customer_repository.dart';
 import '../../core/interfaces/i_invoice_repository.dart';
 import '../../features/invoices/data/invoice_repository.dart';
+import '../../core/interfaces/i_tax_code_repository.dart';
+import '../../features/admin/data/tax_code_repository.dart';
 
 part 'repository_providers.g.dart';
 
@@ -63,6 +65,10 @@ IPermissionRepository permissionRepository(PermissionRepositoryRef ref) =>
 @riverpod
 ICustomerRepository customerRepository(CustomerRepositoryRef ref) =>
     CustomerRepository();
+
+@riverpod
+ITaxCodeRepository taxCodeRepository(TaxCodeRepositoryRef ref) =>
+    TaxCodeRepository();
 
 // @riverpod
 // IAuditService auditService(Ref ref) => AuditService();

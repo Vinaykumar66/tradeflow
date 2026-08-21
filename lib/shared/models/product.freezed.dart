@@ -40,6 +40,8 @@ mixin _$Product {
   int get sellingPrice => throw _privateConstructorUsedError;
   @JsonKey(name: 'mrp')
   int get mrp => throw _privateConstructorUsedError; // Tax
+  @JsonKey(name: 'tax_Id')
+  String get taxCodeId => throw _privateConstructorUsedError;
   @JsonKey(name: 'tax_rate')
   double get taxRate => throw _privateConstructorUsedError;
   @JsonKey(name: 'tax_type')
@@ -93,6 +95,7 @@ abstract class $ProductCopyWith<$Res> {
       @JsonKey(name: 'cost_price') int costPrice,
       @JsonKey(name: 'selling_price') int sellingPrice,
       @JsonKey(name: 'mrp') int mrp,
+      @JsonKey(name: 'tax_Id') String taxCodeId,
       @JsonKey(name: 'tax_rate') double taxRate,
       @JsonKey(name: 'tax_type') String taxType,
       @JsonKey(name: 'tax_inclusive') bool taxInclusive,
@@ -135,6 +138,7 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
     Object? costPrice = null,
     Object? sellingPrice = null,
     Object? mrp = null,
+    Object? taxCodeId = null,
     Object? taxRate = null,
     Object? taxType = null,
     Object? taxInclusive = null,
@@ -201,6 +205,10 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
           ? _value.mrp
           : mrp // ignore: cast_nullable_to_non_nullable
               as int,
+      taxCodeId: null == taxCodeId
+          ? _value.taxCodeId
+          : taxCodeId // ignore: cast_nullable_to_non_nullable
+              as String,
       taxRate: null == taxRate
           ? _value.taxRate
           : taxRate // ignore: cast_nullable_to_non_nullable
@@ -274,6 +282,7 @@ abstract class _$$ProductImplCopyWith<$Res> implements $ProductCopyWith<$Res> {
       @JsonKey(name: 'cost_price') int costPrice,
       @JsonKey(name: 'selling_price') int sellingPrice,
       @JsonKey(name: 'mrp') int mrp,
+      @JsonKey(name: 'tax_Id') String taxCodeId,
       @JsonKey(name: 'tax_rate') double taxRate,
       @JsonKey(name: 'tax_type') String taxType,
       @JsonKey(name: 'tax_inclusive') bool taxInclusive,
@@ -314,6 +323,7 @@ class __$$ProductImplCopyWithImpl<$Res>
     Object? costPrice = null,
     Object? sellingPrice = null,
     Object? mrp = null,
+    Object? taxCodeId = null,
     Object? taxRate = null,
     Object? taxType = null,
     Object? taxInclusive = null,
@@ -380,6 +390,10 @@ class __$$ProductImplCopyWithImpl<$Res>
           ? _value.mrp
           : mrp // ignore: cast_nullable_to_non_nullable
               as int,
+      taxCodeId: null == taxCodeId
+          ? _value.taxCodeId
+          : taxCodeId // ignore: cast_nullable_to_non_nullable
+              as String,
       taxRate: null == taxRate
           ? _value.taxRate
           : taxRate // ignore: cast_nullable_to_non_nullable
@@ -449,6 +463,7 @@ class _$ProductImpl implements _Product {
       @JsonKey(name: 'cost_price') this.costPrice = 0,
       @JsonKey(name: 'selling_price') this.sellingPrice = 0,
       @JsonKey(name: 'mrp') this.mrp = 0,
+      @JsonKey(name: 'tax_Id') this.taxCodeId = 'GSTIN',
       @JsonKey(name: 'tax_rate') this.taxRate = 18.0,
       @JsonKey(name: 'tax_type') this.taxType = 'GST',
       @JsonKey(name: 'tax_inclusive') this.taxInclusive = false,
@@ -500,6 +515,9 @@ class _$ProductImpl implements _Product {
   final int mrp;
 // Tax
   @override
+  @JsonKey(name: 'tax_Id')
+  final String taxCodeId;
+  @override
   @JsonKey(name: 'tax_rate')
   final double taxRate;
   @override
@@ -539,7 +557,7 @@ class _$ProductImpl implements _Product {
 
   @override
   String toString() {
-    return 'Product(id: $id, name: $name, businessId: $businessId, sku: $sku, category: $category, barcode: $barcode, brand: $brand, description: $description, imageUrl: $imageUrl, unit: $unit, costPrice: $costPrice, sellingPrice: $sellingPrice, mrp: $mrp, taxRate: $taxRate, taxType: $taxType, taxInclusive: $taxInclusive, stockQty: $stockQty, reorderLevel: $reorderLevel, reorderQty: $reorderQty, expiryDate: $expiryDate, isActive: $isActive, trackInventory: $trackInventory, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy)';
+    return 'Product(id: $id, name: $name, businessId: $businessId, sku: $sku, category: $category, barcode: $barcode, brand: $brand, description: $description, imageUrl: $imageUrl, unit: $unit, costPrice: $costPrice, sellingPrice: $sellingPrice, mrp: $mrp, taxCodeId: $taxCodeId, taxRate: $taxRate, taxType: $taxType, taxInclusive: $taxInclusive, stockQty: $stockQty, reorderLevel: $reorderLevel, reorderQty: $reorderQty, expiryDate: $expiryDate, isActive: $isActive, trackInventory: $trackInventory, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy)';
   }
 
   @override
@@ -566,6 +584,8 @@ class _$ProductImpl implements _Product {
             (identical(other.sellingPrice, sellingPrice) ||
                 other.sellingPrice == sellingPrice) &&
             (identical(other.mrp, mrp) || other.mrp == mrp) &&
+            (identical(other.taxCodeId, taxCodeId) ||
+                other.taxCodeId == taxCodeId) &&
             (identical(other.taxRate, taxRate) || other.taxRate == taxRate) &&
             (identical(other.taxType, taxType) || other.taxType == taxType) &&
             (identical(other.taxInclusive, taxInclusive) ||
@@ -607,6 +627,7 @@ class _$ProductImpl implements _Product {
         costPrice,
         sellingPrice,
         mrp,
+        taxCodeId,
         taxRate,
         taxType,
         taxInclusive,
@@ -652,6 +673,7 @@ abstract class _Product implements Product {
       @JsonKey(name: 'cost_price') final int costPrice,
       @JsonKey(name: 'selling_price') final int sellingPrice,
       @JsonKey(name: 'mrp') final int mrp,
+      @JsonKey(name: 'tax_Id') final String taxCodeId,
       @JsonKey(name: 'tax_rate') final double taxRate,
       @JsonKey(name: 'tax_type') final String taxType,
       @JsonKey(name: 'tax_inclusive') final bool taxInclusive,
@@ -699,6 +721,9 @@ abstract class _Product implements Product {
   @override
   @JsonKey(name: 'mrp')
   int get mrp; // Tax
+  @override
+  @JsonKey(name: 'tax_Id')
+  String get taxCodeId;
   @override
   @JsonKey(name: 'tax_rate')
   double get taxRate;

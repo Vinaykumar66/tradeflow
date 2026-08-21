@@ -7,7 +7,10 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../features/auth/application/auth_providers.dart';
 import '../../../shared/models/customer.dart';
 import '../../../shared/widgets/field_guard.dart';
+import '../../business/application/business_providers.dart'
+    show activeBusinessProvider;
 import '../application/customer_providers.dart';
+import '../../../core/config/country_tax_config.dart';
 
 class AddEditCustomerScreen extends ConsumerStatefulWidget {
   final Customer? customer;
@@ -91,6 +94,9 @@ class _AddEditCustomerScreenState extends ConsumerState<AddEditCustomerScreen> {
   Widget build(BuildContext context) {
     final sym = '₹';
     final isSaving = ref.watch(saveCustomerNotifierProvider) is AsyncLoading;
+    final biz = ref.watch(activeBusinessProvider).asData?.value;
+    final taxConfig = CountryTaxRegistry.forCountry(biz?.countryCode);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_isEditing ? 'Edit Customer' : 'Add Customer'),
@@ -143,15 +149,27 @@ class _AddEditCustomerScreenState extends ConsumerState<AddEditCustomerScreen> {
             child: TextFormField(
               controller: _gstinCtrl,
               textCapitalization: TextCapitalization.characters,
-              decoration: const InputDecoration(
-                  labelText: 'GSTIN (optional)', hintText: '22AAAAA0000A1Z5'),
+              decoration: InputDecoration(
+                  labelText: '${taxConfig.taxIdLabel} (optional)',
+                  hintText: taxConfig.taxIdHint),
               validator: (v) {
                 if (v == null || v.trim().isEmpty) return null;
-                if (v.trim().length != 15)
-                  return 'GSTIN must be exactly 15 characters';
-                if (!RegExp(
-                        r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$')
-                    .hasMatch(v.trim())) return 'Invalid GSTIN format';
+
+                // India keeps the exact 15-character GSTIN.
+                // Every other country accepts any non-empty value unless a
+                // validator is explicitly configured for it in country_tax_config.dart.
+//commenting this to generalize tax ID across Geo
+                // if (v.trim().length != 15)
+                //   return 'GSTIN must be exactly 15 characters';
+                // if (!RegExp(
+                //         r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$')
+                //     .hasMatch(v.trim())) return 'Invalid GSTIN format';
+//commenting this to generalize tax ID across Geo
+                final validator = taxConfig.taxIdValidator;
+                if (validator != null && !validator.hasMatch(v.trim())) {
+                  return 'Invalid ${taxConfig.taxIdLabel} format';
+                }
+
                 return null;
               },
             ),

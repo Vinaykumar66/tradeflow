@@ -33,6 +33,14 @@ class AdminScreen extends StatelessWidget {
             onTap: () => context.push(AppRoutes.permissionSettings),
           ),
           const Divider(),
+          ListTile(
+            leading: const Icon(Icons.percent_outlined),
+            title: const Text('Tax config'),
+            subtitle: const Text('Configure tax codes'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(AppRoutes.taxCodes),
+          ),
+          const Divider(),
         ],
       ),
     );

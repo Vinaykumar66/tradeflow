@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../features/admin/presentation/tax_codes_screen.dart';
 import '../../features/auth/application/auth_providers.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/signup_screen.dart';
@@ -58,6 +59,7 @@ abstract class AppRoutes {
   static const String invoiceDetail = '/invoices/detail';
   static const String customerPicker = '/customers/picker';
   static const String recordPayment = '/invoices/payment';
+  static const String taxCodes = '/admin/tax-codes';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];
@@ -190,6 +192,9 @@ GoRouter appRouter(Ref ref) {
               path: AppRoutes.barcodeScanner,
               pageBuilder: (context, state) => const MaterialPage(
                   fullscreenDialog: true, child: BarcodeScannerScreen())),
+          GoRoute(
+              path: AppRoutes.taxCodes,
+              builder: (_, __) => const TaxCodesScreen()),
         ],
       ),
     ],

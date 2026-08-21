@@ -14,10 +14,12 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../features/auth/application/auth_providers.dart' as AuthProvider;
 import '../../../shared/models/product.dart';
+import '../../../shared/models/tax_code.dart';
 import '../../../shared/widgets/field_guard.dart';
 import '../../../shared/widgets/storage_guard.dart';
 import '../application/catalog_providers.dart';
 import 'package:go_router/go_router.dart';
+import '../../admin/application/tax_code_providers.dart';
 
 class AddEditProductScreen extends ConsumerStatefulWidget {
   final Product? product;
@@ -44,6 +46,8 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
   final _stockCtrl = TextEditingController(text: '0');
   final _reorderCtrl = TextEditingController(text: '10');
   final _descCtrl = TextEditingController();
+  String? _selectedTaxCodeId;
+  bool _taxInclusive = false;
 
   File? _pickedImage;
   String? _existingImageUrl;
@@ -211,6 +215,7 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
       expiryDate: _expiryDate,
       createdAt: widget.product?.createdAt ?? DateTime.now(),
       createdBy: widget.product?.createdBy ?? uid,
+      taxCodeId: _selectedTaxCodeId ?? '',
     );
 
     debugPrint('Saving product: ${product.name} for bizId: $bizId');
@@ -446,17 +451,47 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
           const SizedBox(height: 20),
 
           // Tax
-          Text('Tax', style: AppTextStyles.h3),
-          const SizedBox(height: 12),
-          FieldGuard(
-            fieldKey: AppFieldKeys.productTaxRate,
-            child: _f(_taxCtrl, 'Tax Rate % (0/5/12/18/28)',
-                type: TextInputType.number),
-            readOnlyChild: ListTile(
-                title: const Text('Tax Rate'),
-                trailing: Text('${_taxCtrl.text}%',
-                    style: const TextStyle(color: Colors.grey))),
-          ),
+          //commenting to fetch the available tax code in the data base configured by the admin
+          //if there is no tax code found it falls back to free field
+          // Text('Tax', style: AppTextStyles.h3),
+          // const SizedBox(height: 12),
+          // FieldGuard(
+          //   fieldKey: AppFieldKeys.productTaxRate,
+          //   child: _f(_taxCtrl, 'Tax Rate % (0/5/12/18/28)',
+          //       type: TextInputType.number),
+          //   readOnlyChild: ListTile(
+          //       title: const Text('Tax Rate'),
+          //       trailing: Text('${_taxCtrl.text}%',
+          //           style: const TextStyle(color: Colors.grey))),
+          // ),
+
+          //commenting to fetch the available tax code in the data base configured by the admin
+
+          Consumer(builder: (context, ref, _) {
+            final codes = ref.watch(taxCodeListProvider).asData?.value ?? [];
+            if (codes.isEmpty) {
+              //No tax codes configured - keep the original manual field
+
+              return _f(_taxCtrl, 'Tax Rate % (0/5/12/18/28)',
+                  type: TextInputType.number);
+            }
+            return DropdownButtonFormField<String>(
+                initialValue: _selectedTaxCodeId,
+                decoration: const InputDecoration(labelText: 'Tax Code'),
+                items: codes
+                    .map((c) => DropdownMenuItem(
+                        value: c.id, child: Text(c.displayLabel)))
+                    .toList(),
+                onChanged: (id) {
+                  final c = codes.firstWhere((c) => c.id == id);
+                  setState(() {
+                    _selectedTaxCodeId = id;
+                    _taxCtrl.text = c.rate.toString();
+                    _taxInclusive = c.isInclusive;
+                  });
+                });
+          }),
+
           const SizedBox(height: 20),
 
           // Inventory
