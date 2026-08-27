@@ -97,19 +97,48 @@ Future<String?> activeBusinessId(ActiveBusinessIdRef ref) async {
 // ── UpdateBusinessNotifier ────────────────────────────────────────────────────
 // Saves changes to the business profile
 // Called from OnboardingScreen and BusinessSettingsScreen
+
 @riverpod
 class UpdateBusinessNotifier extends _$UpdateBusinessNotifier {
   @override
   AsyncValue<void> build() => const AsyncValue.data(null);
 
   Future<void> update(Business b) async {
+    debugPrint('UpdateBusinessNotifier: update() called, id=${b.id}');
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(
-        () => ref.read(businessRepositoryProvider).updateBusiness(b));
-    // Invalidate activeBusiness so AppShell refreshes the business name
+
+    state = await AsyncValue.guard(() async {
+      debugPrint(
+          'UpdateBusinessNotifier: calling repository.updateBusiness()...');
+      await ref.read(businessRepositoryProvider).updateBusiness(b);
+      debugPrint('UpdateBusinessNotifier: repository call completed');
+    });
+
+    if (state is AsyncError) {
+      debugPrint(
+          'UpdateBusinessNotifier: FAILED — ${(state as AsyncError).error}');
+    } else {
+      debugPrint('UpdateBusinessNotifier: SUCCESS');
+    }
+
+    debugPrint('UpdateBusinessNotifier: invalidating activeBusinessProvider');
     ref.invalidate(activeBusinessProvider);
   }
 }
+
+// @riverpod
+// class UpdateBusinessNotifier extends _$UpdateBusinessNotifier {
+//   @override
+//   AsyncValue<void> build() => const AsyncValue.data(null);
+
+//   Future<void> update(Business b) async {
+//     state = const AsyncValue.loading();
+//     state = await AsyncValue.guard(
+//         () => ref.read(businessRepositoryProvider).updateBusiness(b));
+//     // Invalidate activeBusiness so AppShell refreshes the business name
+//     ref.invalidate(activeBusinessProvider);
+//   }
+// }
 
 //Commented on 04.08.2026 replaced the whole code with above code
 

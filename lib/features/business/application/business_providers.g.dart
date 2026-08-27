@@ -59,7 +59,7 @@ final activeBusinessIdProvider = AutoDisposeFutureProvider<String?>.internal(
 // ignore: unused_element
 typedef ActiveBusinessIdRef = AutoDisposeFutureProviderRef<String?>;
 String _$updateBusinessNotifierHash() =>
-    r'b4c69c2d76edac37921278d647759a056c02581c';
+    r'085bb4d3e38f8e60711ac751c3d78ea1655b0aea';
 
 /// See also [UpdateBusinessNotifier].
 @ProviderFor(UpdateBusinessNotifier)

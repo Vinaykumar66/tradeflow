@@ -7,11 +7,11 @@
 
 import '../../../../core/interfaces/i_invoice_printer.dart';
 import 'laser_invoice_printer.dart';
-// import 'thermal_invoice_printer.dart';
-// import 'dot_matrix_invoice_printer.dart';
+import 'thermal_invoice_printer.dart';
+import 'dot_matrix_invoice_printer.dart';
 
 IInvoicePrinter invoicePrinterFor(String formatKey) => switch (formatKey) {
-      // kPrintFormatThermal => () {}, //ThermalInvoicePrinter(),
-      // kPrintFormatDotMatrix => () {}, // DotMatrixInvoicePrinter(),
+      kPrintFormatThermal => ThermalInvoicePrinter(),
+      kPrintFormatDotMatrix => DotMatrixInvoicePrinter(),
       _ => LaserInvoicePrinter(), // laser is the safe default
     };

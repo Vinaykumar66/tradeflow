@@ -7,6 +7,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tradeflow/core/di/repository_providers.dart';
+import '../../../core/interfaces/i_invoice_printer.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
@@ -15,6 +17,8 @@ import '../../../shared/models/invoice.dart';
 import '../application/invoice_providers.dart';
 import '../data/invoice_pdf_generators.dart';
 import 'widgets/invoice_status_badge.dart';
+import '../data/printers/invoice_printer_registry.dart';
+import 'widgets/print_format_picker_sheet.dart';
 
 class InvoiceDetailScreen extends ConsumerWidget {
   // Used for a fast initial app-bar title only — never trusted for items.
@@ -31,12 +35,20 @@ class InvoiceDetailScreen extends ConsumerWidget {
         actions: [
           IconButton(
               icon: const Icon(Icons.print_outlined),
-              tooltip: 'Print invoice',
-              // Disabled until full items are loaded — printing the
-              // lightweight version would produce a PDF with no line items.
-              onPressed: fullAsync.asData?.value == null
-                  ? null
-                  : () => _print(context, ref, fullAsync.asData!.value!)),
+              tooltip:
+                  'Tap to print with your default printer. Long-press to choose a different format.',
+              onPressed: () => _print(context, ref, invoice, override: null),
+              // fullAsync.asData?.value == null
+              //     ? null
+              //     : () => _print(context, ref, fullAsync.asData!.value!)
+              onLongPress: () async {
+                final biz = ref.read(activeBusinessProvider).asData?.value;
+                final chosen = await PrintFormatPickerSheet.show(
+                    context, biz?.defaultPrintFormat ?? kPrintFormatLaser);
+                if (chosen != null)
+                  _print(context, ref, invoice, override: chosen);
+              }),
+          //Add this method to the screen:
         ],
       ),
       body: fullAsync.when(
@@ -72,11 +84,22 @@ class InvoiceDetailScreen extends ConsumerWidget {
                         context.push(AppRoutes.recordPayment, extra: inv)))));
   }
 
-  Future<void> _print(BuildContext context, WidgetRef ref, Invoice inv) async {
+  Future<void> _print(BuildContext context, WidgetRef ref, Invoice inv,
+      {String? override}) async {
     final biz = ref.read(activeBusinessProvider).asData?.value;
+    final customer = inv.customerId == null
+        ? null
+        : await ref
+            .read(customerRepositoryProvider)
+            .getCustomer(inv.businessId, inv.customerId!);
     if (biz == null) return;
+
+    final formatKey = override ?? biz.defaultPrintFormat;
+    final printer = invoicePrinterFor(formatKey);
+
     try {
-      await InvoicePdfGenerator.generate(invoice: inv, business: biz);
+      await printer.print(
+          InvoicePrintJob(invoice: inv, business: biz, customer: customer));
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

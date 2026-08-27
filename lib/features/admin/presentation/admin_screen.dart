@@ -41,6 +41,22 @@ class AdminScreen extends StatelessWidget {
             onTap: () => context.push(AppRoutes.taxCodes),
           ),
           const Divider(),
+          ListTile(
+            leading: const Icon(Icons.image_outlined),
+            title: const Text('Manage Business Logo'),
+            subtitle: const Text('Upload Business Logo'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(AppRoutes.businessSettings),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.image_outlined),
+            title: const Text('Configure printer'),
+            subtitle: const Text('Set up printer settings'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(AppRoutes.printerSettings),
+          ),
+          const Divider(),
         ],
       ),
     );

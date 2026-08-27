@@ -724,7 +724,24 @@ mixin _$InvoiceItem {
   @JsonKey(name: 'line_total')
   int get lineTotal => throw _privateConstructorUsedError;
   @JsonKey(name: 'sort_order')
-  int get sortOrder => throw _privateConstructorUsedError;
+  int get sortOrder =>
+      throw _privateConstructorUsedError; //GST calc, tax amount
+  @JsonKey(name: 'cgst_amount')
+  int get cgstAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'sgst_amount')
+  int get sgstAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'igst_amount')
+  int get igstAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'ugst_amount')
+  int get ugstAmount => throw _privateConstructorUsedError; //GST calc tax total
+  @JsonKey(name: 'cgst_total')
+  int get cgstTotal => throw _privateConstructorUsedError;
+  @JsonKey(name: 'sgst_total')
+  int get sgstTotal => throw _privateConstructorUsedError;
+  @JsonKey(name: 'igst_total')
+  int get igstTotal => throw _privateConstructorUsedError;
+  @JsonKey(name: 'ugst_total')
+  int get ugstTotal => throw _privateConstructorUsedError;
 
   /// Serializes this InvoiceItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -757,7 +774,15 @@ abstract class $InvoiceItemCopyWith<$Res> {
       @JsonKey(name: 'tax_inclusive') bool taxInclusive,
       @JsonKey(name: 'tax_amount') int taxAmount,
       @JsonKey(name: 'line_total') int lineTotal,
-      @JsonKey(name: 'sort_order') int sortOrder});
+      @JsonKey(name: 'sort_order') int sortOrder,
+      @JsonKey(name: 'cgst_amount') int cgstAmount,
+      @JsonKey(name: 'sgst_amount') int sgstAmount,
+      @JsonKey(name: 'igst_amount') int igstAmount,
+      @JsonKey(name: 'ugst_amount') int ugstAmount,
+      @JsonKey(name: 'cgst_total') int cgstTotal,
+      @JsonKey(name: 'sgst_total') int sgstTotal,
+      @JsonKey(name: 'igst_total') int igstTotal,
+      @JsonKey(name: 'ugst_total') int ugstTotal});
 }
 
 /// @nodoc
@@ -790,6 +815,14 @@ class _$InvoiceItemCopyWithImpl<$Res, $Val extends InvoiceItem>
     Object? taxAmount = null,
     Object? lineTotal = null,
     Object? sortOrder = null,
+    Object? cgstAmount = null,
+    Object? sgstAmount = null,
+    Object? igstAmount = null,
+    Object? ugstAmount = null,
+    Object? cgstTotal = null,
+    Object? sgstTotal = null,
+    Object? igstTotal = null,
+    Object? ugstTotal = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -852,6 +885,38 @@ class _$InvoiceItemCopyWithImpl<$Res, $Val extends InvoiceItem>
           ? _value.sortOrder
           : sortOrder // ignore: cast_nullable_to_non_nullable
               as int,
+      cgstAmount: null == cgstAmount
+          ? _value.cgstAmount
+          : cgstAmount // ignore: cast_nullable_to_non_nullable
+              as int,
+      sgstAmount: null == sgstAmount
+          ? _value.sgstAmount
+          : sgstAmount // ignore: cast_nullable_to_non_nullable
+              as int,
+      igstAmount: null == igstAmount
+          ? _value.igstAmount
+          : igstAmount // ignore: cast_nullable_to_non_nullable
+              as int,
+      ugstAmount: null == ugstAmount
+          ? _value.ugstAmount
+          : ugstAmount // ignore: cast_nullable_to_non_nullable
+              as int,
+      cgstTotal: null == cgstTotal
+          ? _value.cgstTotal
+          : cgstTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      sgstTotal: null == sgstTotal
+          ? _value.sgstTotal
+          : sgstTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      igstTotal: null == igstTotal
+          ? _value.igstTotal
+          : igstTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      ugstTotal: null == ugstTotal
+          ? _value.ugstTotal
+          : ugstTotal // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -879,7 +944,15 @@ abstract class _$$InvoiceItemImplCopyWith<$Res>
       @JsonKey(name: 'tax_inclusive') bool taxInclusive,
       @JsonKey(name: 'tax_amount') int taxAmount,
       @JsonKey(name: 'line_total') int lineTotal,
-      @JsonKey(name: 'sort_order') int sortOrder});
+      @JsonKey(name: 'sort_order') int sortOrder,
+      @JsonKey(name: 'cgst_amount') int cgstAmount,
+      @JsonKey(name: 'sgst_amount') int sgstAmount,
+      @JsonKey(name: 'igst_amount') int igstAmount,
+      @JsonKey(name: 'ugst_amount') int ugstAmount,
+      @JsonKey(name: 'cgst_total') int cgstTotal,
+      @JsonKey(name: 'sgst_total') int sgstTotal,
+      @JsonKey(name: 'igst_total') int igstTotal,
+      @JsonKey(name: 'ugst_total') int ugstTotal});
 }
 
 /// @nodoc
@@ -910,6 +983,14 @@ class __$$InvoiceItemImplCopyWithImpl<$Res>
     Object? taxAmount = null,
     Object? lineTotal = null,
     Object? sortOrder = null,
+    Object? cgstAmount = null,
+    Object? sgstAmount = null,
+    Object? igstAmount = null,
+    Object? ugstAmount = null,
+    Object? cgstTotal = null,
+    Object? sgstTotal = null,
+    Object? igstTotal = null,
+    Object? ugstTotal = null,
   }) {
     return _then(_$InvoiceItemImpl(
       id: null == id
@@ -972,6 +1053,38 @@ class __$$InvoiceItemImplCopyWithImpl<$Res>
           ? _value.sortOrder
           : sortOrder // ignore: cast_nullable_to_non_nullable
               as int,
+      cgstAmount: null == cgstAmount
+          ? _value.cgstAmount
+          : cgstAmount // ignore: cast_nullable_to_non_nullable
+              as int,
+      sgstAmount: null == sgstAmount
+          ? _value.sgstAmount
+          : sgstAmount // ignore: cast_nullable_to_non_nullable
+              as int,
+      igstAmount: null == igstAmount
+          ? _value.igstAmount
+          : igstAmount // ignore: cast_nullable_to_non_nullable
+              as int,
+      ugstAmount: null == ugstAmount
+          ? _value.ugstAmount
+          : ugstAmount // ignore: cast_nullable_to_non_nullable
+              as int,
+      cgstTotal: null == cgstTotal
+          ? _value.cgstTotal
+          : cgstTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      sgstTotal: null == sgstTotal
+          ? _value.sgstTotal
+          : sgstTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      igstTotal: null == igstTotal
+          ? _value.igstTotal
+          : igstTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      ugstTotal: null == ugstTotal
+          ? _value.ugstTotal
+          : ugstTotal // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -994,7 +1107,15 @@ class _$InvoiceItemImpl implements _InvoiceItem {
       @JsonKey(name: 'tax_inclusive') this.taxInclusive = false,
       @JsonKey(name: 'tax_amount') this.taxAmount = 0,
       @JsonKey(name: 'line_total') this.lineTotal = 0,
-      @JsonKey(name: 'sort_order') this.sortOrder = 0});
+      @JsonKey(name: 'sort_order') this.sortOrder = 0,
+      @JsonKey(name: 'cgst_amount') this.cgstAmount = 0,
+      @JsonKey(name: 'sgst_amount') this.sgstAmount = 0,
+      @JsonKey(name: 'igst_amount') this.igstAmount = 0,
+      @JsonKey(name: 'ugst_amount') this.ugstAmount = 0,
+      @JsonKey(name: 'cgst_total') this.cgstTotal = 0,
+      @JsonKey(name: 'sgst_total') this.sgstTotal = 0,
+      @JsonKey(name: 'igst_total') this.igstTotal = 0,
+      @JsonKey(name: 'ugst_total') this.ugstTotal = 0});
 
   factory _$InvoiceItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$InvoiceItemImplFromJson(json);
@@ -1041,10 +1162,36 @@ class _$InvoiceItemImpl implements _InvoiceItem {
   @override
   @JsonKey(name: 'sort_order')
   final int sortOrder;
+//GST calc, tax amount
+  @override
+  @JsonKey(name: 'cgst_amount')
+  final int cgstAmount;
+  @override
+  @JsonKey(name: 'sgst_amount')
+  final int sgstAmount;
+  @override
+  @JsonKey(name: 'igst_amount')
+  final int igstAmount;
+  @override
+  @JsonKey(name: 'ugst_amount')
+  final int ugstAmount;
+//GST calc tax total
+  @override
+  @JsonKey(name: 'cgst_total')
+  final int cgstTotal;
+  @override
+  @JsonKey(name: 'sgst_total')
+  final int sgstTotal;
+  @override
+  @JsonKey(name: 'igst_total')
+  final int igstTotal;
+  @override
+  @JsonKey(name: 'ugst_total')
+  final int ugstTotal;
 
   @override
   String toString() {
-    return 'InvoiceItem(id: $id, invoiceId: $invoiceId, businessId: $businessId, productId: $productId, name: $name, description: $description, quantity: $quantity, unit: $unit, unitPrice: $unitPrice, discountPct: $discountPct, taxRate: $taxRate, taxInclusive: $taxInclusive, taxAmount: $taxAmount, lineTotal: $lineTotal, sortOrder: $sortOrder)';
+    return 'InvoiceItem(id: $id, invoiceId: $invoiceId, businessId: $businessId, productId: $productId, name: $name, description: $description, quantity: $quantity, unit: $unit, unitPrice: $unitPrice, discountPct: $discountPct, taxRate: $taxRate, taxInclusive: $taxInclusive, taxAmount: $taxAmount, lineTotal: $lineTotal, sortOrder: $sortOrder, cgstAmount: $cgstAmount, sgstAmount: $sgstAmount, igstAmount: $igstAmount, ugstAmount: $ugstAmount, cgstTotal: $cgstTotal, sgstTotal: $sgstTotal, igstTotal: $igstTotal, ugstTotal: $ugstTotal)';
   }
 
   @override
@@ -1077,28 +1224,53 @@ class _$InvoiceItemImpl implements _InvoiceItem {
             (identical(other.lineTotal, lineTotal) ||
                 other.lineTotal == lineTotal) &&
             (identical(other.sortOrder, sortOrder) ||
-                other.sortOrder == sortOrder));
+                other.sortOrder == sortOrder) &&
+            (identical(other.cgstAmount, cgstAmount) ||
+                other.cgstAmount == cgstAmount) &&
+            (identical(other.sgstAmount, sgstAmount) ||
+                other.sgstAmount == sgstAmount) &&
+            (identical(other.igstAmount, igstAmount) ||
+                other.igstAmount == igstAmount) &&
+            (identical(other.ugstAmount, ugstAmount) ||
+                other.ugstAmount == ugstAmount) &&
+            (identical(other.cgstTotal, cgstTotal) ||
+                other.cgstTotal == cgstTotal) &&
+            (identical(other.sgstTotal, sgstTotal) ||
+                other.sgstTotal == sgstTotal) &&
+            (identical(other.igstTotal, igstTotal) ||
+                other.igstTotal == igstTotal) &&
+            (identical(other.ugstTotal, ugstTotal) ||
+                other.ugstTotal == ugstTotal));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      invoiceId,
-      businessId,
-      productId,
-      name,
-      description,
-      quantity,
-      unit,
-      unitPrice,
-      discountPct,
-      taxRate,
-      taxInclusive,
-      taxAmount,
-      lineTotal,
-      sortOrder);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        invoiceId,
+        businessId,
+        productId,
+        name,
+        description,
+        quantity,
+        unit,
+        unitPrice,
+        discountPct,
+        taxRate,
+        taxInclusive,
+        taxAmount,
+        lineTotal,
+        sortOrder,
+        cgstAmount,
+        sgstAmount,
+        igstAmount,
+        ugstAmount,
+        cgstTotal,
+        sgstTotal,
+        igstTotal,
+        ugstTotal
+      ]);
 
   /// Create a copy of InvoiceItem
   /// with the given fields replaced by the non-null parameter values.
@@ -1132,7 +1304,15 @@ abstract class _InvoiceItem implements InvoiceItem {
       @JsonKey(name: 'tax_inclusive') final bool taxInclusive,
       @JsonKey(name: 'tax_amount') final int taxAmount,
       @JsonKey(name: 'line_total') final int lineTotal,
-      @JsonKey(name: 'sort_order') final int sortOrder}) = _$InvoiceItemImpl;
+      @JsonKey(name: 'sort_order') final int sortOrder,
+      @JsonKey(name: 'cgst_amount') final int cgstAmount,
+      @JsonKey(name: 'sgst_amount') final int sgstAmount,
+      @JsonKey(name: 'igst_amount') final int igstAmount,
+      @JsonKey(name: 'ugst_amount') final int ugstAmount,
+      @JsonKey(name: 'cgst_total') final int cgstTotal,
+      @JsonKey(name: 'sgst_total') final int sgstTotal,
+      @JsonKey(name: 'igst_total') final int igstTotal,
+      @JsonKey(name: 'ugst_total') final int ugstTotal}) = _$InvoiceItemImpl;
 
   factory _InvoiceItem.fromJson(Map<String, dynamic> json) =
       _$InvoiceItemImpl.fromJson;
@@ -1176,7 +1356,31 @@ abstract class _InvoiceItem implements InvoiceItem {
   int get lineTotal;
   @override
   @JsonKey(name: 'sort_order')
-  int get sortOrder;
+  int get sortOrder; //GST calc, tax amount
+  @override
+  @JsonKey(name: 'cgst_amount')
+  int get cgstAmount;
+  @override
+  @JsonKey(name: 'sgst_amount')
+  int get sgstAmount;
+  @override
+  @JsonKey(name: 'igst_amount')
+  int get igstAmount;
+  @override
+  @JsonKey(name: 'ugst_amount')
+  int get ugstAmount; //GST calc tax total
+  @override
+  @JsonKey(name: 'cgst_total')
+  int get cgstTotal;
+  @override
+  @JsonKey(name: 'sgst_total')
+  int get sgstTotal;
+  @override
+  @JsonKey(name: 'igst_total')
+  int get igstTotal;
+  @override
+  @JsonKey(name: 'ugst_total')
+  int get ugstTotal;
 
   /// Create a copy of InvoiceItem
   /// with the given fields replaced by the non-null parameter values.

@@ -89,6 +89,12 @@ mixin _$Business {
   DateTime? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
   DateTime? get updatedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'default_print_format')
+  String get defaultPrintFormat => throw _privateConstructorUsedError;
+  @JsonKey(name: 'dot_matrix_top_margin_lines')
+  int get dotMatrixTopMarginLines => throw _privateConstructorUsedError;
+  @JsonKey(name: 'dot_matrix_left_margin_chars')
+  int get dotMatrixLeftMarginChars => throw _privateConstructorUsedError;
 
   /// Serializes this Business to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -139,7 +145,11 @@ abstract class $BusinessCopyWith<$Res> {
       @JsonKey(name: 'operator_note') String? operatorNote,
       @JsonKey(name: 'is_active') bool isActive,
       @JsonKey(name: 'created_at') DateTime? createdAt,
-      @JsonKey(name: 'updated_at') DateTime? updatedAt});
+      @JsonKey(name: 'updated_at') DateTime? updatedAt,
+      @JsonKey(name: 'default_print_format') String defaultPrintFormat,
+      @JsonKey(name: 'dot_matrix_top_margin_lines') int dotMatrixTopMarginLines,
+      @JsonKey(name: 'dot_matrix_left_margin_chars')
+      int dotMatrixLeftMarginChars});
 }
 
 /// @nodoc
@@ -191,6 +201,9 @@ class _$BusinessCopyWithImpl<$Res, $Val extends Business>
     Object? isActive = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
+    Object? defaultPrintFormat = null,
+    Object? dotMatrixTopMarginLines = null,
+    Object? dotMatrixLeftMarginChars = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -329,6 +342,18 @@ class _$BusinessCopyWithImpl<$Res, $Val extends Business>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      defaultPrintFormat: null == defaultPrintFormat
+          ? _value.defaultPrintFormat
+          : defaultPrintFormat // ignore: cast_nullable_to_non_nullable
+              as String,
+      dotMatrixTopMarginLines: null == dotMatrixTopMarginLines
+          ? _value.dotMatrixTopMarginLines
+          : dotMatrixTopMarginLines // ignore: cast_nullable_to_non_nullable
+              as int,
+      dotMatrixLeftMarginChars: null == dotMatrixLeftMarginChars
+          ? _value.dotMatrixLeftMarginChars
+          : dotMatrixLeftMarginChars // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -375,7 +400,11 @@ abstract class _$$BusinessImplCopyWith<$Res>
       @JsonKey(name: 'operator_note') String? operatorNote,
       @JsonKey(name: 'is_active') bool isActive,
       @JsonKey(name: 'created_at') DateTime? createdAt,
-      @JsonKey(name: 'updated_at') DateTime? updatedAt});
+      @JsonKey(name: 'updated_at') DateTime? updatedAt,
+      @JsonKey(name: 'default_print_format') String defaultPrintFormat,
+      @JsonKey(name: 'dot_matrix_top_margin_lines') int dotMatrixTopMarginLines,
+      @JsonKey(name: 'dot_matrix_left_margin_chars')
+      int dotMatrixLeftMarginChars});
 }
 
 /// @nodoc
@@ -425,6 +454,9 @@ class __$$BusinessImplCopyWithImpl<$Res>
     Object? isActive = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
+    Object? defaultPrintFormat = null,
+    Object? dotMatrixTopMarginLines = null,
+    Object? dotMatrixLeftMarginChars = null,
   }) {
     return _then(_$BusinessImpl(
       id: null == id
@@ -563,6 +595,18 @@ class __$$BusinessImplCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      defaultPrintFormat: null == defaultPrintFormat
+          ? _value.defaultPrintFormat
+          : defaultPrintFormat // ignore: cast_nullable_to_non_nullable
+              as String,
+      dotMatrixTopMarginLines: null == dotMatrixTopMarginLines
+          ? _value.dotMatrixTopMarginLines
+          : dotMatrixTopMarginLines // ignore: cast_nullable_to_non_nullable
+              as int,
+      dotMatrixLeftMarginChars: null == dotMatrixLeftMarginChars
+          ? _value.dotMatrixLeftMarginChars
+          : dotMatrixLeftMarginChars // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -604,7 +648,13 @@ class _$BusinessImpl implements _Business {
       @JsonKey(name: 'operator_note') this.operatorNote,
       @JsonKey(name: 'is_active') this.isActive = true,
       @JsonKey(name: 'created_at') this.createdAt,
-      @JsonKey(name: 'updated_at') this.updatedAt});
+      @JsonKey(name: 'updated_at') this.updatedAt,
+      @JsonKey(name: 'default_print_format')
+      this.defaultPrintFormat = kPrintFormatLaser,
+      @JsonKey(name: 'dot_matrix_top_margin_lines')
+      this.dotMatrixTopMarginLines = 3,
+      @JsonKey(name: 'dot_matrix_left_margin_chars')
+      this.dotMatrixLeftMarginChars = 2});
 
   factory _$BusinessImpl.fromJson(Map<String, dynamic> json) =>
       _$$BusinessImplFromJson(json);
@@ -717,10 +767,19 @@ class _$BusinessImpl implements _Business {
   @override
   @JsonKey(name: 'updated_at')
   final DateTime? updatedAt;
+  @override
+  @JsonKey(name: 'default_print_format')
+  final String defaultPrintFormat;
+  @override
+  @JsonKey(name: 'dot_matrix_top_margin_lines')
+  final int dotMatrixTopMarginLines;
+  @override
+  @JsonKey(name: 'dot_matrix_left_margin_chars')
+  final int dotMatrixLeftMarginChars;
 
   @override
   String toString() {
-    return 'Business(id: $id, name: $name, ownerUid: $ownerUid, email: $email, phone: $phone, address: $address, city: $city, state: $state, country: $country, pincode: $pincode, gstin: $gstin, taxNumber: $taxNumber, logoUrl: $logoUrl, currencyCode: $currencyCode, currency: $currency, currencySymbol: $currencySymbol, countryCode: $countryCode, taxLabel: $taxLabel, defaultTaxRate: $defaultTaxRate, dateFormat: $dateFormat, useLakhFormat: $useLakhFormat, invoicePrefix: $invoicePrefix, nextInvoiceNumber: $nextInvoiceNumber, licenseTierValue: $licenseTierValue, tierExpiresAt: $tierExpiresAt, emailOverride: $emailOverride, cronReminderOverride: $cronReminderOverride, invoiceLimitOverride: $invoiceLimitOverride, userLimitOverride: $userLimitOverride, storageLimitOverride: $storageLimitOverride, operatorNote: $operatorNote, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'Business(id: $id, name: $name, ownerUid: $ownerUid, email: $email, phone: $phone, address: $address, city: $city, state: $state, country: $country, pincode: $pincode, gstin: $gstin, taxNumber: $taxNumber, logoUrl: $logoUrl, currencyCode: $currencyCode, currency: $currency, currencySymbol: $currencySymbol, countryCode: $countryCode, taxLabel: $taxLabel, defaultTaxRate: $defaultTaxRate, dateFormat: $dateFormat, useLakhFormat: $useLakhFormat, invoicePrefix: $invoicePrefix, nextInvoiceNumber: $nextInvoiceNumber, licenseTierValue: $licenseTierValue, tierExpiresAt: $tierExpiresAt, emailOverride: $emailOverride, cronReminderOverride: $cronReminderOverride, invoiceLimitOverride: $invoiceLimitOverride, userLimitOverride: $userLimitOverride, storageLimitOverride: $storageLimitOverride, operatorNote: $operatorNote, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, defaultPrintFormat: $defaultPrintFormat, dotMatrixTopMarginLines: $dotMatrixTopMarginLines, dotMatrixLeftMarginChars: $dotMatrixLeftMarginChars)';
   }
 
   @override
@@ -784,7 +843,15 @@ class _$BusinessImpl implements _Business {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+                other.updatedAt == updatedAt) &&
+            (identical(other.defaultPrintFormat, defaultPrintFormat) ||
+                other.defaultPrintFormat == defaultPrintFormat) &&
+            (identical(
+                    other.dotMatrixTopMarginLines, dotMatrixTopMarginLines) ||
+                other.dotMatrixTopMarginLines == dotMatrixTopMarginLines) &&
+            (identical(
+                    other.dotMatrixLeftMarginChars, dotMatrixLeftMarginChars) ||
+                other.dotMatrixLeftMarginChars == dotMatrixLeftMarginChars));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -824,7 +891,10 @@ class _$BusinessImpl implements _Business {
         operatorNote,
         isActive,
         createdAt,
-        updatedAt
+        updatedAt,
+        defaultPrintFormat,
+        dotMatrixTopMarginLines,
+        dotMatrixLeftMarginChars
       ]);
 
   /// Create a copy of Business
@@ -878,7 +948,12 @@ abstract class _Business implements Business {
       @JsonKey(name: 'operator_note') final String? operatorNote,
       @JsonKey(name: 'is_active') final bool isActive,
       @JsonKey(name: 'created_at') final DateTime? createdAt,
-      @JsonKey(name: 'updated_at') final DateTime? updatedAt}) = _$BusinessImpl;
+      @JsonKey(name: 'updated_at') final DateTime? updatedAt,
+      @JsonKey(name: 'default_print_format') final String defaultPrintFormat,
+      @JsonKey(name: 'dot_matrix_top_margin_lines')
+      final int dotMatrixTopMarginLines,
+      @JsonKey(name: 'dot_matrix_left_margin_chars')
+      final int dotMatrixLeftMarginChars}) = _$BusinessImpl;
 
   factory _Business.fromJson(Map<String, dynamic> json) =
       _$BusinessImpl.fromJson;
@@ -980,6 +1055,15 @@ abstract class _Business implements Business {
   @override
   @JsonKey(name: 'updated_at')
   DateTime? get updatedAt;
+  @override
+  @JsonKey(name: 'default_print_format')
+  String get defaultPrintFormat;
+  @override
+  @JsonKey(name: 'dot_matrix_top_margin_lines')
+  int get dotMatrixTopMarginLines;
+  @override
+  @JsonKey(name: 'dot_matrix_left_margin_chars')
+  int get dotMatrixLeftMarginChars;
 
   /// Create a copy of Business
   /// with the given fields replaced by the non-null parameter values.

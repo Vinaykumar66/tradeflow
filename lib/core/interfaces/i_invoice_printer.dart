@@ -25,7 +25,7 @@ abstract interface class IInvoicePrinter {
   // e.g. 'laser', 'thermal', 'dot_matrix'.
   String get formatKey;
 
-  // Human label shown in settings and the picker sheet.
+  // label shown in settings and the picker sheet.
   String get displayName;
 
   // Icon shown next to the format in pickers.

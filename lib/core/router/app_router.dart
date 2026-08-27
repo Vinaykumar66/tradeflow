@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tradeflow/features/admin/presentation/business_settings_screen.dart'
+    show BusinessSettingsScreen;
+import '../../features/admin/presentation/printer_settings_screen.dart';
 import '../../features/admin/presentation/tax_codes_screen.dart';
 import '../../features/auth/application/auth_providers.dart';
 import '../../features/auth/presentation/login_screen.dart';
@@ -12,6 +15,7 @@ import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/inventory/presentation/inventory_screen.dart';
 import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/invoices/presentation/invoices_screen.dart';
+import '../../features/invoices/presentation/thermal_printer_pairing_screen.dart';
 import '../../features/reports/presentation/reports_screen.dart';
 import '../../features/admin/presentation/admin_screen.dart';
 import '../../features/admin/presentation/permission_settings_screen.dart';
@@ -60,6 +64,9 @@ abstract class AppRoutes {
   static const String customerPicker = '/customers/picker';
   static const String recordPayment = '/invoices/payment';
   static const String taxCodes = '/admin/tax-codes';
+  static const String businessSettings = '/admin/business-settings';
+  static const String printerSettings = '/admin/printer-settings';
+  static const String thermalPairing = '/invoices/thermal-pairing';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];
@@ -195,6 +202,15 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
               path: AppRoutes.taxCodes,
               builder: (_, __) => const TaxCodesScreen()),
+          GoRoute(
+              path: AppRoutes.businessSettings,
+              builder: (_, __) => const BusinessSettingsScreen()),
+          GoRoute(
+              path: AppRoutes.printerSettings,
+              builder: (_, __) => const PrinterSettingsScreen()),
+          GoRoute(
+              path: AppRoutes.thermalPairing,
+              builder: (_, __) => const ThermalPrinterPairingScreen()),
         ],
       ),
     ],

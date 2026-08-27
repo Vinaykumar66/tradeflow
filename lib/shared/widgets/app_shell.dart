@@ -1,5 +1,3 @@
-// lib/shared/widgets/app_shell.dart
-
 import 'package:flutter/foundation.dart'; // kIsWeb
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -294,7 +292,9 @@ class _DrawerLayout extends ConsumerWidget {
                                                     //     width: 3),
                                                   )
                                                 : null),
+                                        clipBehavior: Clip.hardEdge,
                                         child: Row(
+                                            mainAxisSize: MainAxisSize.min,
                                             mainAxisAlignment: isExpanded
                                                 ? MainAxisAlignment.start
                                                 : MainAxisAlignment.center,
@@ -311,7 +311,7 @@ class _DrawerLayout extends ConsumerWidget {
                                               // show label — only when expanded
                                               if (isExpanded) ...[
                                                 const SizedBox(width: 20),
-                                                Expanded(
+                                                Flexible(
                                                     child: Text(tab.label,
                                                         style: TextStyle(
                                                             fontSize: 13,

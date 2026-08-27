@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tradeflow/core/utils/currency_formatter.dart';
+import '../../core/utils/gst_split_calculator.dart';
 part 'invoice.freezed.dart';
 part 'invoice.g.dart';
 
@@ -70,6 +71,17 @@ abstract class InvoiceItem with _$InvoiceItem {
     @JsonKey(name: 'tax_amount') @Default(0) int taxAmount,
     @JsonKey(name: 'line_total') @Default(0) int lineTotal,
     @JsonKey(name: 'sort_order') @Default(0) int sortOrder,
+//GST calc, tax amount
+    @JsonKey(name: 'cgst_amount') @Default(0) int cgstAmount,
+    @JsonKey(name: 'sgst_amount') @Default(0) int sgstAmount,
+    @JsonKey(name: 'igst_amount') @Default(0) int igstAmount,
+    @JsonKey(name: 'ugst_amount') @Default(0) int ugstAmount,
+
+//GST calc tax total
+    @JsonKey(name: 'cgst_total') @Default(0) int cgstTotal,
+    @JsonKey(name: 'sgst_total') @Default(0) int sgstTotal,
+    @JsonKey(name: 'igst_total') @Default(0) int igstTotal,
+    @JsonKey(name: 'ugst_total') @Default(0) int ugstTotal,
   }) = _InvoiceItem;
   factory InvoiceItem.fromJson(Map<String, dynamic> json) =>
       _$InvoiceItemFromJson(json);
@@ -96,21 +108,49 @@ extension InvoiceX on Invoice {
 extension InvoiceItemX on InvoiceItem {
   static InvoiceItem fromMap(Map<String, dynamic> m) => InvoiceItem.fromJson(m);
 
-  InvoiceItem recalculate() {
+  InvoiceItem recalculate({String? sellerState, String? buyerState}) {
     final gross = (unitPrice * quantity).round();
     final discAmt = (gross * discountPct / 100).round();
     final afterDisc = gross - discAmt;
     final int tax;
     if (taxInclusive) {
-      //Tax already inside unit price - extract it
       tax = (afterDisc - (afterDisc * 100 / (100 + taxRate)).round());
     } else {
-      //Tax on top of price
       tax = (afterDisc * taxRate / 100).round();
     }
     final total = taxInclusive ? afterDisc : afterDisc + tax;
-    return copyWith(taxAmount: tax, lineTotal: total);
+
+    // Split stays all-zero whenever sellerState/buyerState are not
+    //passed - exactly the non-Indian business case.
+    final split = GstSplitCalculator.split(
+        sellerState: sellerState, buyerState: buyerState, totalTaxPaise: tax);
+
+    return copyWith(
+        taxAmount: tax,
+        lineTotal: total,
+        cgstAmount: split.cgst,
+        sgstAmount: split.sgst,
+        igstAmount: split.igst,
+        ugstAmount: split.ugst);
   }
+
+//commented to add GST split calculations
+  // InvoiceItem recalculate() {
+  //   final gross = (unitPrice * quantity).round();
+  //   final discAmt = (gross * discountPct / 100).round();
+  //   final afterDisc = gross - discAmt;
+  //   final int tax;
+  //   if (taxInclusive) {
+  //     //Tax already inside unit price - extract it
+  //     tax = (afterDisc - (afterDisc * 100 / (100 + taxRate)).round());
+  //   } else {
+  //     //Tax on top of price
+  //     tax = (afterDisc * taxRate / 100).round();
+  //   }
+  //   final total = taxInclusive ? afterDisc : afterDisc + tax;
+  //   return copyWith(taxAmount: tax, lineTotal: total);
+  // }
+//commented to add GST split calculations
 
   Map<String, dynamic> toInsertMap(String invoiceId, String bizId) => {
         'invoice_id': invoiceId,

@@ -48,6 +48,12 @@ _$BusinessImpl _$$BusinessImplFromJson(Map<String, dynamic> json) =>
       updatedAt: json['updated_at'] == null
           ? null
           : DateTime.parse(json['updated_at'] as String),
+      defaultPrintFormat:
+          json['default_print_format'] as String? ?? kPrintFormatLaser,
+      dotMatrixTopMarginLines:
+          (json['dot_matrix_top_margin_lines'] as num?)?.toInt() ?? 3,
+      dotMatrixLeftMarginChars:
+          (json['dot_matrix_left_margin_chars'] as num?)?.toInt() ?? 2,
     );
 
 Map<String, dynamic> _$$BusinessImplToJson(_$BusinessImpl instance) =>
@@ -86,4 +92,7 @@ Map<String, dynamic> _$$BusinessImplToJson(_$BusinessImpl instance) =>
       'is_active': instance.isActive,
       'created_at': instance.createdAt?.toIso8601String(),
       'updated_at': instance.updatedAt?.toIso8601String(),
+      'default_print_format': instance.defaultPrintFormat,
+      'dot_matrix_top_margin_lines': instance.dotMatrixTopMarginLines,
+      'dot_matrix_left_margin_chars': instance.dotMatrixLeftMarginChars,
     };

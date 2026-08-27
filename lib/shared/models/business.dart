@@ -1,7 +1,8 @@
-// lib/shared/models/business.dart
-
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tradeflow/shared/models/license_tier.dart';
+import '../../../core/interfaces/i_invoice_printer.dart';
+import '../../features/invoices/data/printers/dot_matrix_invoice_printer.dart';
 part 'business.freezed.dart';
 part 'business.g.dart';
 
@@ -72,6 +73,15 @@ class Business with _$Business {
     // Timestamps
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
+    @JsonKey(name: 'default_print_format')
+    @Default(kPrintFormatLaser)
+    String defaultPrintFormat,
+    @JsonKey(name: 'dot_matrix_top_margin_lines')
+    @Default(3)
+    int dotMatrixTopMarginLines,
+    @JsonKey(name: 'dot_matrix_left_margin_chars')
+    @Default(2)
+    int dotMatrixLeftMarginChars,
   }) = _Business;
 
   factory Business.fromJson(Map<String, dynamic> json) =>
@@ -118,5 +128,8 @@ extension BusinessX on Business {
         'invoice_prefix': invoicePrefix,
         'license_tier': licenseTierValue,
         'updated_at': DateTime.now().toIso8601String(),
+        'default_print_format': defaultPrintFormat,
+        'dot_matrix_top_margin_lines': dotMatrixTopMarginLines,
+        'dot_matrix_left_margin_chars': dotMatrixLeftMarginChars,
       };
 }
