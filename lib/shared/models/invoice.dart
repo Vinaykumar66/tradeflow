@@ -33,6 +33,10 @@ abstract class Invoice with _$Invoice {
     @JsonKey(name: 'subtotal') @Default(0) int subtotal,
     @JsonKey(name: 'discount_amount') @Default(0) int discountAmount,
     @JsonKey(name: 'tax_amount') @Default(0) int taxAmount,
+    @JsonKey(name: 'cgst_total') @Default(0) int cgstTotal,
+    @JsonKey(name: 'sgst_total') @Default(0) int sgstTotal,
+    @JsonKey(name: 'igst_total') @Default(0) int igstTotal,
+    @JsonKey(name: 'ugst_total') @Default(0) int ugstTotal,
     @JsonKey(name: 'total') @Default(0) int total,
     @JsonKey(name: 'amount_paid') @Default(0) int amountPaid,
     // Currency snapshot at time of invoice creation
@@ -82,6 +86,7 @@ abstract class InvoiceItem with _$InvoiceItem {
     @JsonKey(name: 'sgst_total') @Default(0) int sgstTotal,
     @JsonKey(name: 'igst_total') @Default(0) int igstTotal,
     @JsonKey(name: 'ugst_total') @Default(0) int ugstTotal,
+    @JsonKey(name: 'hsn_sac_code') String? hsnSacCode,
   }) = _InvoiceItem;
   factory InvoiceItem.fromJson(Map<String, dynamic> json) =>
       _$InvoiceItemFromJson(json);

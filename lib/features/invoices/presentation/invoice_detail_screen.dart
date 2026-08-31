@@ -164,7 +164,17 @@ class _InvoiceDetailBody extends StatelessWidget {
       _totalRow('Subtotal', fmt(invoice.subtotal)),
       if (invoice.discountAmount > 0)
         _totalRow('Discount', '-${fmt(invoice.discountAmount)}'),
-      _totalRow('Tax', fmt(invoice.taxAmount)),
+      if (invoice.cgstTotal +
+              invoice.sgstTotal +
+              invoice.igstTotal +
+              invoice.ugstTotal >
+          0) ...[
+        if (invoice.cgstTotal > 0) _totalRow('CGST', fmt(invoice.cgstTotal)),
+        if (invoice.sgstTotal > 0) _totalRow('CGST', fmt(invoice.sgstTotal)),
+        if (invoice.igstTotal > 0) _totalRow('CGST', fmt(invoice.igstTotal)),
+        if (invoice.ugstTotal > 0) _totalRow('CGST', fmt(invoice.ugstTotal)),
+      ] else
+        _totalRow('Tax', fmt(invoice.taxAmount)),
       const Divider(),
       _totalRow('Total', fmt(invoice.total), bold: true),
       if (invoice.amountPaid > 0) ...[

@@ -8,6 +8,7 @@ class InvoiceLineItemTile extends StatefulWidget {
   final bool lakh;
   final void Function(InvoiceItem) onUpdate;
   final VoidCallback onDelete;
+  final bool showGstSplit;
 
   const InvoiceLineItemTile({
     super.key,
@@ -16,6 +17,7 @@ class InvoiceLineItemTile extends StatefulWidget {
     required this.lakh,
     required this.onUpdate,
     required this.onDelete,
+    required this.showGstSplit,
   });
 
   @override
@@ -56,7 +58,7 @@ class _InvoiceLineItemTileState extends State<InvoiceLineItemTile> {
 
   @override
   Widget build(BuildContext context) {
-    // final item = widget.item;
+    final item = widget.item;
     final fmt = (int v) =>
         CurrencyFormatter.format(v, sym: widget.sym, lakh: widget.lakh);
     return Card(
@@ -158,9 +160,38 @@ class _InvoiceLineItemTileState extends State<InvoiceLineItemTile> {
                       widget.onUpdate(widget.item.copyWith(taxInclusive: v))),
               const Spacer(),
               // Line total
-              Text(fmt(widget.item.lineTotal),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15)),
+
+              widget.showGstSplit
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                          Text(fmt(item.lineTotal),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15)),
+                          if (item.cgstAmount > 0)
+                            Text('CGST ${fmt(item.cgstAmount)}',
+                                style: const TextStyle(
+                                    fontSize: 10, color: Colors.grey)),
+                          if (item.sgstAmount > 0)
+                            Text('SGST ${fmt(item.sgstAmount)}',
+                                style: const TextStyle(
+                                    fontSize: 10, color: Colors.grey)),
+                          if (item.ugstAmount > 0)
+                            Text('UGST ${fmt(item.ugstAmount)}',
+                                style: const TextStyle(
+                                    fontSize: 10, color: Colors.grey)),
+                          if (item.igstAmount > 0)
+                            Text('IGST ${fmt(item.igstAmount)}',
+                                style: const TextStyle(
+                                    fontSize: 10, color: Colors.grey)),
+                        ])
+                  : Text(fmt(item.lineTotal),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15)),
+
+              // Text(fmt(widget.item.lineTotal),
+              //     style: const TextStyle(
+              //         fontWeight: FontWeight.bold, fontSize: 15)),
             ]),
           ]),
         ));

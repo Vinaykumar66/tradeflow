@@ -81,6 +81,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
       };
 
   void _addProduct(Product p) {
+    final biz = ref.read(activeBusinessProvider).asData?.value;
     final item = InvoiceItem(
       id: '',
       invoiceId: '',
@@ -92,8 +93,9 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
       taxRate: p.taxRate,
       taxInclusive: p.taxInclusive,
       quantity: 1,
-    ).recalculate();
+    ).recalculate(sellerState: biz?.state, buyerState: _customer?.state);
     // setState(() => _items = [..._items, item]);
+
     setState(() {
       _items = [..._items, item];
       _paymentAmountCtrl.text = (_grandTotal / 100).toStringAsFixed(2);
@@ -111,8 +113,11 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   }
 
   void _updateItem(int idx, InvoiceItem updated) {
+    final biz = ref.read(activeBusinessProvider).asData?.value;
+
     final list = [..._items];
-    list[idx] = updated.recalculate();
+    list[idx] = updated.recalculate(
+        sellerState: biz?.state, buyerState: _customer?.state);
     // setState(() => );
     setState(() {
       _items = list;
@@ -185,6 +190,10 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
         subtotal: _subtotal,
         taxAmount: _taxTotal,
         total: _grandTotal,
+        cgstTotal: _items.fold(0, (s, i) => s + i.cgstAmount),
+        sgstTotal: _items.fold(0, (s, i) => s + i.sgstAmount),
+        igstTotal: _items.fold(0, (s, i) => s + i.igstAmount),
+        ugstTotal: _items.fold(0, (s, i) => s + i.ugstAmount),
         currencyCode: biz.currencyCode,
         currencySymbol: biz.currencySymbol,
         useLakhFormat: biz.useLakhFormat,
@@ -292,6 +301,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
     final sym = biz?.currencySymbol ?? '';
     final lakh = biz?.useLakhFormat ?? false;
     final saving = ref.watch(saveInvoiceNotifierProvider) is AsyncLoading;
+    final showGstSplit = biz?.countryCode == 'IN';
 
     String fmtAmt(int amt) =>
         CurrencyFormatter.format(amt, sym: sym, lakh: lakh);
@@ -420,16 +430,48 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                   item: _items[i],
                   sym: sym,
                   lakh: lakh,
+                  showGstSplit: showGstSplit,
                   onUpdate: (u) => _updateItem(i, u),
                   onDelete: () => _removeItem(i))),
+
+        // InvoiceLineItemTile(
+        //     item: _items[i],
+        //     sym: sym,
+        //     lakh: lakh,
+        //     onUpdate: (u) => _updateItem(i, u),
+        //     onDelete: () => _removeItem(i))),
 
         const Divider(height: 32),
 
         // Totals
-        _totalRow('Subtotal', fmtAmt(_subtotal)),
-        _totalRow('Tax', fmtAmt(_taxTotal)),
+
+        if (showGstSplit) ...[
+          _totalRow('Subtotal', fmtAmt(_subtotal)),
+          if (_items.any((i) => i.cgstAmount > 0))
+            _totalRow(
+                'CGST', fmtAmt(_items.fold(0, (s, i) => s + i.cgstAmount))),
+          if (_items.any((i) => i.sgstAmount > 0))
+            _totalRow(
+                'SGST', fmtAmt(_items.fold(0, (s, i) => s + i.sgstAmount))),
+          if (_items.any((i) => i.ugstAmount > 0))
+            _totalRow(
+                'UGST', fmtAmt(_items.fold(0, (s, i) => s + i.ugstAmount))),
+          if (_items.any((i) => i.igstAmount > 0))
+            _totalRow(
+                'IGST', fmtAmt(_items.fold(0, (s, i) => s + i.igstAmount))),
+        ] else ...[
+          _totalRow('Subtotal', fmtAmt(_subtotal)),
+          _totalRow('Tax', fmtAmt(_taxTotal)),
+        ],
         const Divider(),
         _totalRow('Total', fmtAmt(_grandTotal), bold: true),
+
+        //commenting this to add GST split conditional display of tax rows
+        // _totalRow('Subtotal', fmtAmt(_subtotal)),
+        // _totalRow('Tax', fmtAmt(_taxTotal)),
+        // const Divider(),
+        // _totalRow('Total', fmtAmt(_grandTotal), bold: true),
+//commenting this to add GST split conditional display of tax rows
 
         // Inline payment — Invoice only
         if (_docType == kDocTypeInvoice) ...[

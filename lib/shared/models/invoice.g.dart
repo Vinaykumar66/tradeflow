@@ -21,6 +21,10 @@ _$InvoiceImpl _$$InvoiceImplFromJson(Map<String, dynamic> json) =>
       subtotal: (json['subtotal'] as num?)?.toInt() ?? 0,
       discountAmount: (json['discount_amount'] as num?)?.toInt() ?? 0,
       taxAmount: (json['tax_amount'] as num?)?.toInt() ?? 0,
+      cgstTotal: (json['cgst_total'] as num?)?.toInt() ?? 0,
+      sgstTotal: (json['sgst_total'] as num?)?.toInt() ?? 0,
+      igstTotal: (json['igst_total'] as num?)?.toInt() ?? 0,
+      ugstTotal: (json['ugst_total'] as num?)?.toInt() ?? 0,
       total: (json['total'] as num?)?.toInt() ?? 0,
       amountPaid: (json['amount_paid'] as num?)?.toInt() ?? 0,
       currencyCode: json['currency_code'] as String? ?? 'INR',
@@ -50,6 +54,10 @@ Map<String, dynamic> _$$InvoiceImplToJson(_$InvoiceImpl instance) =>
       'subtotal': instance.subtotal,
       'discount_amount': instance.discountAmount,
       'tax_amount': instance.taxAmount,
+      'cgst_total': instance.cgstTotal,
+      'sgst_total': instance.sgstTotal,
+      'igst_total': instance.igstTotal,
+      'ugst_total': instance.ugstTotal,
       'total': instance.total,
       'amount_paid': instance.amountPaid,
       'currency_code': instance.currencyCode,
@@ -87,6 +95,7 @@ _$InvoiceItemImpl _$$InvoiceItemImplFromJson(Map<String, dynamic> json) =>
       sgstTotal: (json['sgst_total'] as num?)?.toInt() ?? 0,
       igstTotal: (json['igst_total'] as num?)?.toInt() ?? 0,
       ugstTotal: (json['ugst_total'] as num?)?.toInt() ?? 0,
+      hsnSacCode: json['hsn_sac_code'] as String?,
     );
 
 Map<String, dynamic> _$$InvoiceItemImplToJson(_$InvoiceItemImpl instance) =>
@@ -114,4 +123,5 @@ Map<String, dynamic> _$$InvoiceItemImplToJson(_$InvoiceItemImpl instance) =>
       'sgst_total': instance.sgstTotal,
       'igst_total': instance.igstTotal,
       'ugst_total': instance.ugstTotal,
+      'hsn_sac_code': instance.hsnSacCode,
     };
