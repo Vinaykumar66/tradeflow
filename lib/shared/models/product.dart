@@ -41,6 +41,8 @@ abstract class Product with _$Product {
     @JsonKey(name: 'created_at') required DateTime? createdAt,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
     @JsonKey(name: 'created_by') String? createdBy,
+    @JsonKey(name: 'hsn_sac_code') String? hsnSacCode,
+    @JsonKey(name: 'commodity_code') String? commodityCode,
   }) = _Product;
 
   factory Product.fromJson(Map<String, dynamic> json) =>

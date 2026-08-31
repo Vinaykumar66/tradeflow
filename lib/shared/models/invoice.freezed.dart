@@ -67,7 +67,9 @@ mixin _$Invoice {
   @JsonKey(name: 'created_at')
   DateTime? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
-  DateTime? get updatedAt =>
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'converted_to_invoice_id')
+  String? get convertedToInvoiceId =>
       throw _privateConstructorUsedError; // Populated by join — not stored in invoices table
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<InvoiceItem> get items => throw _privateConstructorUsedError;
@@ -112,6 +114,7 @@ abstract class $InvoiceCopyWith<$Res> {
       @JsonKey(name: 'created_by') String? createdBy,
       @JsonKey(name: 'created_at') DateTime? createdAt,
       @JsonKey(name: 'updated_at') DateTime? updatedAt,
+      @JsonKey(name: 'converted_to_invoice_id') String? convertedToInvoiceId,
       @JsonKey(includeFromJson: false, includeToJson: false)
       List<InvoiceItem> items});
 }
@@ -156,6 +159,7 @@ class _$InvoiceCopyWithImpl<$Res, $Val extends Invoice>
     Object? createdBy = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
+    Object? convertedToInvoiceId = freezed,
     Object? items = null,
   }) {
     return _then(_value.copyWith(
@@ -259,6 +263,10 @@ class _$InvoiceCopyWithImpl<$Res, $Val extends Invoice>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      convertedToInvoiceId: freezed == convertedToInvoiceId
+          ? _value.convertedToInvoiceId
+          : convertedToInvoiceId // ignore: cast_nullable_to_non_nullable
+              as String?,
       items: null == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
@@ -300,6 +308,7 @@ abstract class _$$InvoiceImplCopyWith<$Res> implements $InvoiceCopyWith<$Res> {
       @JsonKey(name: 'created_by') String? createdBy,
       @JsonKey(name: 'created_at') DateTime? createdAt,
       @JsonKey(name: 'updated_at') DateTime? updatedAt,
+      @JsonKey(name: 'converted_to_invoice_id') String? convertedToInvoiceId,
       @JsonKey(includeFromJson: false, includeToJson: false)
       List<InvoiceItem> items});
 }
@@ -342,6 +351,7 @@ class __$$InvoiceImplCopyWithImpl<$Res>
     Object? createdBy = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
+    Object? convertedToInvoiceId = freezed,
     Object? items = null,
   }) {
     return _then(_$InvoiceImpl(
@@ -445,6 +455,10 @@ class __$$InvoiceImplCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      convertedToInvoiceId: freezed == convertedToInvoiceId
+          ? _value.convertedToInvoiceId
+          : convertedToInvoiceId // ignore: cast_nullable_to_non_nullable
+              as String?,
       items: null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
@@ -482,6 +496,7 @@ class _$InvoiceImpl implements _Invoice {
       @JsonKey(name: 'created_by') this.createdBy,
       @JsonKey(name: 'created_at') this.createdAt,
       @JsonKey(name: 'updated_at') this.updatedAt,
+      @JsonKey(name: 'converted_to_invoice_id') this.convertedToInvoiceId,
       @JsonKey(includeFromJson: false, includeToJson: false)
       final List<InvoiceItem> items = const []})
       : _items = items;
@@ -563,6 +578,9 @@ class _$InvoiceImpl implements _Invoice {
   @override
   @JsonKey(name: 'updated_at')
   final DateTime? updatedAt;
+  @override
+  @JsonKey(name: 'converted_to_invoice_id')
+  final String? convertedToInvoiceId;
 // Populated by join — not stored in invoices table
   final List<InvoiceItem> _items;
 // Populated by join — not stored in invoices table
@@ -576,7 +594,7 @@ class _$InvoiceImpl implements _Invoice {
 
   @override
   String toString() {
-    return 'Invoice(id: $id, businessId: $businessId, customerId: $customerId, invoiceNumber: $invoiceNumber, documentType: $documentType, status: $status, issueDate: $issueDate, dueDate: $dueDate, subtotal: $subtotal, discountAmount: $discountAmount, taxAmount: $taxAmount, cgstTotal: $cgstTotal, sgstTotal: $sgstTotal, igstTotal: $igstTotal, ugstTotal: $ugstTotal, total: $total, amountPaid: $amountPaid, currencyCode: $currencyCode, currencySymbol: $currencySymbol, useLakhFormat: $useLakhFormat, notes: $notes, terms: $terms, createdBy: $createdBy, createdAt: $createdAt, updatedAt: $updatedAt, items: $items)';
+    return 'Invoice(id: $id, businessId: $businessId, customerId: $customerId, invoiceNumber: $invoiceNumber, documentType: $documentType, status: $status, issueDate: $issueDate, dueDate: $dueDate, subtotal: $subtotal, discountAmount: $discountAmount, taxAmount: $taxAmount, cgstTotal: $cgstTotal, sgstTotal: $sgstTotal, igstTotal: $igstTotal, ugstTotal: $ugstTotal, total: $total, amountPaid: $amountPaid, currencyCode: $currencyCode, currencySymbol: $currencySymbol, useLakhFormat: $useLakhFormat, notes: $notes, terms: $terms, createdBy: $createdBy, createdAt: $createdAt, updatedAt: $updatedAt, convertedToInvoiceId: $convertedToInvoiceId, items: $items)';
   }
 
   @override
@@ -628,6 +646,8 @@ class _$InvoiceImpl implements _Invoice {
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
+            (identical(other.convertedToInvoiceId, convertedToInvoiceId) ||
+                other.convertedToInvoiceId == convertedToInvoiceId) &&
             const DeepCollectionEquality().equals(other._items, _items));
   }
 
@@ -660,6 +680,7 @@ class _$InvoiceImpl implements _Invoice {
         createdBy,
         createdAt,
         updatedAt,
+        convertedToInvoiceId,
         const DeepCollectionEquality().hash(_items)
       ]);
 
@@ -706,6 +727,8 @@ abstract class _Invoice implements Invoice {
       @JsonKey(name: 'created_by') final String? createdBy,
       @JsonKey(name: 'created_at') final DateTime? createdAt,
       @JsonKey(name: 'updated_at') final DateTime? updatedAt,
+      @JsonKey(name: 'converted_to_invoice_id')
+      final String? convertedToInvoiceId,
       @JsonKey(includeFromJson: false, includeToJson: false)
       final List<InvoiceItem> items}) = _$InvoiceImpl;
 
@@ -781,7 +804,11 @@ abstract class _Invoice implements Invoice {
   DateTime? get createdAt;
   @override
   @JsonKey(name: 'updated_at')
-  DateTime? get updatedAt; // Populated by join — not stored in invoices table
+  DateTime? get updatedAt;
+  @override
+  @JsonKey(name: 'converted_to_invoice_id')
+  String?
+      get convertedToInvoiceId; // Populated by join — not stored in invoices table
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<InvoiceItem> get items;
@@ -844,6 +871,8 @@ mixin _$InvoiceItem {
   int get ugstTotal => throw _privateConstructorUsedError;
   @JsonKey(name: 'hsn_sac_code')
   String? get hsnSacCode => throw _privateConstructorUsedError;
+  @JsonKey(name: 'commodity_code')
+  String? get commodityCode => throw _privateConstructorUsedError;
 
   /// Serializes this InvoiceItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -885,7 +914,8 @@ abstract class $InvoiceItemCopyWith<$Res> {
       @JsonKey(name: 'sgst_total') int sgstTotal,
       @JsonKey(name: 'igst_total') int igstTotal,
       @JsonKey(name: 'ugst_total') int ugstTotal,
-      @JsonKey(name: 'hsn_sac_code') String? hsnSacCode});
+      @JsonKey(name: 'hsn_sac_code') String? hsnSacCode,
+      @JsonKey(name: 'commodity_code') String? commodityCode});
 }
 
 /// @nodoc
@@ -927,6 +957,7 @@ class _$InvoiceItemCopyWithImpl<$Res, $Val extends InvoiceItem>
     Object? igstTotal = null,
     Object? ugstTotal = null,
     Object? hsnSacCode = freezed,
+    Object? commodityCode = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -1025,6 +1056,10 @@ class _$InvoiceItemCopyWithImpl<$Res, $Val extends InvoiceItem>
           ? _value.hsnSacCode
           : hsnSacCode // ignore: cast_nullable_to_non_nullable
               as String?,
+      commodityCode: freezed == commodityCode
+          ? _value.commodityCode
+          : commodityCode // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -1061,7 +1096,8 @@ abstract class _$$InvoiceItemImplCopyWith<$Res>
       @JsonKey(name: 'sgst_total') int sgstTotal,
       @JsonKey(name: 'igst_total') int igstTotal,
       @JsonKey(name: 'ugst_total') int ugstTotal,
-      @JsonKey(name: 'hsn_sac_code') String? hsnSacCode});
+      @JsonKey(name: 'hsn_sac_code') String? hsnSacCode,
+      @JsonKey(name: 'commodity_code') String? commodityCode});
 }
 
 /// @nodoc
@@ -1101,6 +1137,7 @@ class __$$InvoiceItemImplCopyWithImpl<$Res>
     Object? igstTotal = null,
     Object? ugstTotal = null,
     Object? hsnSacCode = freezed,
+    Object? commodityCode = freezed,
   }) {
     return _then(_$InvoiceItemImpl(
       id: null == id
@@ -1199,6 +1236,10 @@ class __$$InvoiceItemImplCopyWithImpl<$Res>
           ? _value.hsnSacCode
           : hsnSacCode // ignore: cast_nullable_to_non_nullable
               as String?,
+      commodityCode: freezed == commodityCode
+          ? _value.commodityCode
+          : commodityCode // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -1230,7 +1271,8 @@ class _$InvoiceItemImpl implements _InvoiceItem {
       @JsonKey(name: 'sgst_total') this.sgstTotal = 0,
       @JsonKey(name: 'igst_total') this.igstTotal = 0,
       @JsonKey(name: 'ugst_total') this.ugstTotal = 0,
-      @JsonKey(name: 'hsn_sac_code') this.hsnSacCode});
+      @JsonKey(name: 'hsn_sac_code') this.hsnSacCode,
+      @JsonKey(name: 'commodity_code') this.commodityCode});
 
   factory _$InvoiceItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$InvoiceItemImplFromJson(json);
@@ -1306,10 +1348,13 @@ class _$InvoiceItemImpl implements _InvoiceItem {
   @override
   @JsonKey(name: 'hsn_sac_code')
   final String? hsnSacCode;
+  @override
+  @JsonKey(name: 'commodity_code')
+  final String? commodityCode;
 
   @override
   String toString() {
-    return 'InvoiceItem(id: $id, invoiceId: $invoiceId, businessId: $businessId, productId: $productId, name: $name, description: $description, quantity: $quantity, unit: $unit, unitPrice: $unitPrice, discountPct: $discountPct, taxRate: $taxRate, taxInclusive: $taxInclusive, taxAmount: $taxAmount, lineTotal: $lineTotal, sortOrder: $sortOrder, cgstAmount: $cgstAmount, sgstAmount: $sgstAmount, igstAmount: $igstAmount, ugstAmount: $ugstAmount, cgstTotal: $cgstTotal, sgstTotal: $sgstTotal, igstTotal: $igstTotal, ugstTotal: $ugstTotal, hsnSacCode: $hsnSacCode)';
+    return 'InvoiceItem(id: $id, invoiceId: $invoiceId, businessId: $businessId, productId: $productId, name: $name, description: $description, quantity: $quantity, unit: $unit, unitPrice: $unitPrice, discountPct: $discountPct, taxRate: $taxRate, taxInclusive: $taxInclusive, taxAmount: $taxAmount, lineTotal: $lineTotal, sortOrder: $sortOrder, cgstAmount: $cgstAmount, sgstAmount: $sgstAmount, igstAmount: $igstAmount, ugstAmount: $ugstAmount, cgstTotal: $cgstTotal, sgstTotal: $sgstTotal, igstTotal: $igstTotal, ugstTotal: $ugstTotal, hsnSacCode: $hsnSacCode, commodityCode: $commodityCode)';
   }
 
   @override
@@ -1360,7 +1405,9 @@ class _$InvoiceItemImpl implements _InvoiceItem {
             (identical(other.ugstTotal, ugstTotal) ||
                 other.ugstTotal == ugstTotal) &&
             (identical(other.hsnSacCode, hsnSacCode) ||
-                other.hsnSacCode == hsnSacCode));
+                other.hsnSacCode == hsnSacCode) &&
+            (identical(other.commodityCode, commodityCode) ||
+                other.commodityCode == commodityCode));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1390,7 +1437,8 @@ class _$InvoiceItemImpl implements _InvoiceItem {
         sgstTotal,
         igstTotal,
         ugstTotal,
-        hsnSacCode
+        hsnSacCode,
+        commodityCode
       ]);
 
   /// Create a copy of InvoiceItem
@@ -1434,7 +1482,8 @@ abstract class _InvoiceItem implements InvoiceItem {
           @JsonKey(name: 'sgst_total') final int sgstTotal,
           @JsonKey(name: 'igst_total') final int igstTotal,
           @JsonKey(name: 'ugst_total') final int ugstTotal,
-          @JsonKey(name: 'hsn_sac_code') final String? hsnSacCode}) =
+          @JsonKey(name: 'hsn_sac_code') final String? hsnSacCode,
+          @JsonKey(name: 'commodity_code') final String? commodityCode}) =
       _$InvoiceItemImpl;
 
   factory _InvoiceItem.fromJson(Map<String, dynamic> json) =
@@ -1507,6 +1556,9 @@ abstract class _InvoiceItem implements InvoiceItem {
   @override
   @JsonKey(name: 'hsn_sac_code')
   String? get hsnSacCode;
+  @override
+  @JsonKey(name: 'commodity_code')
+  String? get commodityCode;
 
   /// Create a copy of InvoiceItem
   /// with the given fields replaced by the non-null parameter values.

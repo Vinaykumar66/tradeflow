@@ -39,6 +39,7 @@ _$InvoiceImpl _$$InvoiceImplFromJson(Map<String, dynamic> json) =>
       updatedAt: json['updated_at'] == null
           ? null
           : DateTime.parse(json['updated_at'] as String),
+      convertedToInvoiceId: json['converted_to_invoice_id'] as String?,
     );
 
 Map<String, dynamic> _$$InvoiceImplToJson(_$InvoiceImpl instance) =>
@@ -68,6 +69,7 @@ Map<String, dynamic> _$$InvoiceImplToJson(_$InvoiceImpl instance) =>
       'created_by': instance.createdBy,
       'created_at': instance.createdAt?.toIso8601String(),
       'updated_at': instance.updatedAt?.toIso8601String(),
+      'converted_to_invoice_id': instance.convertedToInvoiceId,
     };
 
 _$InvoiceItemImpl _$$InvoiceItemImplFromJson(Map<String, dynamic> json) =>
@@ -96,6 +98,7 @@ _$InvoiceItemImpl _$$InvoiceItemImplFromJson(Map<String, dynamic> json) =>
       igstTotal: (json['igst_total'] as num?)?.toInt() ?? 0,
       ugstTotal: (json['ugst_total'] as num?)?.toInt() ?? 0,
       hsnSacCode: json['hsn_sac_code'] as String?,
+      commodityCode: json['commodity_code'] as String?,
     );
 
 Map<String, dynamic> _$$InvoiceItemImplToJson(_$InvoiceItemImpl instance) =>
@@ -124,4 +127,5 @@ Map<String, dynamic> _$$InvoiceItemImplToJson(_$InvoiceItemImpl instance) =>
       'igst_total': instance.igstTotal,
       'ugst_total': instance.ugstTotal,
       'hsn_sac_code': instance.hsnSacCode,
+      'commodity_code': instance.commodityCode,
     };

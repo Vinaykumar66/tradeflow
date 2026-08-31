@@ -8,4 +8,5 @@ abstract interface class IInvoiceRepository {
   Future<void> updateStatus(String invoiceId, String status);
   Future<List<InvoiceItem>> getItems(String invoiceId);
   Future<void> cancelInvoice(String invoiceId);
+  Future<Invoice> convertToInvoice(Invoice source);
 }

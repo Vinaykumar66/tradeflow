@@ -19,6 +19,7 @@ import '../data/invoice_pdf_generators.dart';
 import 'widgets/invoice_status_badge.dart';
 import '../data/printers/invoice_printer_registry.dart';
 import 'widgets/print_format_picker_sheet.dart';
+import '../../../core/router/app_router.dart';
 
 class InvoiceDetailScreen extends ConsumerWidget {
   // Used for a fast initial app-bar title only — never trusted for items.
@@ -33,6 +34,29 @@ class InvoiceDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(invoice.invoiceNumber),
         actions: [
+          if (invoice.documentType != kDocTypeInvoice &&
+              invoice.status != kStatusConverted)
+            IconButton(
+                icon: const Icon(Icons.receipt_long_outlined),
+                tooltip: 'Convert to Invoice',
+                onPressed: () => _convertToInvoice(context, ref, invoice)),
+          if (invoice.status == kStatusConverted)
+            Padding(
+                padding: const EdgeInsets.all(16),
+                child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Row(children: [
+                      const Icon(Icons.check_circle_outline,
+                          color: Colors.green, size: 18),
+                      const SizedBox(width: 8),
+                      const Expanded(
+                          child: Text(
+                              'This document has already been converted to an invoice.')),
+                    ]))),
+
           IconButton(
               icon: const Icon(Icons.print_outlined),
               tooltip:
@@ -104,6 +128,42 @@ class InvoiceDetailScreen extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Print failed: $e'), backgroundColor: Colors.red));
+      }
+    }
+  }
+
+  Future<void> _convertToInvoice(
+      BuildContext context, WidgetRef ref, Invoice inv) async {
+    final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: const Text('Convert to Invoice?'),
+              content: Text(
+                  'This creates a new tax invoice from ${inv.invoiceNumber} '
+                  'with a real invoice number. The original document stays '
+                  'as a record and is marked converted.'),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(ctx, false),
+                    child: const Text('Cancel')),
+                ElevatedButton(
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: const Text('Convert')),
+              ],
+            ));
+    if (confirmed != true) return;
+    try {
+      final newInvoice =
+          await ref.read(invoiceRepositoryProvider).convertToInvoice(inv);
+      ref.invalidate(invoiceDetailProvider(inv.id));
+      if (context.mounted) {
+        context.pushReplacement(AppRoutes.invoiceDetail, extra: newInvoice);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Conversion failed: $e'),
+            backgroundColor: Colors.red));
       }
     }
   }

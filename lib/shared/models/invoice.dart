@@ -15,6 +15,7 @@ const kDocTypeInvoice = 'invoice';
 const kDocTypeProforma = 'proforma';
 const kDocTypeEstimate = 'estimate';
 const kDocTypeQuotation = 'quotation';
+const kStatusConverted = 'converted';
 
 @freezed
 abstract class Invoice with _$Invoice {
@@ -48,6 +49,7 @@ abstract class Invoice with _$Invoice {
     @JsonKey(name: 'created_by') String? createdBy,
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
+    @JsonKey(name: 'converted_to_invoice_id') String? convertedToInvoiceId,
     // Populated by join — not stored in invoices table
     @JsonKey(includeFromJson: false, includeToJson: false)
     @Default([])
@@ -87,6 +89,7 @@ abstract class InvoiceItem with _$InvoiceItem {
     @JsonKey(name: 'igst_total') @Default(0) int igstTotal,
     @JsonKey(name: 'ugst_total') @Default(0) int ugstTotal,
     @JsonKey(name: 'hsn_sac_code') String? hsnSacCode,
+    @JsonKey(name: 'commodity_code') String? commodityCode,
   }) = _InvoiceItem;
   factory InvoiceItem.fromJson(Map<String, dynamic> json) =>
       _$InvoiceItemFromJson(json);
@@ -172,5 +175,7 @@ extension InvoiceItemX on InvoiceItem {
         'tax_amount': taxAmount,
         'line_total': lineTotal,
         'sort_order': sortOrder,
+        'hsn_sac_code': hsnSacCode,
+        'commodity_code': commodityCode,
       };
 }

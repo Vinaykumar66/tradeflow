@@ -201,4 +201,30 @@ class InvoiceRepository implements IInvoiceRepository {
       'updated_at': DateTime.now().toIso8601String(),
     }).eq('id', inv.id);
   }
+
+  @override
+  Future<Invoice> convertToInvoice(Invoice source) async {
+    final full = await getInvoice(source.businessId, source.id);
+    if (full == null) {
+      throw Exception('Source document not found');
+    }
+
+    final newInvoice = full.copyWith(
+      id: '',
+      invoiceNumber: '',
+      documentType: kDocTypeInvoice,
+      status: kStatusDraft,
+      convertedToInvoiceId: null,
+    );
+
+    final newItems =
+        full.items.map((i) => i.copyWith(id: '', invoiceId: '')).toList();
+
+    final created = await createInvoice(newInvoice, newItems);
+    await supabase.from(SupabaseTables.invoices).update({
+      'status': kStatusConverted,
+      'converted_to_invoice_id': created.id,
+    }).eq('id', source.id);
+    return created;
+  }
 }

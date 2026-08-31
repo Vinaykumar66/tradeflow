@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -46,6 +47,8 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
   final _stockCtrl = TextEditingController(text: '0');
   final _reorderCtrl = TextEditingController(text: '10');
   final _descCtrl = TextEditingController();
+  final _hsnSacCtrl = TextEditingController();
+  final _commodityCtrl = TextEditingController();
   String? _selectedTaxCodeId;
   bool _taxInclusive = false;
 
@@ -84,6 +87,8 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
     _trackInventory = p.trackInventory;
     _expiryDate = p.expiryDate;
     _existingImageUrl = p.imageUrl;
+    _hsnSacCtrl.text = p.hsnSacCode ?? '';
+    _commodityCtrl.text = p.commodityCode ?? '';
   }
 
   @override
@@ -101,7 +106,9 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
       _taxCtrl,
       _stockCtrl,
       _reorderCtrl,
-      _descCtrl
+      _descCtrl,
+      _hsnSacCtrl,
+      _commodityCtrl
     ]) c.dispose();
     super.dispose();
   }
@@ -114,7 +121,11 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
 
   Future<String?> _uploadImage(String bizId) async {
     if (_pickedImage == null) return _existingImageUrl;
-    final bytes = await _pickedImage!.readAsBytes();
+    final bytes;
+    Uint8List? _selectedImageBytes;
+
+    if (kIsWeb) _selectedImageBytes = await _pickedImage!.readAsBytes();
+    bytes = await _pickedImage!.readAsBytes();
     final uid = ref.read(AuthProvider.currentSupabaseUserProvider)?.id ?? '';
 
     // STORAGE CHECK: verify quota before uploading
@@ -144,7 +155,7 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
       // UPLOAD to Cloudflare R2
       final result = await ref.read(storageServiceProvider).uploadFile(
             bucket: AppConfig.bucketProductImages,
-            bytes: bytes,
+            bytes: kIsWeb ? _selectedImageBytes : bytes,
             mimeType: 'image/jpeg',
           );
 
@@ -216,6 +227,11 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
       createdAt: widget.product?.createdAt ?? DateTime.now(),
       createdBy: widget.product?.createdBy ?? uid,
       taxCodeId: _selectedTaxCodeId ?? '',
+      hsnSacCode:
+          _hsnSacCtrl.text.trim().isEmpty ? null : _hsnSacCtrl.text.trim(),
+      commodityCode: _commodityCtrl.text.trim().isEmpty
+          ? null
+          : _commodityCtrl.text.trim(),
     );
 
     debugPrint('Saving product: ${product.name} for bizId: $bizId');
@@ -469,12 +485,25 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
 
           Consumer(builder: (context, ref, _) {
             final codes = ref.watch(taxCodeListProvider).asData?.value ?? [];
+            final biz = ref
+                .watch(activeBusinessProvider.activeBusinessProvider)
+                .asData
+                ?.value;
             if (codes.isEmpty) {
               //No tax codes configured - keep the original manual field
 
               return _f(_taxCtrl, 'Tax Rate % (0/5/12/18/28)',
                   type: TextInputType.number);
             }
+
+            if (biz?.countryCode != 'IN') {
+              return _f(_commodityCtrl, 'Commodity Code', validator: null);
+            }
+
+            if (biz?.countryCode == 'IN') {
+              return _f(_hsnSacCtrl, 'HSN/SAC Code', validator: null);
+            }
+
             return DropdownButtonFormField<String>(
                 initialValue: _selectedTaxCodeId,
                 decoration: const InputDecoration(labelText: 'Tax Code'),

@@ -83,17 +83,19 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   void _addProduct(Product p) {
     final biz = ref.read(activeBusinessProvider).asData?.value;
     final item = InvoiceItem(
-      id: '',
-      invoiceId: '',
-      businessId: p.businessId,
-      productId: p.id,
-      name: p.name,
-      unit: p.unit ?? 'pcs',
-      unitPrice: p.sellingPrice,
-      taxRate: p.taxRate,
-      taxInclusive: p.taxInclusive,
-      quantity: 1,
-    ).recalculate(sellerState: biz?.state, buyerState: _customer?.state);
+            id: '',
+            invoiceId: '',
+            businessId: p.businessId,
+            productId: p.id,
+            name: p.name,
+            unit: p.unit ?? 'pcs',
+            unitPrice: p.sellingPrice,
+            taxRate: p.taxRate,
+            taxInclusive: p.taxInclusive,
+            quantity: 1,
+            hsnSacCode: p.hsnSacCode,
+            commodityCode: p.commodityCode)
+        .recalculate(sellerState: biz?.state, buyerState: _customer?.state);
     // setState(() => _items = [..._items, item]);
 
     setState(() {

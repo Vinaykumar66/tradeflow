@@ -46,6 +46,7 @@ class LaserInvoicePrinter implements IInvoicePrinter {
   pw.Widget _buildPage(
       Invoice inv, Business biz, Customer? cust, pw.MemoryImage? logo) {
     final showHsnColumn = inv.items.any((i) => i.hsnSacCode != null);
+    final showCommodity = inv.items.any((i) => i.commodityCode != null);
     final showSplit =
         inv.cgstTotal + inv.sgstTotal + inv.igstTotal + inv.ugstTotal > 0;
 
@@ -123,6 +124,7 @@ class LaserInvoicePrinter implements IInvoicePrinter {
                 children: [
                   'Item',
                   if (showHsnColumn) 'HSN/SAC',
+                  if (showCommodity) 'Cmdty Code',
                   'Qty',
                   'Unit Price',
                   'Tax',
@@ -141,6 +143,7 @@ class LaserInvoicePrinter implements IInvoicePrinter {
             ...inv.items.map((item) => pw.TableRow(children: [
                   _cell(item.name),
                   if (showHsnColumn) _cell(item.hsnSacCode ?? '-'),
+                  if (showCommodity) _cell(item.commodityCode ?? '-'),
                   _cell(item.quantity.toStringAsFixed(0)),
                   _cell(inv.fmt(item.unitPrice)),
                   _cell('${item.taxRate}%${item.taxInclusive ? " incl." : ""}'),

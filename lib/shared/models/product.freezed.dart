@@ -66,6 +66,10 @@ mixin _$Product {
   DateTime? get updatedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_by')
   String? get createdBy => throw _privateConstructorUsedError;
+  @JsonKey(name: 'hsn_sac_code')
+  String? get hsnSacCode => throw _privateConstructorUsedError;
+  @JsonKey(name: 'commodity_code')
+  String? get commodityCode => throw _privateConstructorUsedError;
 
   /// Serializes this Product to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -107,7 +111,9 @@ abstract class $ProductCopyWith<$Res> {
       @JsonKey(name: 'track_inventory') bool trackInventory,
       @JsonKey(name: 'created_at') DateTime? createdAt,
       @JsonKey(name: 'updated_at') DateTime? updatedAt,
-      @JsonKey(name: 'created_by') String? createdBy});
+      @JsonKey(name: 'created_by') String? createdBy,
+      @JsonKey(name: 'hsn_sac_code') String? hsnSacCode,
+      @JsonKey(name: 'commodity_code') String? commodityCode});
 }
 
 /// @nodoc
@@ -151,6 +157,8 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? createdBy = freezed,
+    Object? hsnSacCode = freezed,
+    Object? commodityCode = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -257,6 +265,14 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
           ? _value.createdBy
           : createdBy // ignore: cast_nullable_to_non_nullable
               as String?,
+      hsnSacCode: freezed == hsnSacCode
+          ? _value.hsnSacCode
+          : hsnSacCode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      commodityCode: freezed == commodityCode
+          ? _value.commodityCode
+          : commodityCode // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -294,7 +310,9 @@ abstract class _$$ProductImplCopyWith<$Res> implements $ProductCopyWith<$Res> {
       @JsonKey(name: 'track_inventory') bool trackInventory,
       @JsonKey(name: 'created_at') DateTime? createdAt,
       @JsonKey(name: 'updated_at') DateTime? updatedAt,
-      @JsonKey(name: 'created_by') String? createdBy});
+      @JsonKey(name: 'created_by') String? createdBy,
+      @JsonKey(name: 'hsn_sac_code') String? hsnSacCode,
+      @JsonKey(name: 'commodity_code') String? commodityCode});
 }
 
 /// @nodoc
@@ -336,6 +354,8 @@ class __$$ProductImplCopyWithImpl<$Res>
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? createdBy = freezed,
+    Object? hsnSacCode = freezed,
+    Object? commodityCode = freezed,
   }) {
     return _then(_$ProductImpl(
       id: null == id
@@ -442,6 +462,14 @@ class __$$ProductImplCopyWithImpl<$Res>
           ? _value.createdBy
           : createdBy // ignore: cast_nullable_to_non_nullable
               as String?,
+      hsnSacCode: freezed == hsnSacCode
+          ? _value.hsnSacCode
+          : hsnSacCode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      commodityCode: freezed == commodityCode
+          ? _value.commodityCode
+          : commodityCode // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -475,7 +503,9 @@ class _$ProductImpl implements _Product {
       @JsonKey(name: 'track_inventory') this.trackInventory = true,
       @JsonKey(name: 'created_at') required this.createdAt,
       @JsonKey(name: 'updated_at') this.updatedAt,
-      @JsonKey(name: 'created_by') this.createdBy});
+      @JsonKey(name: 'created_by') this.createdBy,
+      @JsonKey(name: 'hsn_sac_code') this.hsnSacCode,
+      @JsonKey(name: 'commodity_code') this.commodityCode});
 
   factory _$ProductImpl.fromJson(Map<String, dynamic> json) =>
       _$$ProductImplFromJson(json);
@@ -554,10 +584,16 @@ class _$ProductImpl implements _Product {
   @override
   @JsonKey(name: 'created_by')
   final String? createdBy;
+  @override
+  @JsonKey(name: 'hsn_sac_code')
+  final String? hsnSacCode;
+  @override
+  @JsonKey(name: 'commodity_code')
+  final String? commodityCode;
 
   @override
   String toString() {
-    return 'Product(id: $id, name: $name, businessId: $businessId, sku: $sku, category: $category, barcode: $barcode, brand: $brand, description: $description, imageUrl: $imageUrl, unit: $unit, costPrice: $costPrice, sellingPrice: $sellingPrice, mrp: $mrp, taxCodeId: $taxCodeId, taxRate: $taxRate, taxType: $taxType, taxInclusive: $taxInclusive, stockQty: $stockQty, reorderLevel: $reorderLevel, reorderQty: $reorderQty, expiryDate: $expiryDate, isActive: $isActive, trackInventory: $trackInventory, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy)';
+    return 'Product(id: $id, name: $name, businessId: $businessId, sku: $sku, category: $category, barcode: $barcode, brand: $brand, description: $description, imageUrl: $imageUrl, unit: $unit, costPrice: $costPrice, sellingPrice: $sellingPrice, mrp: $mrp, taxCodeId: $taxCodeId, taxRate: $taxRate, taxType: $taxType, taxInclusive: $taxInclusive, stockQty: $stockQty, reorderLevel: $reorderLevel, reorderQty: $reorderQty, expiryDate: $expiryDate, isActive: $isActive, trackInventory: $trackInventory, createdAt: $createdAt, updatedAt: $updatedAt, createdBy: $createdBy, hsnSacCode: $hsnSacCode, commodityCode: $commodityCode)';
   }
 
   @override
@@ -607,7 +643,11 @@ class _$ProductImpl implements _Product {
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
             (identical(other.createdBy, createdBy) ||
-                other.createdBy == createdBy));
+                other.createdBy == createdBy) &&
+            (identical(other.hsnSacCode, hsnSacCode) ||
+                other.hsnSacCode == hsnSacCode) &&
+            (identical(other.commodityCode, commodityCode) ||
+                other.commodityCode == commodityCode));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -639,7 +679,9 @@ class _$ProductImpl implements _Product {
         trackInventory,
         createdAt,
         updatedAt,
-        createdBy
+        createdBy,
+        hsnSacCode,
+        commodityCode
       ]);
 
   /// Create a copy of Product
@@ -660,32 +702,35 @@ class _$ProductImpl implements _Product {
 
 abstract class _Product implements Product {
   const factory _Product(
-      {required final String id,
-      required final String name,
-      @JsonKey(name: 'business_id') required final String businessId,
-      required final String sku,
-      final String? category,
-      final String? barcode,
-      final String? brand,
-      required final String description,
-      @JsonKey(name: 'image_url') final String? imageUrl,
-      final String? unit,
-      @JsonKey(name: 'cost_price') final int costPrice,
-      @JsonKey(name: 'selling_price') final int sellingPrice,
-      @JsonKey(name: 'mrp') final int mrp,
-      @JsonKey(name: 'tax_Id') final String taxCodeId,
-      @JsonKey(name: 'tax_rate') final double taxRate,
-      @JsonKey(name: 'tax_type') final String taxType,
-      @JsonKey(name: 'tax_inclusive') final bool taxInclusive,
-      @JsonKey(name: 'stock_qty') final int stockQty,
-      @JsonKey(name: 'reorder_level') final int reorderLevel,
-      @JsonKey(name: 'reorder_qty') final int reorderQty,
-      @JsonKey(name: 'expiry_date') final DateTime? expiryDate,
-      @JsonKey(name: 'is_active') final bool isActive,
-      @JsonKey(name: 'track_inventory') final bool trackInventory,
-      @JsonKey(name: 'created_at') required final DateTime? createdAt,
-      @JsonKey(name: 'updated_at') final DateTime? updatedAt,
-      @JsonKey(name: 'created_by') final String? createdBy}) = _$ProductImpl;
+          {required final String id,
+          required final String name,
+          @JsonKey(name: 'business_id') required final String businessId,
+          required final String sku,
+          final String? category,
+          final String? barcode,
+          final String? brand,
+          required final String description,
+          @JsonKey(name: 'image_url') final String? imageUrl,
+          final String? unit,
+          @JsonKey(name: 'cost_price') final int costPrice,
+          @JsonKey(name: 'selling_price') final int sellingPrice,
+          @JsonKey(name: 'mrp') final int mrp,
+          @JsonKey(name: 'tax_Id') final String taxCodeId,
+          @JsonKey(name: 'tax_rate') final double taxRate,
+          @JsonKey(name: 'tax_type') final String taxType,
+          @JsonKey(name: 'tax_inclusive') final bool taxInclusive,
+          @JsonKey(name: 'stock_qty') final int stockQty,
+          @JsonKey(name: 'reorder_level') final int reorderLevel,
+          @JsonKey(name: 'reorder_qty') final int reorderQty,
+          @JsonKey(name: 'expiry_date') final DateTime? expiryDate,
+          @JsonKey(name: 'is_active') final bool isActive,
+          @JsonKey(name: 'track_inventory') final bool trackInventory,
+          @JsonKey(name: 'created_at') required final DateTime? createdAt,
+          @JsonKey(name: 'updated_at') final DateTime? updatedAt,
+          @JsonKey(name: 'created_by') final String? createdBy,
+          @JsonKey(name: 'hsn_sac_code') final String? hsnSacCode,
+          @JsonKey(name: 'commodity_code') final String? commodityCode}) =
+      _$ProductImpl;
 
   factory _Product.fromJson(Map<String, dynamic> json) = _$ProductImpl.fromJson;
 
@@ -760,6 +805,12 @@ abstract class _Product implements Product {
   @override
   @JsonKey(name: 'created_by')
   String? get createdBy;
+  @override
+  @JsonKey(name: 'hsn_sac_code')
+  String? get hsnSacCode;
+  @override
+  @JsonKey(name: 'commodity_code')
+  String? get commodityCode;
 
   /// Create a copy of Product
   /// with the given fields replaced by the non-null parameter values.
