@@ -34,6 +34,10 @@ import '../../features/invoices/presentation/create_invoice_screen.dart';
 import '../../features/customers/presentation/customer_picker_screen.dart';
 import '../../features/invoices/presentation/invoice_detail_screen.dart';
 import '../../features/invoices/presentation/record_payment_screen.dart';
+import '../../features/reports/presentation/gst_compliance_screen.dart';
+import '../../features/reports/presentation/gstr1_report_screen.dart';
+import '../../features/reports/presentation/hsn_summary_screen.dart';
+import '../../features/reports/presentation/gstr3b_summary_screen.dart';
 
 import 'router_notifier.dart';
 
@@ -67,6 +71,10 @@ abstract class AppRoutes {
   static const String businessSettings = '/admin/business-settings';
   static const String printerSettings = '/admin/printer-settings';
   static const String thermalPairing = '/invoices/thermal-pairing';
+  static const String gstCompliance = '/reports/gst';
+  static const String gstr1Report = '/reports/gst/gstr1';
+  static const String hsnSummary = '/reports/gst/hsn';
+  static const String gstr3bSummary = '/reports/gst/gstr3b';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];
@@ -177,6 +185,7 @@ GoRouter appRouter(Ref ref) {
             path: AppRoutes.permissionSettings,
             builder: (_, __) => const PermissionSettingsScreen(),
           ),
+
           GoRoute(
               path: AppRoutes.catalog,
               builder: (_, __) => const CatalogScreen(),
@@ -211,6 +220,18 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
               path: AppRoutes.thermalPairing,
               builder: (_, __) => const ThermalPrinterPairingScreen()),
+          GoRoute(
+              path: AppRoutes.gstCompliance,
+              builder: (_, __) => const GstComplianceScreen()),
+          GoRoute(
+              path: AppRoutes.gstr1Report,
+              builder: (_, __) => const Gstr1ReportScreen()),
+          GoRoute(
+              path: AppRoutes.hsnSummary,
+              builder: (_, __) => const HsnSummaryScreen()),
+          GoRoute(
+              path: AppRoutes.gstr3bSummary,
+              builder: (_, __) => const Gstr3bSummaryScreen()),
         ],
       ),
     ],

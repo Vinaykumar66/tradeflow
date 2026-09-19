@@ -40,6 +40,19 @@ _$InvoiceImpl _$$InvoiceImplFromJson(Map<String, dynamic> json) =>
           ? null
           : DateTime.parse(json['updated_at'] as String),
       convertedToInvoiceId: json['converted_to_invoice_id'] as String?,
+      customerName: json['customer_name'] as String?,
+      placeOfSupply: json['place_of_supply'] as String?,
+      einvoiceStatus: json['einvoice_status'] as String? ?? 'not_generated',
+      irn: json['irn'] as String?,
+      ackNumber: json['ack_number'] as String?,
+      ackDate: json['ack_date'] == null
+          ? null
+          : DateTime.parse(json['ack_date'] as String),
+      signedQrCode: json['signed_qr_code'] as String?,
+      items: (json['items'] as List<dynamic>?)
+              ?.map((e) => InvoiceItem.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$InvoiceImplToJson(_$InvoiceImpl instance) =>
@@ -70,6 +83,14 @@ Map<String, dynamic> _$$InvoiceImplToJson(_$InvoiceImpl instance) =>
       'created_at': instance.createdAt?.toIso8601String(),
       'updated_at': instance.updatedAt?.toIso8601String(),
       'converted_to_invoice_id': instance.convertedToInvoiceId,
+      'customer_name': instance.customerName,
+      'place_of_supply': instance.placeOfSupply,
+      'einvoice_status': instance.einvoiceStatus,
+      'irn': instance.irn,
+      'ack_number': instance.ackNumber,
+      'ack_date': instance.ackDate?.toIso8601String(),
+      'signed_qr_code': instance.signedQrCode,
+      'items': instance.items,
     };
 
 _$InvoiceItemImpl _$$InvoiceItemImplFromJson(Map<String, dynamic> json) =>

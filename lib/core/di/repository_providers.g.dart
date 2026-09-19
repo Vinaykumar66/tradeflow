@@ -203,5 +203,41 @@ final taxCodeRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef TaxCodeRepositoryRef = AutoDisposeProviderRef<ITaxCodeRepository>;
+String _$einvoiceProviderHash() => r'94e327e177c4eb5c0f9098504c1c77e35d2cb0c4';
+
+/// See also [einvoiceProvider].
+@ProviderFor(einvoiceProvider)
+final einvoiceProviderProvider =
+    AutoDisposeProvider<IEInvoiceProvider>.internal(
+  einvoiceProvider,
+  name: r'einvoiceProviderProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$einvoiceProviderHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef EinvoiceProviderRef = AutoDisposeProviderRef<IEInvoiceProvider>;
+String _$ewayBillProviderHash() => r'b132dc4bab4ef13cf42582d23a992088253e4aeb';
+
+/// See also [ewayBillProvider].
+@ProviderFor(ewayBillProvider)
+final ewayBillProviderProvider =
+    AutoDisposeProvider<IEwayBillProvider>.internal(
+  ewayBillProvider,
+  name: r'ewayBillProviderProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$ewayBillProviderHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef EwayBillProviderRef = AutoDisposeProviderRef<IEwayBillProvider>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

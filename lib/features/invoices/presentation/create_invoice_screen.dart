@@ -199,8 +199,11 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
         currencyCode: biz.currencyCode,
         currencySymbol: biz.currencySymbol,
         useLakhFormat: biz.useLakhFormat,
+        customerGstin: _customer?.gstin,
+        customerName: _customer?.name,
         notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
         createdBy: uid,
+        placeOfSupply: _customer?.state ?? biz.state,
       );
 
       final saved = await ref

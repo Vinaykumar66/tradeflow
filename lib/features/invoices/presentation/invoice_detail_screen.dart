@@ -8,11 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tradeflow/core/di/repository_providers.dart';
+import 'package:tradeflow/core/supabase/supabase_client.dart';
+import 'package:tradeflow/shared/models/business.dart';
 import '../../../core/interfaces/i_invoice_printer.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../features/business/application/business_providers.dart';
+import '../../../shared/models/eway_bill.dart';
 import '../../../shared/models/invoice.dart';
 import '../application/invoice_providers.dart';
 import '../data/invoice_pdf_generators.dart';
@@ -20,6 +23,8 @@ import 'widgets/invoice_status_badge.dart';
 import '../data/printers/invoice_printer_registry.dart';
 import 'widgets/print_format_picker_sheet.dart';
 import '../../../core/router/app_router.dart';
+import '../data/einvoice_payload_builder.dart';
+import 'widgets/transporter_details_sheet.dart';
 
 class InvoiceDetailScreen extends ConsumerWidget {
   // Used for a fast initial app-bar title only — never trusted for items.
@@ -29,6 +34,7 @@ class InvoiceDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final fullAsync = ref.watch(invoiceDetailProvider(invoice.id));
+    final biz = ref.watch(activeBusinessProvider).asData?.value;
 
     return Scaffold(
       appBar: AppBar(
@@ -40,6 +46,32 @@ class InvoiceDetailScreen extends ConsumerWidget {
                 icon: const Icon(Icons.receipt_long_outlined),
                 tooltip: 'Convert to Invoice',
                 onPressed: () => _convertToInvoice(context, ref, invoice)),
+          //if eway bill is enabled
+          if (biz?.ewayBillEnabled == true &&
+              invoice.total >= (biz?.ewayBillThreshold ?? 5000000))
+            IconButton(
+              onPressed: () => _generateEwayBill(context, ref, invoice, biz!),
+              tooltip: 'Generate E-Way Bill',
+              icon: const Icon(Icons.local_shipping_outlined),
+            ),
+          //if einvoice is enabled show this icon
+          if (biz?.einvoiceEnabled == true &&
+              invoice.documentType == kDocTypeInvoice)
+            invoice.einvoiceStatus == "generated"
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Chip(
+                        label: const Text('E-Invoiced',
+                            style: TextStyle(fontSize: 11)),
+                        backgroundColor: Colors.green.shade50,
+                        avatar: const Icon(Icons.verified_outlined,
+                            size: 14, color: Colors.green)))
+                : IconButton(
+                    icon: const Icon(Icons.qr_code_2_outlined),
+                    tooltip: 'Generate E-Invoice',
+                    onPressed: () =>
+                        _generateEInvoice(context, ref, invoice, biz!)),
+
           if (invoice.status == kStatusConverted)
             Padding(
                 padding: const EdgeInsets.all(16),
@@ -48,11 +80,11 @@ class InvoiceDetailScreen extends ConsumerWidget {
                     decoration: BoxDecoration(
                         color: Colors.green.shade50,
                         borderRadius: BorderRadius.circular(8)),
-                    child: Row(children: [
-                      const Icon(Icons.check_circle_outline,
+                    child: const Row(children: [
+                      Icon(Icons.check_circle_outline,
                           color: Colors.green, size: 18),
-                      const SizedBox(width: 8),
-                      const Expanded(
+                      SizedBox(width: 8),
+                      Expanded(
                           child: Text(
                               'This document has already been converted to an invoice.')),
                     ]))),
@@ -163,6 +195,77 @@ class InvoiceDetailScreen extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Conversion failed: $e'),
+            backgroundColor: Colors.red));
+      }
+    }
+  }
+
+  Future<void> _generateEInvoice(
+      BuildContext context, WidgetRef ref, Invoice inv, Business biz) async {
+    try {
+      final payload = EInvoicePayloadBuilder.build(invoice: inv, business: biz);
+      debugPrint('E-Invoice payload: $payload');
+
+      final result = await ref.read(einvoiceProviderProvider).generateIrn(inv);
+      await supabase.from('invoices').update({
+        'irn': result.irn,
+        'ack_number': result.ackNumber,
+        'ack_date': result.ackDate.toIso8601String(),
+        'signed_qr_code': result.signedQrCode,
+        'einvoice_statis': 'generated',
+      }).eq('id', inv.id);
+      ref.invalidate(invoiceDetailProvider(inv.id));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('E-Invoice generated successfully.')));
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('E-Invoice genereation failed: $e'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+          showCloseIcon: true,
+        ));
+      }
+    }
+  }
+
+  Future<void> _generateEwayBill(
+      BuildContext context, WidgetRef ref, Invoice inv, Business biz) async {
+    final details = await TransporterDetailsSheet.show(context);
+    if (details == null || !context.mounted) return;
+    try {
+      final draft = EwayBill(
+          id: '',
+          businessId: biz.id,
+          invoiceId: inv.id,
+          transporterName: details.transporterName,
+          transporterGstin: details.transporterGstin,
+          vehicleNumber: details.vehicleNumber,
+          transportMode: details.transportMode,
+          distanceKm: details.distanceKm);
+      final result = await ref.read(ewayBillProviderProvider).generate(draft);
+      await supabase.from('eway_bills').insert({
+        'business_id': biz.id,
+        'invoice_id': inv.id,
+        'ebn': result.ebn,
+        'transporter_name': details.transporterName,
+        'transporter_gstin': details.transporterGstin,
+        'vehicle_number': details.vehicleNumber,
+        'transport_mode': details.transportMode,
+        'distance_km': details.distanceKm,
+        'valid_until': result.validUntil.toIso8601String(),
+        'status': 'generated',
+      });
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('E-Way Bill generated: ${result.ebn}')));
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('E-Way Bill generation failed: $e'),
             backgroundColor: Colors.red));
       }
     }

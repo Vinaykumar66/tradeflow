@@ -8,6 +8,8 @@
 //   Storage tracking: Supabase storage_usage table
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tradeflow/core/interfaces/i_eway_bill_provider.dart';
+import 'package:tradeflow/features/invoices/data/stub_eway_bill_provider.dart';
 import '../audit/audit_service.dart';
 import '../interfaces/i_audit_service.dart';
 import '../interfaces/i_auth_service.dart';
@@ -29,6 +31,8 @@ import '../../core/interfaces/i_invoice_repository.dart';
 import '../../features/invoices/data/invoice_repository.dart';
 import '../../core/interfaces/i_tax_code_repository.dart';
 import '../../features/admin/data/tax_code_repository.dart';
+import '../interfaces/i_einvoice_provider.dart';
+import '../../features/invoices/data/stub_einvoice_provider.dart';
 
 part 'repository_providers.g.dart';
 
@@ -69,6 +73,14 @@ ICustomerRepository customerRepository(CustomerRepositoryRef ref) =>
 @riverpod
 ITaxCodeRepository taxCodeRepository(TaxCodeRepositoryRef ref) =>
     TaxCodeRepository();
+
+@riverpod
+IEInvoiceProvider einvoiceProvider(EinvoiceProviderRef ref) =>
+    StubEInvoiceProvider();
+
+@riverpod
+IEwayBillProvider ewayBillProvider(EwayBillProviderRef ref) =>
+    StubEwayBillProvider();
 
 // @riverpod
 // IAuditService auditService(Ref ref) => AuditService();

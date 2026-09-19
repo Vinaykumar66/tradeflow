@@ -82,6 +82,11 @@ class Business with _$Business {
     @JsonKey(name: 'dot_matrix_left_margin_chars')
     @Default(2)
     int dotMatrixLeftMarginChars,
+    @JsonKey(name: 'einvoice_enabled') @Default(false) bool einvoiceEnabled,
+    @JsonKey(name: 'eway_bill_enabled') @Default(false) bool ewayBillEnabled,
+    @JsonKey(name: 'eway_bill_threshold')
+    @Default(5000000)
+    int ewayBillThreshold,
   }) = _Business;
 
   factory Business.fromJson(Map<String, dynamic> json) =>
@@ -131,5 +136,8 @@ extension BusinessX on Business {
         'default_print_format': defaultPrintFormat,
         'dot_matrix_top_margin_lines': dotMatrixTopMarginLines,
         'dot_matrix_left_margin_chars': dotMatrixLeftMarginChars,
+        'einvoice_enabled': einvoiceEnabled,
+        'eway_bill_enabled': ewayBillEnabled,
+        'eway_bill_threshold': ewayBillThreshold,
       };
 }

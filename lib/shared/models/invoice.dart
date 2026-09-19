@@ -52,8 +52,18 @@ abstract class Invoice with _$Invoice {
     @JsonKey(name: 'converted_to_invoice_id') String? convertedToInvoiceId,
     // Populated by join — not stored in invoices table
     @JsonKey(includeFromJson: false, includeToJson: false)
-    @Default([])
-    List<InvoiceItem> items,
+    @JsonKey(name: 'customer_gstin')
+    String? customerGstin,
+    @JsonKey(name: 'customer_name') String? customerName,
+    @JsonKey(name: 'place_of_supply') String? placeOfSupply,
+    @JsonKey(name: 'einvoice_status')
+    @Default('not_generated')
+    String einvoiceStatus,
+    @JsonKey(name: 'irn') String? irn,
+    @JsonKey(name: 'ack_number') String? ackNumber,
+    @JsonKey(name: 'ack_date') DateTime? ackDate,
+    @JsonKey(name: 'signed_qr_code') String? signedQrCode,
+    @Default([]) List<InvoiceItem> items,
   }) = _Invoice;
   factory Invoice.fromJson(Map<String, dynamic> json) =>
       _$InvoiceFromJson(json);

@@ -54,6 +54,10 @@ _$BusinessImpl _$$BusinessImplFromJson(Map<String, dynamic> json) =>
           (json['dot_matrix_top_margin_lines'] as num?)?.toInt() ?? 3,
       dotMatrixLeftMarginChars:
           (json['dot_matrix_left_margin_chars'] as num?)?.toInt() ?? 2,
+      einvoiceEnabled: json['einvoice_enabled'] as bool? ?? false,
+      ewayBillEnabled: json['eway_bill_enabled'] as bool? ?? false,
+      ewayBillThreshold:
+          (json['eway_bill_threshold'] as num?)?.toInt() ?? 5000000,
     );
 
 Map<String, dynamic> _$$BusinessImplToJson(_$BusinessImpl instance) =>
@@ -95,4 +99,7 @@ Map<String, dynamic> _$$BusinessImplToJson(_$BusinessImpl instance) =>
       'default_print_format': instance.defaultPrintFormat,
       'dot_matrix_top_margin_lines': instance.dotMatrixTopMarginLines,
       'dot_matrix_left_margin_chars': instance.dotMatrixLeftMarginChars,
+      'einvoice_enabled': instance.einvoiceEnabled,
+      'eway_bill_enabled': instance.ewayBillEnabled,
+      'eway_bill_threshold': instance.ewayBillThreshold,
     };

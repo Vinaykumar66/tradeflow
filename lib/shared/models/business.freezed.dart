@@ -95,6 +95,12 @@ mixin _$Business {
   int get dotMatrixTopMarginLines => throw _privateConstructorUsedError;
   @JsonKey(name: 'dot_matrix_left_margin_chars')
   int get dotMatrixLeftMarginChars => throw _privateConstructorUsedError;
+  @JsonKey(name: 'einvoice_enabled')
+  bool get einvoiceEnabled => throw _privateConstructorUsedError;
+  @JsonKey(name: 'eway_bill_enabled')
+  bool get ewayBillEnabled => throw _privateConstructorUsedError;
+  @JsonKey(name: 'eway_bill_threshold')
+  int get ewayBillThreshold => throw _privateConstructorUsedError;
 
   /// Serializes this Business to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -149,7 +155,10 @@ abstract class $BusinessCopyWith<$Res> {
       @JsonKey(name: 'default_print_format') String defaultPrintFormat,
       @JsonKey(name: 'dot_matrix_top_margin_lines') int dotMatrixTopMarginLines,
       @JsonKey(name: 'dot_matrix_left_margin_chars')
-      int dotMatrixLeftMarginChars});
+      int dotMatrixLeftMarginChars,
+      @JsonKey(name: 'einvoice_enabled') bool einvoiceEnabled,
+      @JsonKey(name: 'eway_bill_enabled') bool ewayBillEnabled,
+      @JsonKey(name: 'eway_bill_threshold') int ewayBillThreshold});
 }
 
 /// @nodoc
@@ -204,6 +213,9 @@ class _$BusinessCopyWithImpl<$Res, $Val extends Business>
     Object? defaultPrintFormat = null,
     Object? dotMatrixTopMarginLines = null,
     Object? dotMatrixLeftMarginChars = null,
+    Object? einvoiceEnabled = null,
+    Object? ewayBillEnabled = null,
+    Object? ewayBillThreshold = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -354,6 +366,18 @@ class _$BusinessCopyWithImpl<$Res, $Val extends Business>
           ? _value.dotMatrixLeftMarginChars
           : dotMatrixLeftMarginChars // ignore: cast_nullable_to_non_nullable
               as int,
+      einvoiceEnabled: null == einvoiceEnabled
+          ? _value.einvoiceEnabled
+          : einvoiceEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      ewayBillEnabled: null == ewayBillEnabled
+          ? _value.ewayBillEnabled
+          : ewayBillEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      ewayBillThreshold: null == ewayBillThreshold
+          ? _value.ewayBillThreshold
+          : ewayBillThreshold // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -404,7 +428,10 @@ abstract class _$$BusinessImplCopyWith<$Res>
       @JsonKey(name: 'default_print_format') String defaultPrintFormat,
       @JsonKey(name: 'dot_matrix_top_margin_lines') int dotMatrixTopMarginLines,
       @JsonKey(name: 'dot_matrix_left_margin_chars')
-      int dotMatrixLeftMarginChars});
+      int dotMatrixLeftMarginChars,
+      @JsonKey(name: 'einvoice_enabled') bool einvoiceEnabled,
+      @JsonKey(name: 'eway_bill_enabled') bool ewayBillEnabled,
+      @JsonKey(name: 'eway_bill_threshold') int ewayBillThreshold});
 }
 
 /// @nodoc
@@ -457,6 +484,9 @@ class __$$BusinessImplCopyWithImpl<$Res>
     Object? defaultPrintFormat = null,
     Object? dotMatrixTopMarginLines = null,
     Object? dotMatrixLeftMarginChars = null,
+    Object? einvoiceEnabled = null,
+    Object? ewayBillEnabled = null,
+    Object? ewayBillThreshold = null,
   }) {
     return _then(_$BusinessImpl(
       id: null == id
@@ -607,6 +637,18 @@ class __$$BusinessImplCopyWithImpl<$Res>
           ? _value.dotMatrixLeftMarginChars
           : dotMatrixLeftMarginChars // ignore: cast_nullable_to_non_nullable
               as int,
+      einvoiceEnabled: null == einvoiceEnabled
+          ? _value.einvoiceEnabled
+          : einvoiceEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      ewayBillEnabled: null == ewayBillEnabled
+          ? _value.ewayBillEnabled
+          : ewayBillEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      ewayBillThreshold: null == ewayBillThreshold
+          ? _value.ewayBillThreshold
+          : ewayBillThreshold // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -654,7 +696,10 @@ class _$BusinessImpl implements _Business {
       @JsonKey(name: 'dot_matrix_top_margin_lines')
       this.dotMatrixTopMarginLines = 3,
       @JsonKey(name: 'dot_matrix_left_margin_chars')
-      this.dotMatrixLeftMarginChars = 2});
+      this.dotMatrixLeftMarginChars = 2,
+      @JsonKey(name: 'einvoice_enabled') this.einvoiceEnabled = false,
+      @JsonKey(name: 'eway_bill_enabled') this.ewayBillEnabled = false,
+      @JsonKey(name: 'eway_bill_threshold') this.ewayBillThreshold = 5000000});
 
   factory _$BusinessImpl.fromJson(Map<String, dynamic> json) =>
       _$$BusinessImplFromJson(json);
@@ -776,10 +821,19 @@ class _$BusinessImpl implements _Business {
   @override
   @JsonKey(name: 'dot_matrix_left_margin_chars')
   final int dotMatrixLeftMarginChars;
+  @override
+  @JsonKey(name: 'einvoice_enabled')
+  final bool einvoiceEnabled;
+  @override
+  @JsonKey(name: 'eway_bill_enabled')
+  final bool ewayBillEnabled;
+  @override
+  @JsonKey(name: 'eway_bill_threshold')
+  final int ewayBillThreshold;
 
   @override
   String toString() {
-    return 'Business(id: $id, name: $name, ownerUid: $ownerUid, email: $email, phone: $phone, address: $address, city: $city, state: $state, country: $country, pincode: $pincode, gstin: $gstin, taxNumber: $taxNumber, logoUrl: $logoUrl, currencyCode: $currencyCode, currency: $currency, currencySymbol: $currencySymbol, countryCode: $countryCode, taxLabel: $taxLabel, defaultTaxRate: $defaultTaxRate, dateFormat: $dateFormat, useLakhFormat: $useLakhFormat, invoicePrefix: $invoicePrefix, nextInvoiceNumber: $nextInvoiceNumber, licenseTierValue: $licenseTierValue, tierExpiresAt: $tierExpiresAt, emailOverride: $emailOverride, cronReminderOverride: $cronReminderOverride, invoiceLimitOverride: $invoiceLimitOverride, userLimitOverride: $userLimitOverride, storageLimitOverride: $storageLimitOverride, operatorNote: $operatorNote, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, defaultPrintFormat: $defaultPrintFormat, dotMatrixTopMarginLines: $dotMatrixTopMarginLines, dotMatrixLeftMarginChars: $dotMatrixLeftMarginChars)';
+    return 'Business(id: $id, name: $name, ownerUid: $ownerUid, email: $email, phone: $phone, address: $address, city: $city, state: $state, country: $country, pincode: $pincode, gstin: $gstin, taxNumber: $taxNumber, logoUrl: $logoUrl, currencyCode: $currencyCode, currency: $currency, currencySymbol: $currencySymbol, countryCode: $countryCode, taxLabel: $taxLabel, defaultTaxRate: $defaultTaxRate, dateFormat: $dateFormat, useLakhFormat: $useLakhFormat, invoicePrefix: $invoicePrefix, nextInvoiceNumber: $nextInvoiceNumber, licenseTierValue: $licenseTierValue, tierExpiresAt: $tierExpiresAt, emailOverride: $emailOverride, cronReminderOverride: $cronReminderOverride, invoiceLimitOverride: $invoiceLimitOverride, userLimitOverride: $userLimitOverride, storageLimitOverride: $storageLimitOverride, operatorNote: $operatorNote, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, defaultPrintFormat: $defaultPrintFormat, dotMatrixTopMarginLines: $dotMatrixTopMarginLines, dotMatrixLeftMarginChars: $dotMatrixLeftMarginChars, einvoiceEnabled: $einvoiceEnabled, ewayBillEnabled: $ewayBillEnabled, ewayBillThreshold: $ewayBillThreshold)';
   }
 
   @override
@@ -851,7 +905,13 @@ class _$BusinessImpl implements _Business {
                 other.dotMatrixTopMarginLines == dotMatrixTopMarginLines) &&
             (identical(
                     other.dotMatrixLeftMarginChars, dotMatrixLeftMarginChars) ||
-                other.dotMatrixLeftMarginChars == dotMatrixLeftMarginChars));
+                other.dotMatrixLeftMarginChars == dotMatrixLeftMarginChars) &&
+            (identical(other.einvoiceEnabled, einvoiceEnabled) ||
+                other.einvoiceEnabled == einvoiceEnabled) &&
+            (identical(other.ewayBillEnabled, ewayBillEnabled) ||
+                other.ewayBillEnabled == ewayBillEnabled) &&
+            (identical(other.ewayBillThreshold, ewayBillThreshold) ||
+                other.ewayBillThreshold == ewayBillThreshold));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -894,7 +954,10 @@ class _$BusinessImpl implements _Business {
         updatedAt,
         defaultPrintFormat,
         dotMatrixTopMarginLines,
-        dotMatrixLeftMarginChars
+        dotMatrixLeftMarginChars,
+        einvoiceEnabled,
+        ewayBillEnabled,
+        ewayBillThreshold
       ]);
 
   /// Create a copy of Business
@@ -953,7 +1016,11 @@ abstract class _Business implements Business {
       @JsonKey(name: 'dot_matrix_top_margin_lines')
       final int dotMatrixTopMarginLines,
       @JsonKey(name: 'dot_matrix_left_margin_chars')
-      final int dotMatrixLeftMarginChars}) = _$BusinessImpl;
+      final int dotMatrixLeftMarginChars,
+      @JsonKey(name: 'einvoice_enabled') final bool einvoiceEnabled,
+      @JsonKey(name: 'eway_bill_enabled') final bool ewayBillEnabled,
+      @JsonKey(name: 'eway_bill_threshold')
+      final int ewayBillThreshold}) = _$BusinessImpl;
 
   factory _Business.fromJson(Map<String, dynamic> json) =
       _$BusinessImpl.fromJson;
@@ -1064,6 +1131,15 @@ abstract class _Business implements Business {
   @override
   @JsonKey(name: 'dot_matrix_left_margin_chars')
   int get dotMatrixLeftMarginChars;
+  @override
+  @JsonKey(name: 'einvoice_enabled')
+  bool get einvoiceEnabled;
+  @override
+  @JsonKey(name: 'eway_bill_enabled')
+  bool get ewayBillEnabled;
+  @override
+  @JsonKey(name: 'eway_bill_threshold')
+  int get ewayBillThreshold;
 
   /// Create a copy of Business
   /// with the given fields replaced by the non-null parameter values.

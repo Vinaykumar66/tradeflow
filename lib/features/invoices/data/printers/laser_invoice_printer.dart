@@ -2,10 +2,12 @@ import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:tradeflow/shared/models/eway_bill.dart';
 import '../../../../core/interfaces/i_invoice_printer.dart';
 import '../../../../shared/models/business.dart';
 import '../../../../shared/models/customer.dart';
 import '../../../../shared/models/invoice.dart';
+import 'package:barcode/barcode.dart';
 
 class LaserInvoicePrinter implements IInvoicePrinter {
   @override
@@ -20,6 +22,7 @@ class LaserInvoicePrinter implements IInvoicePrinter {
     final inv = job.invoice;
     final biz = job.business;
     final cust = job.customer;
+    final EwayBill? ewayBill;
 
     // Logo is optional — never let a failed fetch break printing.
     pw.MemoryImage? logo;
@@ -34,7 +37,7 @@ class LaserInvoicePrinter implements IInvoicePrinter {
     pdf.addPage(pw.Page(
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(32),
-      build: (ctx) => _buildPage(inv, biz, cust, logo),
+      build: (ctx) => _buildPage(job, inv, biz, cust, logo),
     ));
 
     // Opens the native print dialog — the user selects the actual
@@ -43,8 +46,8 @@ class LaserInvoicePrinter implements IInvoicePrinter {
         onLayout: (_) => pdf.save(), name: '${inv.invoiceNumber}.pdf');
   }
 
-  pw.Widget _buildPage(
-      Invoice inv, Business biz, Customer? cust, pw.MemoryImage? logo) {
+  pw.Widget _buildPage(InvoicePrintJob job, Invoice inv, Business biz,
+      Customer? cust, pw.MemoryImage? logo) {
     final showHsnColumn = inv.items.any((i) => i.hsnSacCode != null);
     final showCommodity = inv.items.any((i) => i.commodityCode != null);
     final showSplit =
@@ -193,6 +196,41 @@ class LaserInvoicePrinter implements IInvoicePrinter {
         pw.Text('Notes:', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
         pw.Text(inv.notes!),
       ],
+
+      if (inv.irn != null) ...[
+        pw.SizedBox(height: 16),
+        pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text('IRN: ${inv.irn}',
+                        style: const pw.TextStyle(fontSize: 8)),
+                    pw.Text('Ack No. ${inv.ackNumber}',
+                        style: const pw.TextStyle(fontSize: 8)),
+                    if (inv.ackDate != null)
+                      pw.Text('Ack Date: ${_fmtDate(inv.ackDate!)}',
+                          style: const pw.TextStyle(fontSize: 8)),
+                  ]),
+              if (inv.signedQrCode != null)
+                pw.BarcodeWidget(
+                    barcode: Barcode.qrCode(),
+                    data: inv.signedQrCode!,
+                    width: 70,
+                    height: 70),
+            ]),
+      ],
+
+      if (job.ewayBill != null) ...[
+        pw.SizedBox(height: 8),
+        pw.Text('E-Way Bill No: ${job.ewayBill!.ebn}',
+            style: const pw.TextStyle(fontSize: 8)),
+        if (job.ewayBill!.validUntil != null)
+          pw.Text('Valid until: ${_fmtDate(job.ewayBill!.validUntil!)}',
+              style: const pw.TextStyle(fontSize: 8)),
+      ]
     ]);
   }
 

@@ -227,4 +227,26 @@ class InvoiceRepository implements IInvoiceRepository {
     }).eq('id', source.id);
     return created;
   }
+
+  @override
+  Future<List<Invoice>> getInvoicesForPeriod(
+      String businessId, DateTime start, DateTime end) async {
+    final rows = await supabase
+        .from(SupabaseTables.invoices)
+        .select()
+        .eq('business_id', businessId)
+        .eq('document_type', kDocTypeInvoice)
+        .neq('status', kStatusCancelled)
+        .gte('issue_date', start.toIso8601String().split('T').first)
+        .lte('issue_date', end.toIso8601String().split('T').first)
+        .order('issue_date');
+    final result = <Invoice>[];
+    for (final row in rows) {
+      final inv = Invoice.fromJson(row);
+      final items = await getItems(inv.id);
+      result.add(inv.copyWith(items: items));
+      // result.add(Invoice.fromJson(row));
+    }
+    return result;
+  }
 }

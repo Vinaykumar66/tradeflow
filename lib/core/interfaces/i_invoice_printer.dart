@@ -1,3 +1,5 @@
+import 'package:tradeflow/shared/models/eway_bill.dart';
+
 import '../../shared/models/business.dart';
 import '../../shared/models/customer.dart';
 import '../../shared/models/invoice.dart';
@@ -13,10 +15,12 @@ class InvoicePrintJob {
   final Invoice invoice;
   final Business business;
   final Customer? customer;
+  final EwayBill? ewayBill;
   const InvoicePrintJob({
     required this.invoice,
     required this.business,
     this.customer,
+    this.ewayBill,
   });
 }
 

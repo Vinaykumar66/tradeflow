@@ -32,6 +32,8 @@ dependencies:
   esc_pos_utils_plus: ^2.0.4
   print_bluetooth_thermal: ^1.1.4
   shared_preferences: ^2.2.0
+  path_provider: ^2.1.0   # temp directory to write the CSV before sharing
+  barcode: ^2.2.7 # QR code widget, used by pw.BarcodeWidget in the PDF
 dev_dependencies:
   flutter_test:
     sdk: flutter

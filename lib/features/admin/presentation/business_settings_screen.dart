@@ -2,6 +2,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tradeflow/core/di/repository_providers.dart';
 import 'package:tradeflow/core/router/app_router.dart';
@@ -132,15 +133,60 @@ class _BusinessSettingsScreenState
                                           style: TextStyle(color: Colors.grey)),
                                     ])))),
           const SizedBox(height: 24),
-          // Text('Tax Identification',
-          //     style: Theme.of(context).textTheme.titleMedium),
-          // const SizedBox(height: 12),
-          // ListTile(
-          //   title: Text(taxCfg.taxIdLabel),
-          //   subtitle: Text(biz?.gstin ?? 'Not set'),
-          //   trailing: const Icon(Icons.chevron_right),
-          //   onTap: () => context.push(AppRoutes.taxCodes),
-          // )
+          Text('Tax Identification',
+              style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 12),
+          ListTile(
+            title: Text(taxCfg.taxIdLabel),
+            subtitle: Text(biz?.gstin ?? 'Not set'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(AppRoutes.taxCodes),
+          ),
+          const SizedBox(height: 24),
+          Text('Compliance', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 12),
+          SwitchListTile(
+              title: const Text('E-invoicing (IRN)'),
+              subtitle: const Text('Requires a GSP account to go live'),
+              value: biz?.einvoiceEnabled ?? false,
+              onChanged: (v) => ref
+                  .read(updateBusinessNotifierProvider.notifier)
+                  .update(biz!.copyWith(ewayBillEnabled: v))),
+          if (biz?.ewayBillEnabled == true)
+            ListTile(
+                title: const Text('E-way Bill Threshold'),
+                subtitle: Text(
+                    'Rs.${((biz?.ewayBillThreshold ?? 5000000) / 100).toStringAsFixed(0)}'),
+                trailing: const Icon(Icons.edit_outlined),
+                onTap: () async {
+                  final ctrl = TextEditingController(
+                      text: ((biz?.ewayBillThreshold ?? 5000000) / 100)
+                          .toStringAsFixed(0));
+                  final result = await showDialog<String>(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                              title: const Text('E-Way Bill Threshold (Rs.)'),
+                              content: TextField(
+                                  controller: ctrl,
+                                  keyboardType: TextInputType.number),
+                              actions: [
+                                TextButton(
+                                    onPressed: () => Navigator.pop(ctx),
+                                    child: const Text('Cancel')),
+                                ElevatedButton(
+                                    onPressed: () =>
+                                        Navigator.pop(ctx, ctrl.text),
+                                    child: const Text('Save')),
+                              ]));
+
+                  if (result != null && biz != null) {
+                    final paise =
+                        ((double.tryParse(result) ?? 500) * 100).round();
+                    ref
+                        .read(updateBusinessNotifierProvider.notifier)
+                        .update(biz.copyWith(ewayBillThreshold: paise));
+                  }
+                }),
         ],
       ),
     );

@@ -72,6 +72,22 @@ mixin _$Invoice {
   String? get convertedToInvoiceId =>
       throw _privateConstructorUsedError; // Populated by join — not stored in invoices table
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(name: 'customer_gstin')
+  String? get customerGstin => throw _privateConstructorUsedError;
+  @JsonKey(name: 'customer_name')
+  String? get customerName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'place_of_supply')
+  String? get placeOfSupply => throw _privateConstructorUsedError;
+  @JsonKey(name: 'einvoice_status')
+  String get einvoiceStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: 'irn')
+  String? get irn => throw _privateConstructorUsedError;
+  @JsonKey(name: 'ack_number')
+  String? get ackNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'ack_date')
+  DateTime? get ackDate => throw _privateConstructorUsedError;
+  @JsonKey(name: 'signed_qr_code')
+  String? get signedQrCode => throw _privateConstructorUsedError;
   List<InvoiceItem> get items => throw _privateConstructorUsedError;
 
   /// Serializes this Invoice to a JSON map.
@@ -116,6 +132,15 @@ abstract class $InvoiceCopyWith<$Res> {
       @JsonKey(name: 'updated_at') DateTime? updatedAt,
       @JsonKey(name: 'converted_to_invoice_id') String? convertedToInvoiceId,
       @JsonKey(includeFromJson: false, includeToJson: false)
+      @JsonKey(name: 'customer_gstin')
+      String? customerGstin,
+      @JsonKey(name: 'customer_name') String? customerName,
+      @JsonKey(name: 'place_of_supply') String? placeOfSupply,
+      @JsonKey(name: 'einvoice_status') String einvoiceStatus,
+      @JsonKey(name: 'irn') String? irn,
+      @JsonKey(name: 'ack_number') String? ackNumber,
+      @JsonKey(name: 'ack_date') DateTime? ackDate,
+      @JsonKey(name: 'signed_qr_code') String? signedQrCode,
       List<InvoiceItem> items});
 }
 
@@ -160,6 +185,14 @@ class _$InvoiceCopyWithImpl<$Res, $Val extends Invoice>
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? convertedToInvoiceId = freezed,
+    Object? customerGstin = freezed,
+    Object? customerName = freezed,
+    Object? placeOfSupply = freezed,
+    Object? einvoiceStatus = null,
+    Object? irn = freezed,
+    Object? ackNumber = freezed,
+    Object? ackDate = freezed,
+    Object? signedQrCode = freezed,
     Object? items = null,
   }) {
     return _then(_value.copyWith(
@@ -267,6 +300,38 @@ class _$InvoiceCopyWithImpl<$Res, $Val extends Invoice>
           ? _value.convertedToInvoiceId
           : convertedToInvoiceId // ignore: cast_nullable_to_non_nullable
               as String?,
+      customerGstin: freezed == customerGstin
+          ? _value.customerGstin
+          : customerGstin // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customerName: freezed == customerName
+          ? _value.customerName
+          : customerName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      placeOfSupply: freezed == placeOfSupply
+          ? _value.placeOfSupply
+          : placeOfSupply // ignore: cast_nullable_to_non_nullable
+              as String?,
+      einvoiceStatus: null == einvoiceStatus
+          ? _value.einvoiceStatus
+          : einvoiceStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      irn: freezed == irn
+          ? _value.irn
+          : irn // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ackNumber: freezed == ackNumber
+          ? _value.ackNumber
+          : ackNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ackDate: freezed == ackDate
+          ? _value.ackDate
+          : ackDate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      signedQrCode: freezed == signedQrCode
+          ? _value.signedQrCode
+          : signedQrCode // ignore: cast_nullable_to_non_nullable
+              as String?,
       items: null == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
@@ -310,6 +375,15 @@ abstract class _$$InvoiceImplCopyWith<$Res> implements $InvoiceCopyWith<$Res> {
       @JsonKey(name: 'updated_at') DateTime? updatedAt,
       @JsonKey(name: 'converted_to_invoice_id') String? convertedToInvoiceId,
       @JsonKey(includeFromJson: false, includeToJson: false)
+      @JsonKey(name: 'customer_gstin')
+      String? customerGstin,
+      @JsonKey(name: 'customer_name') String? customerName,
+      @JsonKey(name: 'place_of_supply') String? placeOfSupply,
+      @JsonKey(name: 'einvoice_status') String einvoiceStatus,
+      @JsonKey(name: 'irn') String? irn,
+      @JsonKey(name: 'ack_number') String? ackNumber,
+      @JsonKey(name: 'ack_date') DateTime? ackDate,
+      @JsonKey(name: 'signed_qr_code') String? signedQrCode,
       List<InvoiceItem> items});
 }
 
@@ -352,6 +426,14 @@ class __$$InvoiceImplCopyWithImpl<$Res>
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? convertedToInvoiceId = freezed,
+    Object? customerGstin = freezed,
+    Object? customerName = freezed,
+    Object? placeOfSupply = freezed,
+    Object? einvoiceStatus = null,
+    Object? irn = freezed,
+    Object? ackNumber = freezed,
+    Object? ackDate = freezed,
+    Object? signedQrCode = freezed,
     Object? items = null,
   }) {
     return _then(_$InvoiceImpl(
@@ -459,6 +541,38 @@ class __$$InvoiceImplCopyWithImpl<$Res>
           ? _value.convertedToInvoiceId
           : convertedToInvoiceId // ignore: cast_nullable_to_non_nullable
               as String?,
+      customerGstin: freezed == customerGstin
+          ? _value.customerGstin
+          : customerGstin // ignore: cast_nullable_to_non_nullable
+              as String?,
+      customerName: freezed == customerName
+          ? _value.customerName
+          : customerName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      placeOfSupply: freezed == placeOfSupply
+          ? _value.placeOfSupply
+          : placeOfSupply // ignore: cast_nullable_to_non_nullable
+              as String?,
+      einvoiceStatus: null == einvoiceStatus
+          ? _value.einvoiceStatus
+          : einvoiceStatus // ignore: cast_nullable_to_non_nullable
+              as String,
+      irn: freezed == irn
+          ? _value.irn
+          : irn // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ackNumber: freezed == ackNumber
+          ? _value.ackNumber
+          : ackNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ackDate: freezed == ackDate
+          ? _value.ackDate
+          : ackDate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      signedQrCode: freezed == signedQrCode
+          ? _value.signedQrCode
+          : signedQrCode // ignore: cast_nullable_to_non_nullable
+              as String?,
       items: null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
@@ -498,6 +612,15 @@ class _$InvoiceImpl implements _Invoice {
       @JsonKey(name: 'updated_at') this.updatedAt,
       @JsonKey(name: 'converted_to_invoice_id') this.convertedToInvoiceId,
       @JsonKey(includeFromJson: false, includeToJson: false)
+      @JsonKey(name: 'customer_gstin')
+      this.customerGstin,
+      @JsonKey(name: 'customer_name') this.customerName,
+      @JsonKey(name: 'place_of_supply') this.placeOfSupply,
+      @JsonKey(name: 'einvoice_status') this.einvoiceStatus = 'not_generated',
+      @JsonKey(name: 'irn') this.irn,
+      @JsonKey(name: 'ack_number') this.ackNumber,
+      @JsonKey(name: 'ack_date') this.ackDate,
+      @JsonKey(name: 'signed_qr_code') this.signedQrCode,
       final List<InvoiceItem> items = const []})
       : _items = items;
 
@@ -582,10 +705,34 @@ class _$InvoiceImpl implements _Invoice {
   @JsonKey(name: 'converted_to_invoice_id')
   final String? convertedToInvoiceId;
 // Populated by join — not stored in invoices table
-  final List<InvoiceItem> _items;
-// Populated by join — not stored in invoices table
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(name: 'customer_gstin')
+  final String? customerGstin;
+  @override
+  @JsonKey(name: 'customer_name')
+  final String? customerName;
+  @override
+  @JsonKey(name: 'place_of_supply')
+  final String? placeOfSupply;
+  @override
+  @JsonKey(name: 'einvoice_status')
+  final String einvoiceStatus;
+  @override
+  @JsonKey(name: 'irn')
+  final String? irn;
+  @override
+  @JsonKey(name: 'ack_number')
+  final String? ackNumber;
+  @override
+  @JsonKey(name: 'ack_date')
+  final DateTime? ackDate;
+  @override
+  @JsonKey(name: 'signed_qr_code')
+  final String? signedQrCode;
+  final List<InvoiceItem> _items;
+  @override
+  @JsonKey()
   List<InvoiceItem> get items {
     if (_items is EqualUnmodifiableListView) return _items;
     // ignore: implicit_dynamic_type
@@ -594,7 +741,7 @@ class _$InvoiceImpl implements _Invoice {
 
   @override
   String toString() {
-    return 'Invoice(id: $id, businessId: $businessId, customerId: $customerId, invoiceNumber: $invoiceNumber, documentType: $documentType, status: $status, issueDate: $issueDate, dueDate: $dueDate, subtotal: $subtotal, discountAmount: $discountAmount, taxAmount: $taxAmount, cgstTotal: $cgstTotal, sgstTotal: $sgstTotal, igstTotal: $igstTotal, ugstTotal: $ugstTotal, total: $total, amountPaid: $amountPaid, currencyCode: $currencyCode, currencySymbol: $currencySymbol, useLakhFormat: $useLakhFormat, notes: $notes, terms: $terms, createdBy: $createdBy, createdAt: $createdAt, updatedAt: $updatedAt, convertedToInvoiceId: $convertedToInvoiceId, items: $items)';
+    return 'Invoice(id: $id, businessId: $businessId, customerId: $customerId, invoiceNumber: $invoiceNumber, documentType: $documentType, status: $status, issueDate: $issueDate, dueDate: $dueDate, subtotal: $subtotal, discountAmount: $discountAmount, taxAmount: $taxAmount, cgstTotal: $cgstTotal, sgstTotal: $sgstTotal, igstTotal: $igstTotal, ugstTotal: $ugstTotal, total: $total, amountPaid: $amountPaid, currencyCode: $currencyCode, currencySymbol: $currencySymbol, useLakhFormat: $useLakhFormat, notes: $notes, terms: $terms, createdBy: $createdBy, createdAt: $createdAt, updatedAt: $updatedAt, convertedToInvoiceId: $convertedToInvoiceId, customerGstin: $customerGstin, customerName: $customerName, placeOfSupply: $placeOfSupply, einvoiceStatus: $einvoiceStatus, irn: $irn, ackNumber: $ackNumber, ackDate: $ackDate, signedQrCode: $signedQrCode, items: $items)';
   }
 
   @override
@@ -648,6 +795,20 @@ class _$InvoiceImpl implements _Invoice {
                 other.updatedAt == updatedAt) &&
             (identical(other.convertedToInvoiceId, convertedToInvoiceId) ||
                 other.convertedToInvoiceId == convertedToInvoiceId) &&
+            (identical(other.customerGstin, customerGstin) ||
+                other.customerGstin == customerGstin) &&
+            (identical(other.customerName, customerName) ||
+                other.customerName == customerName) &&
+            (identical(other.placeOfSupply, placeOfSupply) ||
+                other.placeOfSupply == placeOfSupply) &&
+            (identical(other.einvoiceStatus, einvoiceStatus) ||
+                other.einvoiceStatus == einvoiceStatus) &&
+            (identical(other.irn, irn) || other.irn == irn) &&
+            (identical(other.ackNumber, ackNumber) ||
+                other.ackNumber == ackNumber) &&
+            (identical(other.ackDate, ackDate) || other.ackDate == ackDate) &&
+            (identical(other.signedQrCode, signedQrCode) ||
+                other.signedQrCode == signedQrCode) &&
             const DeepCollectionEquality().equals(other._items, _items));
   }
 
@@ -681,6 +842,14 @@ class _$InvoiceImpl implements _Invoice {
         createdAt,
         updatedAt,
         convertedToInvoiceId,
+        customerGstin,
+        customerName,
+        placeOfSupply,
+        einvoiceStatus,
+        irn,
+        ackNumber,
+        ackDate,
+        signedQrCode,
         const DeepCollectionEquality().hash(_items)
       ]);
 
@@ -730,6 +899,15 @@ abstract class _Invoice implements Invoice {
       @JsonKey(name: 'converted_to_invoice_id')
       final String? convertedToInvoiceId,
       @JsonKey(includeFromJson: false, includeToJson: false)
+      @JsonKey(name: 'customer_gstin')
+      final String? customerGstin,
+      @JsonKey(name: 'customer_name') final String? customerName,
+      @JsonKey(name: 'place_of_supply') final String? placeOfSupply,
+      @JsonKey(name: 'einvoice_status') final String einvoiceStatus,
+      @JsonKey(name: 'irn') final String? irn,
+      @JsonKey(name: 'ack_number') final String? ackNumber,
+      @JsonKey(name: 'ack_date') final DateTime? ackDate,
+      @JsonKey(name: 'signed_qr_code') final String? signedQrCode,
       final List<InvoiceItem> items}) = _$InvoiceImpl;
 
   factory _Invoice.fromJson(Map<String, dynamic> json) = _$InvoiceImpl.fromJson;
@@ -811,6 +989,30 @@ abstract class _Invoice implements Invoice {
       get convertedToInvoiceId; // Populated by join — not stored in invoices table
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(name: 'customer_gstin')
+  String? get customerGstin;
+  @override
+  @JsonKey(name: 'customer_name')
+  String? get customerName;
+  @override
+  @JsonKey(name: 'place_of_supply')
+  String? get placeOfSupply;
+  @override
+  @JsonKey(name: 'einvoice_status')
+  String get einvoiceStatus;
+  @override
+  @JsonKey(name: 'irn')
+  String? get irn;
+  @override
+  @JsonKey(name: 'ack_number')
+  String? get ackNumber;
+  @override
+  @JsonKey(name: 'ack_date')
+  DateTime? get ackDate;
+  @override
+  @JsonKey(name: 'signed_qr_code')
+  String? get signedQrCode;
+  @override
   List<InvoiceItem> get items;
 
   /// Create a copy of Invoice
