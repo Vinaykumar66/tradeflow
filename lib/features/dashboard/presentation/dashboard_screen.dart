@@ -32,13 +32,30 @@ class DashboardScreen extends ConsumerWidget {
           data: (stats) =>
               ListView(padding: const EdgeInsets.all(16), children: [
                 // Business name + greeting
-                Text(biz?.name ?? '',
+                Text('${biz?.name} - Dashboard' ?? '',
                     style: const TextStyle(
                         fontSize: 20, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
                 Text(_greeting(), style: const TextStyle(color: Colors.grey)),
                 const SizedBox(height: 20),
 
+                _sectionLabel('Quick Actions'),
+                const SizedBox(height: 8),
+                Row(children: [
+                  _quickAction(context,
+                      label: 'New Invoice',
+                      icon: Icons.add_circle_outline,
+                      route: AppRoutes.createInvoice),
+                  _quickAction(context,
+                      label: 'Add Product',
+                      icon: Icons.storefront_outlined,
+                      route: AppRoutes.addProduct),
+                  _quickAction(context,
+                      label: 'Add Customer',
+                      icon: Icons.person_add_outlined,
+                      route: AppRoutes.addCustomer),
+                ]),
+                const SizedBox(height: 20),
                 // Revenue cards — 3 in a row
                 _sectionLabel('Revenue'),
                 const SizedBox(height: 8),
@@ -128,23 +145,6 @@ class DashboardScreen extends ConsumerWidget {
                 const SizedBox(height: 20),
 
                 // Quick actions
-                _sectionLabel('Quick Actions'),
-                const SizedBox(height: 8),
-                Row(children: [
-                  _quickAction(context,
-                      label: 'New Invoice',
-                      icon: Icons.add_circle_outline,
-                      route: AppRoutes.createInvoice),
-                  _quickAction(context,
-                      label: 'Add Product',
-                      icon: Icons.storefront_outlined,
-                      route: AppRoutes.addProduct),
-                  _quickAction(context,
-                      label: 'Add Customer',
-                      icon: Icons.person_add_outlined,
-                      route: AppRoutes.addCustomer),
-                ]),
-                const SizedBox(height: 20),
 
                 // Recent invoices
                 _sectionLabel('Recent Invoices'),
@@ -196,21 +196,24 @@ class DashboardScreen extends ConsumerWidget {
           required IconData icon,
           required String route}) =>
       Expanded(
-          child: GestureDetector(
-              onTap: () => context.push(route),
-              child: Container(
-                  margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Column(children: [
-                    Icon(icon, color: AppColors.primary),
-                    const SizedBox(height: 4),
-                    Text(label,
-                        style: const TextStyle(fontSize: 11),
-                        textAlign: TextAlign.center),
-                  ]))));
+          child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+            onTap: () => context.push(route),
+            child: Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12)),
+                child: Column(children: [
+                  Icon(icon, color: AppColors.primary),
+                  const SizedBox(height: 4),
+                  Text(label,
+                      style: const TextStyle(fontSize: 11),
+                      textAlign: TextAlign.center),
+                ]))),
+      ));
 
   String _greeting() {
     final h = DateTime.now().hour;

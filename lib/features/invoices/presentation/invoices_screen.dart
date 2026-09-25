@@ -68,7 +68,11 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Invoices'),
+        // title: const Text('Invoices'),
+
+        backgroundColor: Color(0xF0FFFFFF),
+        title: const Text(style: TextStyle(color: Colors.black), 'Invoices'),
+
         bottom: TabBar(
           controller: _tabCtrl,
           isScrollable: true,

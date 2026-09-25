@@ -4,6 +4,7 @@ abstract class AppScreenKeys {
   static const String dashboard = 'dashboard';
   static const String inventory = 'inventory';
   static const String customers = 'customers';
+  static const String vendors = 'vendors';
   static const String invoices = 'invoices';
   static const String payments = 'payments';
   static const String reports = 'reports';

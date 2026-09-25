@@ -89,6 +89,11 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
     }).toList();
 
     return Scaffold(
+      appBar: AppBar(
+        title:
+            const Text(style: TextStyle(color: Color(0xFFA9A9A9)), 'Products'),
+        backgroundColor: Color(0xF0FFFFFF),
+      ),
       body: Column(children: [
         // ── SEARCH BAR ────────────────────────────────────────────────────
         Padding(

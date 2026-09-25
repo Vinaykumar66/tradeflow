@@ -533,6 +533,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ),
               ),
               const SizedBox(height: 12),
+              TextButton(
+                  onPressed: () => context.push(AppRoutes.joinBusiness),
+                  child: const Text(
+                      'Have an invite code? Join a business instead')),
+
+              const SizedBox(height: 12),
 
               // ── SKIP LINK (duplicate at bottom for visibility) ─────────────
               Center(

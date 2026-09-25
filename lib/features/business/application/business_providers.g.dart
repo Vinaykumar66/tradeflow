@@ -24,7 +24,7 @@ final userBusinessListProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef UserBusinessListRef = AutoDisposeFutureProviderRef<List<Business>>;
-String _$activeBusinessHash() => r'38c06cf4c5d3f18f7b5cd83c4393994bc7259949';
+String _$activeBusinessHash() => r'63ba5fdff6cc60471a5c068292dc88352438ad3f';
 
 /// See also [activeBusiness].
 @ProviderFor(activeBusiness)

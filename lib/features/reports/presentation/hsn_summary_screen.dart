@@ -22,7 +22,11 @@ class HsnSummaryScreen extends ConsumerWidget {
     final invoicesAsync = ref.watch(outwardSuppliesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('HSN/SAC Summary')),
+      appBar: AppBar(
+          iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
+          backgroundColor: const Color(0xF0FFFFFF),
+          title: const Text(
+              style: TextStyle(color: Color(0xFF2F4F4F)), 'HSN/SAC Summary')),
       body: invoicesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),

@@ -10,12 +10,14 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tradeflow/core/interfaces/i_eway_bill_provider.dart';
 import 'package:tradeflow/features/invoices/data/stub_eway_bill_provider.dart';
+import '../../features/vendors/data/vendor_repository.dart';
 import '../audit/audit_service.dart';
 import '../interfaces/i_audit_service.dart';
 import '../interfaces/i_auth_service.dart';
 import '../interfaces/i_business_repository.dart';
 import '../interfaces/i_storage_service.dart';
 import '../interfaces/i_user_repository.dart';
+import '../interfaces/i_vendor_repository.dart';
 import '../storage/storage_tracking_service.dart';
 import '../../features/auth/data/supabase_auth_service.dart';
 import '../../features/auth/data/user_repository.dart';
@@ -69,6 +71,10 @@ IPermissionRepository permissionRepository(PermissionRepositoryRef ref) =>
 @riverpod
 ICustomerRepository customerRepository(CustomerRepositoryRef ref) =>
     CustomerRepository();
+
+@riverpod
+IVendorRepository vendorRepository(VendorRepositoryRef ref) =>
+    VendorRepository();
 
 @riverpod
 ITaxCodeRepository taxCodeRepository(TaxCodeRepositoryRef ref) =>

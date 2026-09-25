@@ -185,6 +185,24 @@ final customerRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CustomerRepositoryRef = AutoDisposeProviderRef<ICustomerRepository>;
+String _$vendorRepositoryHash() => r'25660a20efb41f5f30321b41377c46f9ccd09130';
+
+/// See also [vendorRepository].
+@ProviderFor(vendorRepository)
+final vendorRepositoryProvider =
+    AutoDisposeProvider<IVendorRepository>.internal(
+  vendorRepository,
+  name: r'vendorRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$vendorRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef VendorRepositoryRef = AutoDisposeProviderRef<IVendorRepository>;
 String _$taxCodeRepositoryHash() => r'30a425cc1082fd3ff35266e9739ad33c1a3f5315';
 
 /// See also [taxCodeRepository].

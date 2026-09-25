@@ -104,7 +104,7 @@ class LaserInvoicePrinter implements IInvoicePrinter {
       // Item table
       pw.Table(
           border: pw.TableBorder.all(color: PdfColors.grey300),
-          columnWidths: showHsnColumn
+          columnWidths: showHsnColumn || showCommodity
               ? {
                   0: const pw.FlexColumnWidth(3),
                   1: const pw.FlexColumnWidth(1.5),

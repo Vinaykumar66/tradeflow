@@ -4,11 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tradeflow/features/admin/presentation/business_settings_screen.dart'
     show BusinessSettingsScreen;
+import 'package:tradeflow/features/vendors/presentation/vendors_screen.dart';
 import '../../features/admin/presentation/printer_settings_screen.dart';
 import '../../features/admin/presentation/tax_codes_screen.dart';
+import '../../features/admin/presentation/team_members_screen.dart';
 import '../../features/auth/application/auth_providers.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/signup_screen.dart';
+import '../../features/business/presentation/join_business_screen.dart';
 import '../../features/business/presentation/onboarding_screen.dart';
 import '../../features/customers/presentation/add_edit_customer_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
@@ -20,7 +23,9 @@ import '../../features/reports/presentation/reports_screen.dart';
 import '../../features/admin/presentation/admin_screen.dart';
 import '../../features/admin/presentation/permission_settings_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/vendors/presentation/add_edit_vendor_screen.dart';
 import '../../shared/models/invoice.dart';
+import '../../shared/models/vendor.dart';
 import '../../shared/widgets/app_shell.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/add_edit_product_screen.dart';
@@ -75,6 +80,11 @@ abstract class AppRoutes {
   static const String gstr1Report = '/reports/gst/gstr1';
   static const String hsnSummary = '/reports/gst/hsn';
   static const String gstr3bSummary = '/reports/gst/gstr3b';
+  static const String joinBusiness = '/join-business';
+  static const String manageTeamMembers = '/admin/manage-team';
+  static const String vendors = '/vendors';
+  static const String addVendor = '/vendors/add';
+  static const String editVendor = '/vendors/edit';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];
@@ -152,6 +162,20 @@ GoRouter appRouter(Ref ref) {
                     path: 'ledger',
                     builder: (_, s) =>
                         CustomerLedgerScreen(customer: s.extra as Customer)),
+              ]),
+
+          GoRoute(
+              path: AppRoutes.vendors,
+              builder: (_, __) => const VendorsScreen(),
+              routes: [
+                GoRoute(
+                    path: 'add',
+                    builder: (_, __) =>
+                        const AddEditVendorScreen(vendor: null)),
+                GoRoute(
+                    path: 'edit',
+                    builder: (_, s) =>
+                        AddEditVendorScreen(vendor: s.extra as Vendor?)),
               ]),
           GoRoute(
               path: AppRoutes.invoices,
@@ -232,6 +256,12 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
               path: AppRoutes.gstr3bSummary,
               builder: (_, __) => const Gstr3bSummaryScreen()),
+          GoRoute(
+              path: AppRoutes.joinBusiness,
+              builder: (_, __) => const JoinBusinessScreen()),
+          GoRoute(
+              path: AppRoutes.manageTeamMembers,
+              builder: (_, __) => const TeamMembersScreen()),
         ],
       ),
     ],

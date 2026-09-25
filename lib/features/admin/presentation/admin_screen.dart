@@ -10,6 +10,7 @@ class AdminScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
         backgroundColor: Color(0xF0FFFFFF),
         title: const Text(style: TextStyle(color: Colors.black), 'Admin'),
       ),
@@ -55,6 +56,14 @@ class AdminScreen extends StatelessWidget {
             subtitle: const Text('Set up printer settings'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(AppRoutes.printerSettings),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.image_outlined),
+            title: const Text('Manage Team members'),
+            subtitle: const Text('Modify team member roles and permissions'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(AppRoutes.manageTeamMembers),
           ),
           const Divider(),
         ],

@@ -63,8 +63,9 @@ class _PermissionSettingsScreenState
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xF0FFFFFF),
+        iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
         title: const Text(
-            style: TextStyle(color: Colors.black), 'Permission Settings'),
+            style: TextStyle(color: Color(0xFF2F4F4F)), 'Permission Settings'),
         // ── TAB BAR in AppBar bottom ─────────────────────────────────────
         bottom: TabBar(
           // labelColor: Color.from(alpha: 24, red: 10, green: 10, blue: 10),

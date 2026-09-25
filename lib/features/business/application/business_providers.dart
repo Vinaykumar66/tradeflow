@@ -6,6 +6,7 @@ import '../../../core/di/repository_providers.dart';
 import '../../../features/auth/application/auth_providers.dart';
 import '../../../shared/models/business.dart';
 import '../../../core/supabase/supabase_client.dart';
+import 'active_business_selector.dart';
 
 part 'business_providers.g.dart';
 
@@ -31,7 +32,7 @@ Future<Business?> activeBusiness(ActiveBusinessRef ref) async {
   // Watch auth stream — ensures this rebuilds after login
   // Without this the provider runs before the session is ready
   ref.watch(supabaseAuthStateProvider);
-
+  final selectedId = ref.watch(activeBusinessSelectorProvider);
   // Read current user from the live session
   final user = supabase.auth.currentUser;
 
@@ -44,22 +45,36 @@ Future<Business?> activeBusiness(ActiveBusinessRef ref) async {
 
   try {
     // Step 1: find business_id from business_members
-    final memberRow = await supabase
+
+    //  commented on day 59 of dev
+    // final memberRow = await supabase
+    //     .from('business_members')
+    //     .select('business_id')
+    //     .eq('uid', user.id)
+    //     .eq('is_active', true)
+    //     .limit(1)
+    //     .maybeSingle();
+
+    final memberRows = await supabase
         .from('business_members')
         .select('business_id')
         .eq('uid', user.id)
-        .eq('is_active', true)
-        .limit(1)
-        .maybeSingle();
+        .eq('is_active', true);
 
-    debugPrint('activeBusinessProvider memberRow: $memberRow');
+    debugPrint('activeBusinessProvider memberRow: $memberRows');
 
-    if (memberRow == null) {
+    if (memberRows.isEmpty) {
       debugPrint('activeBusinessProvider: no membership found for this user');
       return null;
     }
 
-    final bizId = memberRow['business_id'] as String;
+    final validIds = memberRows.map((r) => r['business_id'] as String).toSet();
+
+    // final bizId = memberRow['business_id'] as String; commented on day 59
+
+    final bizId = (selectedId != null && validIds.contains(selectedId))
+        ? selectedId
+        : memberRows.first['business_id'] as String;
 
     // Step 2: fetch the full business row
     final bizRow = await supabase

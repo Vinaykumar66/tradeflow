@@ -32,6 +32,7 @@ Stream<RolePermissionSet?> currentRolePermissions(
 bool hasScreenPermission(
     HasScreenPermissionRef ref, String screenKey, PermissionAction action) {
   final perms = ref.watch(currentRolePermissionsProvider).asData?.value;
+
   if (perms == null) return false;
   return switch (action) {
     PermissionAction.view => perms.canView(screenKey),

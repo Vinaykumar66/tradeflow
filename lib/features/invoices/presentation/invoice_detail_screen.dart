@@ -18,11 +18,11 @@ import '../../../features/business/application/business_providers.dart';
 import '../../../shared/models/eway_bill.dart';
 import '../../../shared/models/invoice.dart';
 import '../application/invoice_providers.dart';
-import '../data/invoice_pdf_generators.dart';
+// import '../data/invoice_pdf_generators.dart';
 import 'widgets/invoice_status_badge.dart';
 import '../data/printers/invoice_printer_registry.dart';
 import 'widgets/print_format_picker_sheet.dart';
-import '../../../core/router/app_router.dart';
+// import '../../../core/router/app_router.dart';
 import '../data/einvoice_payload_builder.dart';
 import 'widgets/transporter_details_sheet.dart';
 
@@ -93,10 +93,14 @@ class InvoiceDetailScreen extends ConsumerWidget {
               icon: const Icon(Icons.print_outlined),
               tooltip:
                   'Tap to print with your default printer. Long-press to choose a different format.',
-              onPressed: () => _print(context, ref, invoice, override: null),
-              // fullAsync.asData?.value == null
-              //     ? null
-              //     : () => _print(context, ref, fullAsync.asData!.value!)
+              onPressed:
+                  //commented on 25Sep 2026 as li\ne item det was not being printed on invoice
+                  // () => _print(context, ref, invoice, override: null),
+                  //commented on 25Sep 2026 as li\ne item det was not being printed on invoice
+                  fullAsync.asData?.value == null
+                      ? null
+                      : () => _print(context, ref, fullAsync.asData!.value!,
+                          override: null),
               onLongPress: () async {
                 final biz = ref.read(activeBusinessProvider).asData?.value;
                 final chosen = await PrintFormatPickerSheet.show(

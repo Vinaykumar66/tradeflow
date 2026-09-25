@@ -33,7 +33,11 @@ class PrinterSettingsScreen extends ConsumerWidget {
     final biz = ref.watch(activeBusinessProvider).asData?.value;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Printing')),
+      appBar: AppBar(
+          backgroundColor: Color(0xF0FFFFFF),
+          iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
+          title: const Text(
+              style: TextStyle(color: Color(0xFF2F4F4F)), 'Printing')),
       body: ListView(children: [
         Padding(
             padding: const EdgeInsets.all(16),

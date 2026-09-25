@@ -12,7 +12,12 @@ class Gstr3bSummaryScreen extends ConsumerWidget {
     final invoicesAsync = ref.watch(outwardSuppliesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('GSTR-3B Tax Liability')),
+      appBar: AppBar(
+          iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
+          backgroundColor: const Color(0xF0FFFFFF),
+          title: const Text(
+              style: TextStyle(color: Color(0xFF2F4F4F)),
+              'GSTR-3B Tax Liability')),
       body: invoicesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),

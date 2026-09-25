@@ -100,7 +100,11 @@ class _BusinessSettingsScreenState
     final taxCfg = CountryTaxRegistry.forCountry(biz?.countryCode);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Business Settings')),
+      appBar: AppBar(
+          backgroundColor: Color(0xF0FFFFFF),
+          iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
+          title: const Text(
+              style: TextStyle(color: Color(0xFF2F4F4F)), 'Business Settings')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

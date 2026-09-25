@@ -15,7 +15,11 @@ class TaxCodesScreen extends ConsumerWidget {
     final codes = ref.watch(taxCodeListProvider).asData?.value ?? [];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Tax Codes')),
+      appBar: AppBar(
+          backgroundColor: Color(0xF0FFFFFF),
+          iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
+          title: const Text(
+              style: TextStyle(color: Color(0xFF2F4F4F)), 'Tax Codes')),
       body: codes.isEmpty
           ? Center(
               child: Column(mainAxisSize: MainAxisSize.min, children: [

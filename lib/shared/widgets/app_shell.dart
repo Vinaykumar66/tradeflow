@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tradeflow/core/di/repository_providers.dart';
+import 'package:tradeflow/features/business/application/active_business_selector.dart';
 import 'package:tradeflow/shared/models/permission.dart';
 import '../../core/constants/permission_keys.dart';
 import '../../core/router/app_router.dart';
@@ -57,6 +58,12 @@ const _allTabs = [
       screenKey: AppScreenKeys.customers,
       icon: Icons.people_outline,
       activeIcon: Icons.people_rounded),
+  _Tab(
+      path: AppRoutes.vendors,
+      label: 'Vendors',
+      screenKey: AppScreenKeys.vendors,
+      icon: Icons.store_outlined,
+      activeIcon: Icons.store_rounded),
   _Tab(
       path: AppRoutes.invoices,
       label: 'Invoices',
@@ -147,6 +154,36 @@ class _DrawerLayout extends ConsumerWidget {
     required this.isWideScreen,
     required this.ref,
   });
+  void _showBusinessPicker(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+        context: context,
+        builder: (ctx) => Consumer(builder: (ctx, ref, _) {
+              final businesses =
+                  ref.watch(userBusinessListProvider).asData?.value ?? [];
+              final current =
+                  ref.watch(activeBusinessProvider).asData?.value?.id;
+
+              return SafeArea(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text('Switch Business',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                ...businesses.map((b) => ListTile(
+                    leading: b.id == current
+                        ? const Icon(Icons.check_circle, color: Colors.green)
+                        : const Icon(Icons.business_outlined),
+                    title: Text(b.name),
+                    onTap: () async {
+                      await ref
+                          .read(activeBusinessSelectorProvider.notifier)
+                          .select(b.id);
+                      ref.invalidate(activeBusinessProvider);
+                      if (ctx.mounted) Navigator.pop(ctx);
+                    })),
+              ]));
+            }));
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -165,7 +202,8 @@ class _DrawerLayout extends ConsumerWidget {
               // Override default leading so hamburger is always visible
               automaticallyImplyLeading: false,
               leading: IconButton(
-                icon: const Icon(Icons.menu),
+                icon:
+                    !isExpanded ? Icon(Icons.menu) : Icon(Icons.close_outlined),
                 tooltip: isExpanded ? 'Collapse Menu' : 'Expand Menu',
                 onPressed: () => ref
                     .read(sidebarExpandedProvider.notifier)
@@ -180,6 +218,10 @@ class _DrawerLayout extends ConsumerWidget {
                     onPressed: () =>
                         ref.read(navLayoutProvider.notifier).state = false,
                   ),
+                IconButton(
+                    icon: const Icon(Icons.switch_access_shortcut),
+                    tooltip: 'Switch Business account',
+                    onPressed: () => _showBusinessPicker(context, ref)),
                 IconButton(
                     icon: const Icon(Icons.account_circle_outlined),
                     onPressed: () => context.push(AppRoutes.profile)),
@@ -263,6 +305,8 @@ class _DrawerLayout extends ConsumerWidget {
                                       onTap: () => context.go(tab.path),
                                       borderRadius: BorderRadius.circular(8),
                                       child: AnimatedContainer(
+                                        width: isExpanded ? 240 : 70,
+                                        curve: Curves.easeInOut,
                                         duration:
                                             const Duration(milliseconds: 200),
                                         margin: const EdgeInsets.symmetric(
@@ -293,43 +337,59 @@ class _DrawerLayout extends ConsumerWidget {
                                                   )
                                                 : null),
                                         clipBehavior: Clip.hardEdge,
-                                        child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: isExpanded
-                                                ? MainAxisAlignment.start
-                                                : MainAxisAlignment.center,
-                                            children: [
-                                              // Icon — always visible
-                                              Icon(
-                                                  isSelected
-                                                      ? tab.activeIcon
-                                                      : tab.icon,
-                                                  size: 22,
-                                                  color: isSelected
-                                                      ? AppColors.surface
-                                                      : Colors.white),
-                                              // show label — only when expanded
-                                              if (isExpanded) ...[
-                                                const SizedBox(width: 20),
-                                                Flexible(
-                                                    child: Text(tab.label,
-                                                        style: TextStyle(
-                                                            fontSize: 13,
-                                                            fontWeight:
-                                                                isSelected
-                                                                    ? FontWeight
-                                                                        .bold
-                                                                    : FontWeight
-                                                                        .normal,
-                                                            color: isSelected
-                                                                ? AppColors
-                                                                    .surface
-                                                                : Colors.grey
-                                                                    .shade500),
-                                                        overflow: TextOverflow
-                                                            .ellipsis)),
-                                              ],
-                                            ]),
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          child: SizedBox(
+                                            // width: isExpanded ? 240 : 70,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 16),
+                                              child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  mainAxisAlignment: isExpanded
+                                                      ? MainAxisAlignment.start
+                                                      : MainAxisAlignment
+                                                          .center,
+                                                  children: [
+                                                    // Icon — always visible
+                                                    Icon(
+                                                        isSelected
+                                                            ? tab.activeIcon
+                                                            : tab.icon,
+                                                        size: 22,
+                                                        color: isSelected
+                                                            ? AppColors.surface
+                                                            : Colors.white),
+                                                    // show label — only when expanded
+                                                    if (isExpanded) ...[
+                                                      const SizedBox(width: 20),
+                                                      Flexible(
+                                                          child: Text(tab.label,
+                                                              style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  fontWeight: isSelected
+                                                                      ? FontWeight
+                                                                          .bold
+                                                                      : FontWeight
+                                                                          .normal,
+                                                                  color: isSelected
+                                                                      ? AppColors
+                                                                          .surface
+                                                                      : Colors
+                                                                          .grey
+                                                                          .shade500),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis)),
+                                                    ],
+                                                  ]),
+                                            ),
+                                          ),
+                                        ),
                                       )));
                             }).toList())),
 
@@ -373,6 +433,10 @@ class _DrawerLayout extends ConsumerWidget {
                     onPressed: () =>
                         ref.read(navLayoutProvider.notifier).state = false,
                   ),
+                IconButton(
+                    icon: const Icon(Icons.switch_access_shortcut),
+                    tooltip: 'Switch Business account',
+                    onPressed: () => _showBusinessPicker(context, ref)),
                 IconButton(
                     icon: const Icon(Icons.account_circle_outlined),
                     onPressed: () => context.push(AppRoutes.profile)),

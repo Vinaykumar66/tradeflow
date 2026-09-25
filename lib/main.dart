@@ -148,3 +148,6 @@ The short answer: do it now before you have real users and real uploaded files. 
 // git add .
 // git commit -m "Rename project to YourNewName"
 // git push
+
+//to open supabase send reminder email index.ts
+//open supabase/functions/send-reminder-email

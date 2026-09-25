@@ -9,7 +9,11 @@ class GstComplianceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('GST Compliance ')),
+        appBar: AppBar(
+            iconTheme: IconThemeData(color: Color(0xFF2F4F4F)),
+            backgroundColor: Color(0xF0FFFFFF),
+            title: const Text(
+                style: TextStyle(color: Color(0xFF2F4F4F)), 'GST Compliance ')),
         body: ListView(padding: const EdgeInsets.all(16), children: [
           _tile(context,
               title: 'GSTR-1 - Outward Supplies',

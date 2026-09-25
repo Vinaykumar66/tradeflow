@@ -53,4 +53,5 @@ Future<List<DueReminder>> whatsappQueue(WhatsappQueueRef ref) async {
       due.add(DueReminder(invoice: inv, channel: 'whatsapp', message: message));
     }
   }
+  return due;
 }

@@ -16,7 +16,12 @@ class Gstr1ReportScreen extends ConsumerWidget {
     final invoicesAsync = ref.watch(outwardSuppliesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('GSTR-1 - Outward Supplies')),
+      appBar: AppBar(
+          iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
+          backgroundColor: const Color(0xF0FFFFFF),
+          title: const Text(
+              style: TextStyle(color: Color(0xFF2F4F4F)),
+              'GSTR-1 - Outward Supplies')),
       body: invoicesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
