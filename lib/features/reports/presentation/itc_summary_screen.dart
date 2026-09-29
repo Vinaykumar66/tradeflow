@@ -57,7 +57,7 @@ class ItcSummaryScreen extends ConsumerWidget {
   }
 
   Widget _row(String label, String value, {bool bold = false}) => Padding(
-      padding: const EdgeInset.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(children: [
         Text(label,
             style: TextStyle(

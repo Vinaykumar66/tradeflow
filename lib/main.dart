@@ -149,5 +149,8 @@ The short answer: do it now before you have real users and real uploaded files. 
 // git commit -m "Rename project to YourNewName"
 // git push
 
+//dart run build_runner build 
+//dart run build_runner build --delete-conflicting-outputs
+
 //to open supabase send reminder email index.ts
 //open supabase/functions/send-reminder-email

@@ -24,6 +24,24 @@ final outwardSuppliesProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef OutwardSuppliesRef = AutoDisposeFutureProviderRef<List<Invoice>>;
+String _$inputPurchasesHash() => r'56cea294a1d87020c942518330e102c64534302d';
+
+/// See also [inputPurchases].
+@ProviderFor(inputPurchases)
+final inputPurchasesProvider =
+    AutoDisposeFutureProvider<List<PurchaseBill>>.internal(
+  inputPurchases,
+  name: r'inputPurchasesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$inputPurchasesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef InputPurchasesRef = AutoDisposeFutureProviderRef<List<PurchaseBill>>;
 String _$gstReportPeriodNotifierHash() =>
     r'490437140c8efc0829f6b07cd04025826b83e98f';
 

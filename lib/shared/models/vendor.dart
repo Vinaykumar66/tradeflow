@@ -15,6 +15,7 @@ abstract class Vendor with _$Vendor {
     String? city,
     String? state,
     @JsonKey(name: 'is_active') @Default(true) bool? isActive,
+    @Default(0) int outstanding,
   }) = _Vendor;
 
   factory Vendor.fromJson(Map<String, dynamic> json) => _$VendorFromJson(json);

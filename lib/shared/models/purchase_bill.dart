@@ -50,7 +50,7 @@ abstract class PurchaseBill with _$PurchaseBill {
 }
 
 extension PurchaseBillItemX on PurchaseBillItem {
-  PurchaseBillItem recalculate({String? sellerState, String? buyState}) {
+  PurchaseBillItem recalculate({String? sellerState, String? buyerState}) {
     final gross = (unitPrice * quantity).round();
     final tax = (gross * taxRate / 100).round();
     final total = gross + tax;
