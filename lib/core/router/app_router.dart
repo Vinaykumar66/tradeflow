@@ -19,12 +19,17 @@ import '../../features/inventory/presentation/inventory_screen.dart';
 import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/invoices/presentation/invoices_screen.dart';
 import '../../features/invoices/presentation/thermal_printer_pairing_screen.dart';
+import '../../features/purchases/presentation/purchase_bill_detail_screen.dart'
+    show PurchaseBillDetailScreen;
+import '../../features/purchases/presentation/record_vendor_payment_screen.dart'
+    show RecordVendorPaymentScreen;
 import '../../features/reports/presentation/reports_screen.dart';
 import '../../features/admin/presentation/admin_screen.dart';
 import '../../features/admin/presentation/permission_settings_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/vendors/presentation/add_edit_vendor_screen.dart';
 import '../../shared/models/invoice.dart';
+import '../../shared/models/purchase_bill.dart';
 import '../../shared/models/vendor.dart';
 import '../../shared/widgets/app_shell.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
@@ -85,6 +90,8 @@ abstract class AppRoutes {
   static const String vendors = '/vendors';
   static const String addVendor = '/vendors/add';
   static const String editVendor = '/vendors/edit';
+  static const String payVendor = '/vendors/pay';
+  static const String purchaseBillDetail = '/purchases/detail';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];
@@ -262,6 +269,15 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
               path: AppRoutes.manageTeamMembers,
               builder: (_, __) => const TeamMembersScreen()),
+
+          GoRoute(
+              path: AppRoutes.payVendor,
+              builder: (_, s) =>
+                  RecordVendorPaymentScreen(vendor: s.extra as Vendor)),
+          GoRoute(
+              path: AppRoutes.purchaseBillDetail,
+              builder: (_, s) =>
+                  PurchaseBillDetailScreen(bill: s.extra as PurchaseBill)),
         ],
       ),
     ],

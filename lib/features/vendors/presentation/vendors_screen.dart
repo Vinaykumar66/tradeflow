@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/router/app_router.dart';
 import '../application/vendor_providers.dart';
+import '../../../core/router/app_router.dart';
 
 class VendorsScreen extends ConsumerWidget {
   const VendorsScreen({super.key});
@@ -35,7 +36,22 @@ class VendorsScreen extends ConsumerWidget {
                               ? v.name[0].toUpperCase()
                               : '?')),
                       title: Text(v.name),
-                      subtitle: Text(v.phone ?? 'No phone'),
+                      subtitle: Text(
+                          v.outstanding > 0
+                              ? 'Outstanding: Rs.${(v.outstanding / 100).toStringAsFixed(2)}'
+                              : v.phone ?? 'No phone',
+                          style: TextStyle(
+                              color: v.outstanding > 0 ? Colors.orange : null,
+                              fontWeight:
+                                  v.outstanding > 0 ? FontWeight.w600 : null)),
+                      // Only shown when money is actually owed — same gating condition
+                      // used for Record Payment on Invoice Detail (balanceDue > 0).
+                      trailing: v.outstanding > 0
+                          ? TextButton(
+                              onPressed: () =>
+                                  context.push(AppRoutes.payVendor, extra: v),
+                              child: const Text('Pay'))
+                          : null,
                       onTap: () =>
                           context.push(AppRoutes.editVendor, extra: v));
                 }),

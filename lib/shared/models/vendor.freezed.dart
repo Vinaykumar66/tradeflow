@@ -32,6 +32,7 @@ mixin _$Vendor {
   String? get state => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_active')
   bool? get isActive => throw _privateConstructorUsedError;
+  int get outstanding => throw _privateConstructorUsedError;
 
   /// Serializes this Vendor to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -57,7 +58,8 @@ abstract class $VendorCopyWith<$Res> {
       String? address,
       String? city,
       String? state,
-      @JsonKey(name: 'is_active') bool? isActive});
+      @JsonKey(name: 'is_active') bool? isActive,
+      int outstanding});
 }
 
 /// @nodoc
@@ -85,6 +87,7 @@ class _$VendorCopyWithImpl<$Res, $Val extends Vendor>
     Object? city = freezed,
     Object? state = freezed,
     Object? isActive = freezed,
+    Object? outstanding = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -127,6 +130,10 @@ class _$VendorCopyWithImpl<$Res, $Val extends Vendor>
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
               as bool?,
+      outstanding: null == outstanding
+          ? _value.outstanding
+          : outstanding // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -148,7 +155,8 @@ abstract class _$$VendorImplCopyWith<$Res> implements $VendorCopyWith<$Res> {
       String? address,
       String? city,
       String? state,
-      @JsonKey(name: 'is_active') bool? isActive});
+      @JsonKey(name: 'is_active') bool? isActive,
+      int outstanding});
 }
 
 /// @nodoc
@@ -174,6 +182,7 @@ class __$$VendorImplCopyWithImpl<$Res>
     Object? city = freezed,
     Object? state = freezed,
     Object? isActive = freezed,
+    Object? outstanding = null,
   }) {
     return _then(_$VendorImpl(
       id: null == id
@@ -216,6 +225,10 @@ class __$$VendorImplCopyWithImpl<$Res>
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
               as bool?,
+      outstanding: null == outstanding
+          ? _value.outstanding
+          : outstanding // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -233,7 +246,8 @@ class _$VendorImpl implements _Vendor {
       this.address,
       this.city,
       this.state,
-      @JsonKey(name: 'is_active') this.isActive = true});
+      @JsonKey(name: 'is_active') this.isActive = true,
+      this.outstanding = 0});
 
   factory _$VendorImpl.fromJson(Map<String, dynamic> json) =>
       _$$VendorImplFromJson(json);
@@ -260,10 +274,13 @@ class _$VendorImpl implements _Vendor {
   @override
   @JsonKey(name: 'is_active')
   final bool? isActive;
+  @override
+  @JsonKey()
+  final int outstanding;
 
   @override
   String toString() {
-    return 'Vendor(id: $id, businessId: $businessId, name: $name, phone: $phone, email: $email, gstin: $gstin, address: $address, city: $city, state: $state, isActive: $isActive)';
+    return 'Vendor(id: $id, businessId: $businessId, name: $name, phone: $phone, email: $email, gstin: $gstin, address: $address, city: $city, state: $state, isActive: $isActive, outstanding: $outstanding)';
   }
 
   @override
@@ -282,13 +299,15 @@ class _$VendorImpl implements _Vendor {
             (identical(other.city, city) || other.city == city) &&
             (identical(other.state, state) || other.state == state) &&
             (identical(other.isActive, isActive) ||
-                other.isActive == isActive));
+                other.isActive == isActive) &&
+            (identical(other.outstanding, outstanding) ||
+                other.outstanding == outstanding));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, businessId, name, phone,
-      email, gstin, address, city, state, isActive);
+      email, gstin, address, city, state, isActive, outstanding);
 
   /// Create a copy of Vendor
   /// with the given fields replaced by the non-null parameter values.
@@ -317,7 +336,8 @@ abstract class _Vendor implements Vendor {
       final String? address,
       final String? city,
       final String? state,
-      @JsonKey(name: 'is_active') final bool? isActive}) = _$VendorImpl;
+      @JsonKey(name: 'is_active') final bool? isActive,
+      final int outstanding}) = _$VendorImpl;
 
   factory _Vendor.fromJson(Map<String, dynamic> json) = _$VendorImpl.fromJson;
 
@@ -343,6 +363,8 @@ abstract class _Vendor implements Vendor {
   @override
   @JsonKey(name: 'is_active')
   bool? get isActive;
+  @override
+  int get outstanding;
 
   /// Create a copy of Vendor
   /// with the given fields replaced by the non-null parameter values.

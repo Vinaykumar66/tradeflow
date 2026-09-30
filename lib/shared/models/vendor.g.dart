@@ -17,6 +17,7 @@ _$VendorImpl _$$VendorImplFromJson(Map<String, dynamic> json) => _$VendorImpl(
       city: json['city'] as String?,
       state: json['state'] as String?,
       isActive: json['is_active'] as bool? ?? true,
+      outstanding: (json['outstanding'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$$VendorImplToJson(_$VendorImpl instance) =>
@@ -31,4 +32,5 @@ Map<String, dynamic> _$$VendorImplToJson(_$VendorImpl instance) =>
       'city': instance.city,
       'state': instance.state,
       'is_active': instance.isActive,
+      'outstanding': instance.outstanding,
     };
