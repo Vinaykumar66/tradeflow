@@ -14,6 +14,7 @@ class DashboardStats {
   final int lowStockCount;
   final int outOfStockCount;
   final int draftInvoiceCount;
+  final int totalPayables;
   const DashboardStats({
     this.revenueToday = 0,
     this.revenueWeek = 0,
@@ -24,6 +25,7 @@ class DashboardStats {
     this.lowStockCount = 0,
     this.outOfStockCount = 0,
     this.draftInvoiceCount = 0,
+    this.totalPayables = 0,
   });
 }
 
@@ -63,6 +65,8 @@ Future<DashboardStats> dashboardStats(DashboardStatsRef ref) async {
     _countOutOfStock(bizId),
     //draft invoices
     _countDrafts(bizId),
+    //Vendor payables
+    _sumVendorPayables(bizId),
   ]);
   return DashboardStats(
     revenueToday: results[0],
@@ -74,6 +78,7 @@ Future<DashboardStats> dashboardStats(DashboardStatsRef ref) async {
     lowStockCount: results[6],
     outOfStockCount: results[7],
     draftInvoiceCount: results[8],
+    totalPayables: results[9],
   );
 }
 
@@ -157,4 +162,15 @@ Future<int> _countDrafts(String bizId) async {
       .eq('business_id', bizId)
       .eq('status', kStatusDraft);
   return rows.length;
+}
+
+Future<int> _sumVendorPayables(String bizId) async {
+  final rows = await supabase
+      .from('vendors')
+      .select('outstanding')
+      .eq('business_id', bizId)
+      .eq('is_active', true)
+      .gt('outstanding', 0);
+  return rows.fold<int>(
+      0, (s, r) => s + ((r['outstanding'] as num?)?.toInt() ?? 0));
 }

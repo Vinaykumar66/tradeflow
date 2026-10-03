@@ -110,8 +110,20 @@ class DashboardScreen extends ConsumerWidget {
                           isCurrency: false)),
                 ]),
                 const SizedBox(height: 16),
+                _sectionLabel('Payables'),
+                const SizedBox(height: 8),
+                Row(children: [
+                  Expanded(
+                      child: _statCard(
+                          label: 'Owed to Vendors',
+                          value: fmt(stats.totalPayables),
+                          icon: Icons.local_shipping_outlined,
+                          color: Colors.deepPurple,
+                          onTap: () => context.go(AppRoutes.purchases))),
+                ]),
+                const SizedBox(height: 16),
 
-                // Invenaory alerts
+                // Inventory alerts
                 _sectionLabel('Inventory'),
                 const SizedBox(height: 8),
                 Row(children: [

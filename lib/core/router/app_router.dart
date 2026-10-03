@@ -19,10 +19,14 @@ import '../../features/inventory/presentation/inventory_screen.dart';
 import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/invoices/presentation/invoices_screen.dart';
 import '../../features/invoices/presentation/thermal_printer_pairing_screen.dart';
+import '../../features/purchases/presentation/create_purchase_bill_screen.dart'
+    show CreatePurchaseBillScreen;
 import '../../features/purchases/presentation/purchase_bill_detail_screen.dart'
     show PurchaseBillDetailScreen;
+import '../../features/purchases/presentation/purchase_bills_screen.dart';
 import '../../features/purchases/presentation/record_vendor_payment_screen.dart'
     show RecordVendorPaymentScreen;
+import '../../features/purchases/presentation/vendor_ledger_screen.dart';
 import '../../features/reports/presentation/reports_screen.dart';
 import '../../features/admin/presentation/admin_screen.dart';
 import '../../features/admin/presentation/permission_settings_screen.dart';
@@ -91,7 +95,10 @@ abstract class AppRoutes {
   static const String addVendor = '/vendors/add';
   static const String editVendor = '/vendors/edit';
   static const String payVendor = '/vendors/pay';
-  static const String purchaseBillDetail = '/purchases/detail';
+  // static const String purchaseBillDetail = '/purchases/detail';
+  static const String purchases = '/purchases';
+  static const String createPurchaseBill = '/purchases/create';
+  static const String vendorLedger = '/vendors/ledger';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];
@@ -274,10 +281,27 @@ GoRouter appRouter(Ref ref) {
               path: AppRoutes.payVendor,
               builder: (_, s) =>
                   RecordVendorPaymentScreen(vendor: s.extra as Vendor)),
+          // GoRoute(
+          //     path: AppRoutes.purchaseBillDetail,
+          //     builder: (_, s) =>
+          //         PurchaseBillDetailScreen(bill: s.extra as PurchaseBill)),
+
           GoRoute(
-              path: AppRoutes.purchaseBillDetail,
-              builder: (_, s) =>
-                  PurchaseBillDetailScreen(bill: s.extra as PurchaseBill)),
+              path: AppRoutes.purchases,
+              builder: (_, __) => const PurchaseBillsScreen(),
+              routes: [
+                GoRoute(
+                    path: 'create',
+                    builder: (_, __) => const CreatePurchaseBillScreen()),
+                GoRoute(
+                    path: 'detail',
+                    builder: (_, s) => PurchaseBillDetailScreen(
+                        bill: s.extra as PurchaseBill)),
+              ]),
+          GoRoute(
+            path: AppRoutes.vendorLedger,
+            builder: (_, s) => VendorLedgerScreen(vendor: s.extra as Vendor),
+          )
         ],
       ),
     ],

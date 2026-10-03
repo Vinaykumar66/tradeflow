@@ -31,29 +31,31 @@ class VendorsScreen extends ConsumerWidget {
                 itemBuilder: (_, i) {
                   final v = vendors[i];
                   return ListTile(
-                      leading: CircleAvatar(
-                          child: Text(v.name.isNotEmpty
-                              ? v.name[0].toUpperCase()
-                              : '?')),
-                      title: Text(v.name),
-                      subtitle: Text(
-                          v.outstanding > 0
-                              ? 'Outstanding: Rs.${(v.outstanding / 100).toStringAsFixed(2)}'
-                              : v.phone ?? 'No phone',
-                          style: TextStyle(
-                              color: v.outstanding > 0 ? Colors.orange : null,
-                              fontWeight:
-                                  v.outstanding > 0 ? FontWeight.w600 : null)),
-                      // Only shown when money is actually owed — same gating condition
-                      // used for Record Payment on Invoice Detail (balanceDue > 0).
-                      trailing: v.outstanding > 0
-                          ? TextButton(
-                              onPressed: () =>
-                                  context.push(AppRoutes.payVendor, extra: v),
-                              child: const Text('Pay'))
-                          : null,
-                      onTap: () =>
-                          context.push(AppRoutes.editVendor, extra: v));
+                    leading: CircleAvatar(
+                        child: Text(
+                            v.name.isNotEmpty ? v.name[0].toUpperCase() : '?')),
+                    title: Text(v.name),
+                    subtitle: Text(
+                        v.outstanding > 0
+                            ? 'Outstanding: Rs.${(v.outstanding / 100).toStringAsFixed(2)}'
+                            : v.phone ?? 'No phone',
+                        style: TextStyle(
+                            color: v.outstanding > 0 ? Colors.orange : null,
+                            fontWeight:
+                                v.outstanding > 0 ? FontWeight.w600 : null)),
+                    // Only shown when money is actually owed — same gating condition
+                    // used for Record Payment on Invoice Detail (balanceDue > 0).
+                    trailing: v.outstanding > 0
+                        ? TextButton(
+                            onPressed: () =>
+                                context.push(AppRoutes.payVendor, extra: v),
+                            child: const Text('Pay'))
+                        : null,
+                    onTap: () => context.push(AppRoutes.editVendor, extra: v),
+                    onLongPress: () {
+                      context.push(AppRoutes.vendorLedger, extra: v);
+                    },
+                  );
                 }),
       ),
       floatingActionButton: FloatingActionButton.extended(

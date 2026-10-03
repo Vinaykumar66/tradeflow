@@ -82,6 +82,12 @@ const _allTabs = [
       screenKey: AppScreenKeys.admin,
       icon: Icons.settings_outlined,
       activeIcon: Icons.settings_rounded),
+  _Tab(
+      path: AppRoutes.purchases,
+      label: 'Purchases',
+      screenKey: AppScreenKeys.purchases,
+      icon: Icons.local_shipping_outlined,
+      activeIcon: Icons.local_shipping),
 ];
 
 // ── APP SHELL ─────────────────────────────────────────────────────────────────

@@ -10,6 +10,7 @@ abstract class AppScreenKeys {
   static const String reports = 'reports';
   static const String admin = 'admin';
   static const String catalog = 'catalog';
+  static const String purchases = 'purchases';
 }
 
 abstract class AppFieldKeys {
