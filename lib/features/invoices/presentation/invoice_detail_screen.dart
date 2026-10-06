@@ -25,6 +25,9 @@ import 'widgets/print_format_picker_sheet.dart';
 // import '../../../core/router/app_router.dart';
 import '../data/einvoice_payload_builder.dart';
 import 'widgets/transporter_details_sheet.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import '../../../core/utils/upi_qr_builder.dart';
+import '../../../shared/models/business.dart';
 
 class InvoiceDetailScreen extends ConsumerWidget {
   // Used for a fast initial app-bar title only — never trusted for items.
@@ -126,22 +129,72 @@ class InvoiceDetailScreen extends ConsumerWidget {
         ])),
         data: (full) => _InvoiceDetailBody(invoice: full ?? invoice),
       ),
-      bottomNavigationBar: _paymentButton(context, fullAsync.asData?.value),
+      bottomNavigationBar:
+          _paymentButton(context, fullAsync.asData?.value, biz),
     );
   }
 
-  Widget? _paymentButton(BuildContext context, Invoice? inv) {
-    if (inv == null || inv.balanceDue <= 0) return null;
+  Widget? _paymentButton(BuildContext context, Invoice? inv, Business? biz) {
+    if (inv == null ||
+        inv.documentType != kDocTypeInvoice ||
+        inv.balanceDue <= 0) {
+      return null;
+    }
+
+    final showQr = biz != null && UpiQrBuilder.shouldShow(biz, inv);
+
     return SafeArea(
         child: Padding(
             padding: const EdgeInsets.all(16),
-            child: SizedBox(
-                width: double.infinity,
+            child: Row(children: [
+              if (showQr) ...[
+                Expanded(
+                    child: OutlinedButton.icon(
+                        icon: const Icon(Icons.qr_code_2),
+                        label: const Text('Payment QR'),
+                        onPressed: () => _showUpiQr(context, inv, biz))),
+                const SizedBox(width: 12),
+              ],
+              Expanded(
                 child: ElevatedButton.icon(
                     icon: const Icon(Icons.payments_outlined),
                     label: const Text('Record Payment'),
                     onPressed: () =>
-                        context.push(AppRoutes.recordPayment, extra: inv)))));
+                        context.push(AppRoutes.recordPayment, extra: inv)),
+              ),
+            ])));
+  }
+
+  void _showUpiQr(BuildContext context, Invoice inv, Business biz) {
+    final data = UpiQrBuilder.forInvoice(biz, inv);
+    if (data == null) return;
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+                title: const Text('Scan to Pay'),
+                content: Column(mainAxisSize: MainAxisSize.min, children: [
+                  SizedBox(
+                      width: 220,
+                      height: 220,
+                      child: QrImageView(
+                          data: data, backgroundColor: Colors.white)),
+                  const SizedBox(height: 12),
+                  Text(inv.formattedBalanceDue,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 18)),
+                  Text(biz.upiId!,
+                      style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                  const SizedBox(height: 8),
+                  const Text(
+                      'After the customer pays, tap Record Payment to update this invoice.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 11, color: Colors.grey)),
+                ]),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text('Close')),
+                ]));
   }
 
   Future<void> _print(BuildContext context, WidgetRef ref, Invoice inv,

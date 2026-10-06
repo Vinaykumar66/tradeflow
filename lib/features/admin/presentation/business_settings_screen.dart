@@ -13,6 +13,7 @@ import '../../../core/config/country_tax_config.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../features/business/application/business_providers.dart';
 import '../../../shared/widgets/storage_guard.dart';
+import '../../../core/utils/upi_qr_builder.dart';
 
 class BusinessSettingsScreen extends ConsumerStatefulWidget {
   const BusinessSettingsScreen({super.key});
@@ -94,6 +95,42 @@ class _BusinessSettingsScreenState
     }
   }
 
+  Future<void> _editUpiId(Business biz) async {
+    final ctrl = TextEditingController(text: biz.upiId ?? '');
+    String? error;
+    final result = await showDialog<String>(
+        context: context,
+        builder: (ctx) => StatefulBuilder(
+            builder: (ctx, setState) => AlertDialog(
+                    title: const Text('UPI ID'),
+                    content: TextField(
+                        controller: ctrl,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                            hintText: 'yourname@bank', errorText: error)),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('Cancel')),
+                      ElevatedButton(
+                          onPressed: () {
+                            final v = ctrl.text.trim();
+                            if (v.isNotEmpty && !UpiQrBuilder.isValidVpa(v)) {
+                              setState(() => error =
+                                  'Enter a valid UPI ID, e.g. name@bank');
+                              return;
+                            }
+                            Navigator.pop(ctx, v);
+                          },
+                          child: const Text('Save')),
+                    ])));
+    if (result == null) return;
+    // An empty string clears the UPI ID
+    await ref
+        .read(updateBusinessNotifierProvider.notifier)
+        .update(biz.copyWith(upiId: result.isEmpty ? null : result));
+  }
+
   @override
   Widget build(BuildContext context) {
     final biz = ref.watch(activeBusinessProvider).asData?.value;
@@ -158,39 +195,61 @@ class _BusinessSettingsScreenState
                   .update(biz!.copyWith(ewayBillEnabled: v))),
           if (biz?.ewayBillEnabled == true)
             ListTile(
-                title: const Text('E-way Bill Threshold'),
-                subtitle: Text(
-                    'Rs.${((biz?.ewayBillThreshold ?? 5000000) / 100).toStringAsFixed(0)}'),
-                trailing: const Icon(Icons.edit_outlined),
-                onTap: () async {
-                  final ctrl = TextEditingController(
-                      text: ((biz?.ewayBillThreshold ?? 5000000) / 100)
-                          .toStringAsFixed(0));
-                  final result = await showDialog<String>(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                              title: const Text('E-Way Bill Threshold (Rs.)'),
-                              content: TextField(
-                                  controller: ctrl,
-                                  keyboardType: TextInputType.number),
-                              actions: [
-                                TextButton(
-                                    onPressed: () => Navigator.pop(ctx),
-                                    child: const Text('Cancel')),
-                                ElevatedButton(
-                                    onPressed: () =>
-                                        Navigator.pop(ctx, ctrl.text),
-                                    child: const Text('Save')),
-                              ]));
+              title: const Text('E-way Bill Threshold'),
+              subtitle: Text(
+                  'Rs.${((biz?.ewayBillThreshold ?? 5000000) / 100).toStringAsFixed(0)}'),
+              trailing: const Icon(Icons.edit_outlined),
+              onTap: () async {
+                final ctrl = TextEditingController(
+                    text: ((biz?.ewayBillThreshold ?? 5000000) / 100)
+                        .toStringAsFixed(0));
+                final result = await showDialog<String>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                            title: const Text('E-Way Bill Threshold (Rs.)'),
+                            content: TextField(
+                                controller: ctrl,
+                                keyboardType: TextInputType.number),
+                            actions: [
+                              TextButton(
+                                  onPressed: () => Navigator.pop(ctx),
+                                  child: const Text('Cancel')),
+                              ElevatedButton(
+                                  onPressed: () =>
+                                      Navigator.pop(ctx, ctrl.text),
+                                  child: const Text('Save')),
+                            ]));
 
-                  if (result != null && biz != null) {
-                    final paise =
-                        ((double.tryParse(result) ?? 500) * 100).round();
-                    ref
+                if (result != null && biz != null) {
+                  final paise =
+                      ((double.tryParse(result) ?? 500) * 100).round();
+                  ref
+                      .read(updateBusinessNotifierProvider.notifier)
+                      .update(biz.copyWith(ewayBillThreshold: paise));
+                }
+              },
+            ),
+          if (biz?.countryCode == 'IN') ...[
+            const SizedBox(height: 24),
+            Text('Payments(UPI)',
+                style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('UPI ID'),
+                subtitle: Text(biz?.upiId ?? 'Not set'),
+                trailing: const Icon(Icons.edit_outlined),
+                onTap: () => _editUpiId(biz!)),
+            SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Show payment QR on invoices'),
+                value: biz?.showUpiQr ?? true,
+                onChanged: biz?.upiId == null
+                    ? null
+                    : (v) => ref
                         .read(updateBusinessNotifierProvider.notifier)
-                        .update(biz.copyWith(ewayBillThreshold: paise));
-                  }
-                }),
+                        .update(biz!.copyWith(showUpiQr: v)))
+          ],
         ],
       ),
     );

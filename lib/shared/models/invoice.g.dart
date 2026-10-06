@@ -42,6 +42,11 @@ _$InvoiceImpl _$$InvoiceImplFromJson(Map<String, dynamic> json) =>
       convertedToInvoiceId: json['converted_to_invoice_id'] as String?,
       customerName: json['customer_name'] as String?,
       placeOfSupply: json['place_of_supply'] as String?,
+      originalInvoiceId: json['original_invoice_id'] as String?,
+      originalInvoiceNumber: json['original_invoice_number'] as String?,
+      originalInvoiceDate: json['original_invoice_date'] as String?,
+      creditReason: json['credit_reason'] as String?,
+      restockItems: json['restock_items'] as String?,
       einvoiceStatus: json['einvoice_status'] as String? ?? 'not_generated',
       irn: json['irn'] as String?,
       ackNumber: json['ack_number'] as String?,
@@ -85,6 +90,11 @@ Map<String, dynamic> _$$InvoiceImplToJson(_$InvoiceImpl instance) =>
       'converted_to_invoice_id': instance.convertedToInvoiceId,
       'customer_name': instance.customerName,
       'place_of_supply': instance.placeOfSupply,
+      'original_invoice_id': instance.originalInvoiceId,
+      'original_invoice_number': instance.originalInvoiceNumber,
+      'original_invoice_date': instance.originalInvoiceDate,
+      'credit_reason': instance.creditReason,
+      'restock_items': instance.restockItems,
       'einvoice_status': instance.einvoiceStatus,
       'irn': instance.irn,
       'ack_number': instance.ackNumber,
@@ -120,6 +130,7 @@ _$InvoiceItemImpl _$$InvoiceItemImplFromJson(Map<String, dynamic> json) =>
       ugstTotal: (json['ugst_total'] as num?)?.toInt() ?? 0,
       hsnSacCode: json['hsn_sac_code'] as String?,
       commodityCode: json['commodity_code'] as String?,
+      originalItemId: json['original_item_id'] as String?,
     );
 
 Map<String, dynamic> _$$InvoiceItemImplToJson(_$InvoiceItemImpl instance) =>
@@ -149,4 +160,5 @@ Map<String, dynamic> _$$InvoiceItemImplToJson(_$InvoiceItemImpl instance) =>
       'ugst_total': instance.ugstTotal,
       'hsn_sac_code': instance.hsnSacCode,
       'commodity_code': instance.commodityCode,
+      'original_item_id': instance.originalItemId,
     };

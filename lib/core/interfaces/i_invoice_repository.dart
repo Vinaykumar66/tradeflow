@@ -11,4 +11,7 @@ abstract interface class IInvoiceRepository {
   Future<Invoice> convertToInvoice(Invoice source);
   Future<List<Invoice>> getInvoicesForPeriod(
       String businessId, DateTime start, DateTime end);
+  Future<Map<String, double>> getCreditedQuantities(String invoiceId);
+  Future<List<Invoice>> getCreditNotesForPeriod(
+      String businessId, DateTime start, DateTime end);
 }

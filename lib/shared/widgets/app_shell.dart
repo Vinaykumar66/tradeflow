@@ -58,12 +58,12 @@ const _allTabs = [
       screenKey: AppScreenKeys.customers,
       icon: Icons.people_outline,
       activeIcon: Icons.people_rounded),
-  _Tab(
-      path: AppRoutes.vendors,
-      label: 'Vendors',
-      screenKey: AppScreenKeys.vendors,
-      icon: Icons.store_outlined,
-      activeIcon: Icons.store_rounded),
+  // _Tab(
+  //     path: AppRoutes.vendors,
+  //     label: 'Vendors',
+  //     screenKey: AppScreenKeys.vendors,
+  //     icon: Icons.store_outlined,
+  //     activeIcon: Icons.store_rounded),
   _Tab(
       path: AppRoutes.invoices,
       label: 'Invoices',
@@ -77,17 +77,17 @@ const _allTabs = [
       icon: Icons.bar_chart_outlined,
       activeIcon: Icons.bar_chart_rounded),
   _Tab(
-      path: AppRoutes.admin,
-      label: 'Settings',
-      screenKey: AppScreenKeys.admin,
-      icon: Icons.settings_outlined,
-      activeIcon: Icons.settings_rounded),
-  _Tab(
       path: AppRoutes.purchases,
       label: 'Purchases',
       screenKey: AppScreenKeys.purchases,
       icon: Icons.local_shipping_outlined,
       activeIcon: Icons.local_shipping),
+  _Tab(
+      path: AppRoutes.admin,
+      label: 'Settings',
+      screenKey: AppScreenKeys.admin,
+      icon: Icons.settings_outlined,
+      activeIcon: Icons.settings_rounded),
 ];
 
 // ── APP SHELL ─────────────────────────────────────────────────────────────────

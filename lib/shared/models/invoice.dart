@@ -16,6 +16,8 @@ const kDocTypeProforma = 'proforma';
 const kDocTypeEstimate = 'estimate';
 const kDocTypeQuotation = 'quotation';
 const kStatusConverted = 'converted';
+const kDocTypeCreditNote = 'credit_note';
+const kStatusIssued = 'issued';
 
 @freezed
 abstract class Invoice with _$Invoice {
@@ -56,6 +58,11 @@ abstract class Invoice with _$Invoice {
     String? customerGstin,
     @JsonKey(name: 'customer_name') String? customerName,
     @JsonKey(name: 'place_of_supply') String? placeOfSupply,
+    @JsonKey(name: 'original_invoice_id') String? originalInvoiceId,
+    @JsonKey(name: 'original_invoice_number') String? originalInvoiceNumber,
+    @JsonKey(name: 'original_invoice_date') String? originalInvoiceDate,
+    @JsonKey(name: 'credit_reason') String? creditReason,
+    @JsonKey(name: 'restock_items') String? restockItems,
     @JsonKey(name: 'einvoice_status')
     @Default('not_generated')
     String einvoiceStatus,
@@ -100,6 +107,7 @@ abstract class InvoiceItem with _$InvoiceItem {
     @JsonKey(name: 'ugst_total') @Default(0) int ugstTotal,
     @JsonKey(name: 'hsn_sac_code') String? hsnSacCode,
     @JsonKey(name: 'commodity_code') String? commodityCode,
+    @JsonKey(name: 'original_item_id') String? originalItemId,
   }) = _InvoiceItem;
   factory InvoiceItem.fromJson(Map<String, dynamic> json) =>
       _$InvoiceItemFromJson(json);
@@ -187,5 +195,10 @@ extension InvoiceItemX on InvoiceItem {
         'sort_order': sortOrder,
         'hsn_sac_code': hsnSacCode,
         'commodity_code': commodityCode,
+        'cgst_amount': cgstAmount,
+        'sgst_amount': sgstAmount,
+        'igst_amount': igstAmount,
+        'ugst_amount': ugstAmount,
+        'original_item_id': originalItemId,
       };
 }

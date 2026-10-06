@@ -58,6 +58,8 @@ _$BusinessImpl _$$BusinessImplFromJson(Map<String, dynamic> json) =>
       ewayBillEnabled: json['eway_bill_enabled'] as bool? ?? false,
       ewayBillThreshold:
           (json['eway_bill_threshold'] as num?)?.toInt() ?? 5000000,
+      upiId: json['upi_id'] as String?,
+      showUpiQr: json['show_upi_qr'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$$BusinessImplToJson(_$BusinessImpl instance) =>
@@ -102,4 +104,6 @@ Map<String, dynamic> _$$BusinessImplToJson(_$BusinessImpl instance) =>
       'einvoice_enabled': instance.einvoiceEnabled,
       'eway_bill_enabled': instance.ewayBillEnabled,
       'eway_bill_threshold': instance.ewayBillThreshold,
+      'upi_id': instance.upiId,
+      'show_upi_qr': instance.showUpiQr,
     };

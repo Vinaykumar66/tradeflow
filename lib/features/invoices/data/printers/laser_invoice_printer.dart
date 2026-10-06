@@ -7,6 +7,7 @@ import '../../../../core/interfaces/i_invoice_printer.dart';
 import '../../../../shared/models/business.dart';
 import '../../../../shared/models/customer.dart';
 import '../../../../shared/models/invoice.dart';
+import '../../../../core/utils/upi_qr_builder.dart';
 import 'package:barcode/barcode.dart';
 
 class LaserInvoicePrinter implements IInvoicePrinter {
@@ -52,7 +53,7 @@ class LaserInvoicePrinter implements IInvoicePrinter {
     final showCommodity = inv.items.any((i) => i.commodityCode != null);
     final showSplit =
         inv.cgstTotal + inv.sgstTotal + inv.igstTotal + inv.ugstTotal > 0;
-
+    final upiData = UpiQrBuilder.forInvoice(biz, inv);
     return pw
         .Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
       // ── HEADER: logo + business details, invoice title + number ────────
@@ -189,6 +190,27 @@ class LaserInvoicePrinter implements IInvoicePrinter {
                       bold: true, color: PdfColors.red),
                 ],
               ])),
+      if (upiData != null) ...[
+        pw.SizedBox(height: 16),
+        pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+          pw.BarcodeWidget(
+              barcode: Barcode.qrCode(), data: upiData, width: 80, height: 80),
+          pw.SizedBox(width: 12),
+          pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+            pw.Text('Scan to pay via UPI',
+                style:
+                    pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
+            pw.Text('${inv.formattedBalanceDue} to ${biz.upiId}',
+                style: const pw.TextStyle(fontSize: 9)),
+            // Keeps this QR from being confused with the IRN QR further down
+            pw.Text('Payment QR only. This is not the e-invoice QR.',
+                style: pw.TextStyle(
+                    fontSize: 8,
+                    fontStyle: pw.FontStyle.italic,
+                    color: PdfColors.grey700)),
+          ]),
+        ]),
+      ],
 
       // Notes
       if (inv.notes != null) ...[

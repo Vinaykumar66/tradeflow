@@ -3,6 +3,7 @@ import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tradeflow/shared/models/invoice.dart';
 import '../../../../core/interfaces/i_invoice_printer.dart';
+import '../../../../core/utils/upi_qr_builder.dart';
 
 const _kPrefKeyPairedPrinter = 'thermal_printer_mac_address';
 
@@ -35,6 +36,7 @@ class ThermalInvoicePrinter implements IInvoicePrinter {
   Future<List<int>> _buildReceipt(InvoicePrintJob job) async {
     final inv = job.invoice;
     final biz = job.business;
+
 //80mm paper
     final profile = await CapabilityProfile.load();
     final generator = Generator(PaperSize.mm80, profile);
@@ -84,6 +86,12 @@ class ThermalInvoicePrinter implements IInvoicePrinter {
             width: 6,
             styles: const PosStyles(align: PosAlign.right)),
       ]);
+    }
+    final upi = UpiQrBuilder.forInvoice(biz, inv);
+    if (upi != null) {
+      bytes += generator.text('Scan to pay via UPI',
+          styles: const PosStyles(align: PosAlign.center));
+      bytes += generator.qrcode(upi);
     }
     bytes += generator.feed(2);
     bytes += generator.cut();

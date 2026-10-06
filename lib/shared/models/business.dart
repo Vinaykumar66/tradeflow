@@ -87,6 +87,8 @@ class Business with _$Business {
     @JsonKey(name: 'eway_bill_threshold')
     @Default(5000000)
     int ewayBillThreshold,
+    @JsonKey(name: 'upi_id') String? upiId,
+    @JsonKey(name: 'show_upi_qr') @Default(true) bool showUpiQr,
   }) = _Business;
 
   factory Business.fromJson(Map<String, dynamic> json) =>
@@ -139,5 +141,7 @@ extension BusinessX on Business {
         'einvoice_enabled': einvoiceEnabled,
         'eway_bill_enabled': ewayBillEnabled,
         'eway_bill_threshold': ewayBillThreshold,
+        'upi_id': upiId,
+        'show_upi_qr': showUpiQr,
       };
 }

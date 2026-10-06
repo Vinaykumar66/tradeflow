@@ -178,30 +178,33 @@ class DashboardScreen extends ConsumerWidget {
     bool isCurrency = true,
     VoidCallback? onTap,
   }) =>
-      GestureDetector(
-          onTap: onTap,
-          child: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: color.withValues(alpha: 0.2))),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(icon, color: color, size: 20),
-                    const SizedBox(height: 8),
-                    Text(value,
-                        style: TextStyle(
-                            fontSize: isCurrency ? 13 : 20,
-                            fontWeight: FontWeight.bold,
-                            color: color),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                    Text(label,
-                        style:
-                            const TextStyle(fontSize: 11, color: Colors.grey)),
-                  ])));
+      MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+            onTap: onTap,
+            child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: color.withValues(alpha: 0.2))),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(icon, color: color, size: 20),
+                      const SizedBox(height: 8),
+                      Text(value,
+                          style: TextStyle(
+                              fontSize: isCurrency ? 13 : 20,
+                              fontWeight: FontWeight.bold,
+                              color: color),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                      Text(label,
+                          style: const TextStyle(
+                              fontSize: 11, color: Colors.grey)),
+                    ]))),
+      );
 
   Widget _quickAction(BuildContext context,
           {required String label,

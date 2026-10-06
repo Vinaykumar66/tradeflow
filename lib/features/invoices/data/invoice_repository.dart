@@ -32,6 +32,7 @@ class InvoiceRepository implements IInvoiceRepository {
         kDocTypeProforma => 'PRO',
         kDocTypeEstimate => 'EST',
         kDocTypeQuotation => 'QUO',
+        kDocTypeCreditNote => 'CN',
         _ => 'DOC',
       };
       final seqResult = await supabase.rpc('get_next_document_number', params: {
@@ -65,6 +66,18 @@ class InvoiceRepository implements IInvoiceRepository {
       'notes': inv.notes,
       'terms': inv.terms,
       'created_by': inv.createdBy,
+      'cgst_total': inv.cgstTotal,
+      'sgst_total': inv.sgstTotal,
+      'igst_total': inv.igstTotal,
+      'ugst_total': inv.ugstTotal,
+      'customer_gstin': inv.customerGstin,
+      'customer_name': inv.customerName,
+      'place_of_supply': inv.placeOfSupply,
+      'original_invoice_id': inv.originalInvoiceId,
+      'original_invoice_number': inv.originalInvoiceNumber,
+      'original_invoice_date': inv.originalInvoiceDate,
+      'credit_reason': inv.creditReason,
+      'restock_items': inv.restockItems,
     };
     await supabase.from(SupabaseTables.invoices).insert(map);
 
@@ -246,6 +259,50 @@ class InvoiceRepository implements IInvoiceRepository {
       final items = await getItems(inv.id);
       result.add(inv.copyWith(items: items));
       // result.add(Invoice.fromJson(row));
+    }
+    return result;
+  }
+
+  Future<Map<String, double>> getCreditedQuantities(String invoiceId) async {
+    final notes = await supabase
+        .from(SupabaseTables.invoices)
+        .select('id')
+        .eq('original_invoice_id', invoiceId)
+        .eq('document_type', kDocTypeCreditNote)
+        .neq('status', kStatusCancelled);
+    if (notes.isEmpty) return {};
+
+    final ids = notes.map((n) => n['id'] as String).toList();
+
+    final rows = await supabase
+        .from(SupabaseTables.invoiceItems)
+        .select('original_ite_id, quantity')
+        .inFilter('invoice_id', ids);
+    final credited = <String, double>{};
+    for (final r in rows) {
+      final key = r['original_item_id'] as String?;
+      if (key == null) continue;
+      credited[key] = (credited[key] ?? 0) + (r['quantity'] as num).toDouble();
+    }
+    return credited;
+  }
+
+  @override
+  Future<List<Invoice>> getCreditNotesForPeriod(
+      String businessId, DateTime start, DateTime end) async {
+    final rows = await supabase
+        .from(SupabaseTables.invoices)
+        .select()
+        .eq('business_id', businessId)
+        .eq('document_type', kDocTypeCreditNote)
+        .neq('status', kStatusCancelled)
+        .gte('issue_date', start.toIso8601String().split('T').first)
+        .lte('issue_date', end.toIso8601String().split('T').first)
+        .order('issue_date');
+    final result = <Invoice>[];
+    for (final row in rows) {
+      final inv = Invoice.fromJson(row);
+      result.add(inv.copyWith(items: await getItems(inv.id)));
     }
     return result;
   }

@@ -101,6 +101,10 @@ mixin _$Business {
   bool get ewayBillEnabled => throw _privateConstructorUsedError;
   @JsonKey(name: 'eway_bill_threshold')
   int get ewayBillThreshold => throw _privateConstructorUsedError;
+  @JsonKey(name: 'upi_id')
+  String? get upiId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'show_upi_qr')
+  bool get showUpiQr => throw _privateConstructorUsedError;
 
   /// Serializes this Business to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -158,7 +162,9 @@ abstract class $BusinessCopyWith<$Res> {
       int dotMatrixLeftMarginChars,
       @JsonKey(name: 'einvoice_enabled') bool einvoiceEnabled,
       @JsonKey(name: 'eway_bill_enabled') bool ewayBillEnabled,
-      @JsonKey(name: 'eway_bill_threshold') int ewayBillThreshold});
+      @JsonKey(name: 'eway_bill_threshold') int ewayBillThreshold,
+      @JsonKey(name: 'upi_id') String? upiId,
+      @JsonKey(name: 'show_upi_qr') bool showUpiQr});
 }
 
 /// @nodoc
@@ -216,6 +222,8 @@ class _$BusinessCopyWithImpl<$Res, $Val extends Business>
     Object? einvoiceEnabled = null,
     Object? ewayBillEnabled = null,
     Object? ewayBillThreshold = null,
+    Object? upiId = freezed,
+    Object? showUpiQr = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -378,6 +386,14 @@ class _$BusinessCopyWithImpl<$Res, $Val extends Business>
           ? _value.ewayBillThreshold
           : ewayBillThreshold // ignore: cast_nullable_to_non_nullable
               as int,
+      upiId: freezed == upiId
+          ? _value.upiId
+          : upiId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      showUpiQr: null == showUpiQr
+          ? _value.showUpiQr
+          : showUpiQr // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -431,7 +447,9 @@ abstract class _$$BusinessImplCopyWith<$Res>
       int dotMatrixLeftMarginChars,
       @JsonKey(name: 'einvoice_enabled') bool einvoiceEnabled,
       @JsonKey(name: 'eway_bill_enabled') bool ewayBillEnabled,
-      @JsonKey(name: 'eway_bill_threshold') int ewayBillThreshold});
+      @JsonKey(name: 'eway_bill_threshold') int ewayBillThreshold,
+      @JsonKey(name: 'upi_id') String? upiId,
+      @JsonKey(name: 'show_upi_qr') bool showUpiQr});
 }
 
 /// @nodoc
@@ -487,6 +505,8 @@ class __$$BusinessImplCopyWithImpl<$Res>
     Object? einvoiceEnabled = null,
     Object? ewayBillEnabled = null,
     Object? ewayBillThreshold = null,
+    Object? upiId = freezed,
+    Object? showUpiQr = null,
   }) {
     return _then(_$BusinessImpl(
       id: null == id
@@ -649,6 +669,14 @@ class __$$BusinessImplCopyWithImpl<$Res>
           ? _value.ewayBillThreshold
           : ewayBillThreshold // ignore: cast_nullable_to_non_nullable
               as int,
+      upiId: freezed == upiId
+          ? _value.upiId
+          : upiId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      showUpiQr: null == showUpiQr
+          ? _value.showUpiQr
+          : showUpiQr // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -699,7 +727,9 @@ class _$BusinessImpl implements _Business {
       this.dotMatrixLeftMarginChars = 2,
       @JsonKey(name: 'einvoice_enabled') this.einvoiceEnabled = false,
       @JsonKey(name: 'eway_bill_enabled') this.ewayBillEnabled = false,
-      @JsonKey(name: 'eway_bill_threshold') this.ewayBillThreshold = 5000000});
+      @JsonKey(name: 'eway_bill_threshold') this.ewayBillThreshold = 5000000,
+      @JsonKey(name: 'upi_id') this.upiId,
+      @JsonKey(name: 'show_upi_qr') this.showUpiQr = true});
 
   factory _$BusinessImpl.fromJson(Map<String, dynamic> json) =>
       _$$BusinessImplFromJson(json);
@@ -830,10 +860,16 @@ class _$BusinessImpl implements _Business {
   @override
   @JsonKey(name: 'eway_bill_threshold')
   final int ewayBillThreshold;
+  @override
+  @JsonKey(name: 'upi_id')
+  final String? upiId;
+  @override
+  @JsonKey(name: 'show_upi_qr')
+  final bool showUpiQr;
 
   @override
   String toString() {
-    return 'Business(id: $id, name: $name, ownerUid: $ownerUid, email: $email, phone: $phone, address: $address, city: $city, state: $state, country: $country, pincode: $pincode, gstin: $gstin, taxNumber: $taxNumber, logoUrl: $logoUrl, currencyCode: $currencyCode, currency: $currency, currencySymbol: $currencySymbol, countryCode: $countryCode, taxLabel: $taxLabel, defaultTaxRate: $defaultTaxRate, dateFormat: $dateFormat, useLakhFormat: $useLakhFormat, invoicePrefix: $invoicePrefix, nextInvoiceNumber: $nextInvoiceNumber, licenseTierValue: $licenseTierValue, tierExpiresAt: $tierExpiresAt, emailOverride: $emailOverride, cronReminderOverride: $cronReminderOverride, invoiceLimitOverride: $invoiceLimitOverride, userLimitOverride: $userLimitOverride, storageLimitOverride: $storageLimitOverride, operatorNote: $operatorNote, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, defaultPrintFormat: $defaultPrintFormat, dotMatrixTopMarginLines: $dotMatrixTopMarginLines, dotMatrixLeftMarginChars: $dotMatrixLeftMarginChars, einvoiceEnabled: $einvoiceEnabled, ewayBillEnabled: $ewayBillEnabled, ewayBillThreshold: $ewayBillThreshold)';
+    return 'Business(id: $id, name: $name, ownerUid: $ownerUid, email: $email, phone: $phone, address: $address, city: $city, state: $state, country: $country, pincode: $pincode, gstin: $gstin, taxNumber: $taxNumber, logoUrl: $logoUrl, currencyCode: $currencyCode, currency: $currency, currencySymbol: $currencySymbol, countryCode: $countryCode, taxLabel: $taxLabel, defaultTaxRate: $defaultTaxRate, dateFormat: $dateFormat, useLakhFormat: $useLakhFormat, invoicePrefix: $invoicePrefix, nextInvoiceNumber: $nextInvoiceNumber, licenseTierValue: $licenseTierValue, tierExpiresAt: $tierExpiresAt, emailOverride: $emailOverride, cronReminderOverride: $cronReminderOverride, invoiceLimitOverride: $invoiceLimitOverride, userLimitOverride: $userLimitOverride, storageLimitOverride: $storageLimitOverride, operatorNote: $operatorNote, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, defaultPrintFormat: $defaultPrintFormat, dotMatrixTopMarginLines: $dotMatrixTopMarginLines, dotMatrixLeftMarginChars: $dotMatrixLeftMarginChars, einvoiceEnabled: $einvoiceEnabled, ewayBillEnabled: $ewayBillEnabled, ewayBillThreshold: $ewayBillThreshold, upiId: $upiId, showUpiQr: $showUpiQr)';
   }
 
   @override
@@ -911,7 +947,10 @@ class _$BusinessImpl implements _Business {
             (identical(other.ewayBillEnabled, ewayBillEnabled) ||
                 other.ewayBillEnabled == ewayBillEnabled) &&
             (identical(other.ewayBillThreshold, ewayBillThreshold) ||
-                other.ewayBillThreshold == ewayBillThreshold));
+                other.ewayBillThreshold == ewayBillThreshold) &&
+            (identical(other.upiId, upiId) || other.upiId == upiId) &&
+            (identical(other.showUpiQr, showUpiQr) ||
+                other.showUpiQr == showUpiQr));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -957,7 +996,9 @@ class _$BusinessImpl implements _Business {
         dotMatrixLeftMarginChars,
         einvoiceEnabled,
         ewayBillEnabled,
-        ewayBillThreshold
+        ewayBillThreshold,
+        upiId,
+        showUpiQr
       ]);
 
   /// Create a copy of Business
@@ -1019,8 +1060,9 @@ abstract class _Business implements Business {
       final int dotMatrixLeftMarginChars,
       @JsonKey(name: 'einvoice_enabled') final bool einvoiceEnabled,
       @JsonKey(name: 'eway_bill_enabled') final bool ewayBillEnabled,
-      @JsonKey(name: 'eway_bill_threshold')
-      final int ewayBillThreshold}) = _$BusinessImpl;
+      @JsonKey(name: 'eway_bill_threshold') final int ewayBillThreshold,
+      @JsonKey(name: 'upi_id') final String? upiId,
+      @JsonKey(name: 'show_upi_qr') final bool showUpiQr}) = _$BusinessImpl;
 
   factory _Business.fromJson(Map<String, dynamic> json) =
       _$BusinessImpl.fromJson;
@@ -1140,6 +1182,12 @@ abstract class _Business implements Business {
   @override
   @JsonKey(name: 'eway_bill_threshold')
   int get ewayBillThreshold;
+  @override
+  @JsonKey(name: 'upi_id')
+  String? get upiId;
+  @override
+  @JsonKey(name: 'show_upi_qr')
+  bool get showUpiQr;
 
   /// Create a copy of Business
   /// with the given fields replaced by the non-null parameter values.

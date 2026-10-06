@@ -25,6 +25,11 @@ class InvoiceStatusBadge extends StatelessWidget {
       kStatusDraft => ('DRAFT', Colors.grey.shade200, Colors.grey.shade700),
       kStatusSent => ('SENT', Colors.blue.shade100, Colors.blue.shade800),
       kStatusPaid => ('PAID', Colors.green.shade100, Colors.green.shade800),
+      kStatusIssued => (
+          'ISSUED',
+          Colors.purple.shade100,
+          Colors.purple.shade800
+        ),
       kStatusPartial => (
           'PARTIAL',
           Colors.orange.shade100,
