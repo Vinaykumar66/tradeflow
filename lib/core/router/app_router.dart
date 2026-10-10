@@ -17,6 +17,7 @@ import '../../features/customers/presentation/add_edit_customer_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/inventory/presentation/inventory_screen.dart';
 import '../../features/customers/presentation/customers_screen.dart';
+import '../../features/invoices/presentation/create_credit_note_screen.dart';
 import '../../features/invoices/presentation/invoices_screen.dart';
 import '../../features/invoices/presentation/thermal_printer_pairing_screen.dart';
 import '../../features/purchases/presentation/create_purchase_bill_screen.dart'
@@ -99,6 +100,7 @@ abstract class AppRoutes {
   static const String purchases = '/purchases';
   static const String createPurchaseBill = '/purchases/create';
   static const String vendorLedger = '/vendors/ledger';
+  static const String createCreditNote = '/invoices/credit-note';
 }
 
 const _publicRoutes = [AppRoutes.login, AppRoutes.signup, AppRoutes.onboarding];
@@ -206,6 +208,10 @@ GoRouter appRouter(Ref ref) {
                     path: 'payment',
                     builder: (_, s) =>
                         RecordPaymentScreen(invoice: s.extra as Invoice)),
+                GoRoute(
+                    path: 'credit-note',
+                    builder: (_, s) =>
+                        CreateCreditNoteScreen(invoice: s.extra as Invoice)),
               ]),
 
           // GoRoute(

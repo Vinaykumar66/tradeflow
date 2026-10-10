@@ -17,6 +17,13 @@ class LaserInvoicePrinter implements IInvoicePrinter {
   String get displayName => 'Laser / Inkjet (A4 PDF)';
   @override
   String get iconAssetHint => 'print_outlined';
+  static const _titles = {
+    kDocTypeInvoice: 'INVOICE',
+    kDocTypeProforma: 'PROFORMA INVOICE',
+    kDocTypeEstimate: 'ESTIMATE',
+    kDocTypeQuotation: 'QUOTATION',
+    kDocTypeCreditNote: 'CREDIT NOTE',
+  };
 
   @override
   Future<void> print(InvoicePrintJob job) async {
@@ -78,7 +85,7 @@ class LaserInvoicePrinter implements IInvoicePrinter {
                   ]),
             ]),
             pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
-              pw.Text('INVOICE',
+              pw.Text(_titles[inv.documentType] ?? 'INVOICE',
                   style: pw.TextStyle(
                       fontSize: 24,
                       fontWeight: pw.FontWeight.bold,
@@ -91,6 +98,15 @@ class LaserInvoicePrinter implements IInvoicePrinter {
             ]),
           ]),
       pw.SizedBox(height: 24),
+
+      if (inv.documentType == kDocTypeCreditNote) ...[
+        pw.Text(
+            'Against Invoice: ${inv.originalInvoiceNumber ?? "-"}'
+            '${inv.originalInvoiceDate != null ? " dated ${_fmtDate(inv.originalInvoiceDate! as DateTime)}" : ""}',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        if (inv.creditReason != null) pw.Text('Reason: ${inv.creditReason}'),
+        pw.SizedBox(height: 12),
+      ],
 
       // Bill to
       if (cust != null) ...[

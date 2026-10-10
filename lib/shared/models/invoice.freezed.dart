@@ -87,7 +87,7 @@ mixin _$Invoice {
   @JsonKey(name: 'credit_reason')
   String? get creditReason => throw _privateConstructorUsedError;
   @JsonKey(name: 'restock_items')
-  String? get restockItems => throw _privateConstructorUsedError;
+  bool? get restockItems => throw _privateConstructorUsedError;
   @JsonKey(name: 'einvoice_status')
   String get einvoiceStatus => throw _privateConstructorUsedError;
   @JsonKey(name: 'irn')
@@ -150,7 +150,7 @@ abstract class $InvoiceCopyWith<$Res> {
       @JsonKey(name: 'original_invoice_number') String? originalInvoiceNumber,
       @JsonKey(name: 'original_invoice_date') String? originalInvoiceDate,
       @JsonKey(name: 'credit_reason') String? creditReason,
-      @JsonKey(name: 'restock_items') String? restockItems,
+      @JsonKey(name: 'restock_items') bool? restockItems,
       @JsonKey(name: 'einvoice_status') String einvoiceStatus,
       @JsonKey(name: 'irn') String? irn,
       @JsonKey(name: 'ack_number') String? ackNumber,
@@ -351,7 +351,7 @@ class _$InvoiceCopyWithImpl<$Res, $Val extends Invoice>
       restockItems: freezed == restockItems
           ? _value.restockItems
           : restockItems // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as bool?,
       einvoiceStatus: null == einvoiceStatus
           ? _value.einvoiceStatus
           : einvoiceStatus // ignore: cast_nullable_to_non_nullable
@@ -423,7 +423,7 @@ abstract class _$$InvoiceImplCopyWith<$Res> implements $InvoiceCopyWith<$Res> {
       @JsonKey(name: 'original_invoice_number') String? originalInvoiceNumber,
       @JsonKey(name: 'original_invoice_date') String? originalInvoiceDate,
       @JsonKey(name: 'credit_reason') String? creditReason,
-      @JsonKey(name: 'restock_items') String? restockItems,
+      @JsonKey(name: 'restock_items') bool? restockItems,
       @JsonKey(name: 'einvoice_status') String einvoiceStatus,
       @JsonKey(name: 'irn') String? irn,
       @JsonKey(name: 'ack_number') String? ackNumber,
@@ -622,7 +622,7 @@ class __$$InvoiceImplCopyWithImpl<$Res>
       restockItems: freezed == restockItems
           ? _value.restockItems
           : restockItems // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as bool?,
       einvoiceStatus: null == einvoiceStatus
           ? _value.einvoiceStatus
           : einvoiceStatus // ignore: cast_nullable_to_non_nullable
@@ -804,7 +804,7 @@ class _$InvoiceImpl implements _Invoice {
   final String? creditReason;
   @override
   @JsonKey(name: 'restock_items')
-  final String? restockItems;
+  final bool? restockItems;
   @override
   @JsonKey(name: 'einvoice_status')
   final String einvoiceStatus;
@@ -1013,7 +1013,7 @@ abstract class _Invoice implements Invoice {
       final String? originalInvoiceNumber,
       @JsonKey(name: 'original_invoice_date') final String? originalInvoiceDate,
       @JsonKey(name: 'credit_reason') final String? creditReason,
-      @JsonKey(name: 'restock_items') final String? restockItems,
+      @JsonKey(name: 'restock_items') final bool? restockItems,
       @JsonKey(name: 'einvoice_status') final String einvoiceStatus,
       @JsonKey(name: 'irn') final String? irn,
       @JsonKey(name: 'ack_number') final String? ackNumber,
@@ -1122,7 +1122,7 @@ abstract class _Invoice implements Invoice {
   String? get creditReason;
   @override
   @JsonKey(name: 'restock_items')
-  String? get restockItems;
+  bool? get restockItems;
   @override
   @JsonKey(name: 'einvoice_status')
   String get einvoiceStatus;

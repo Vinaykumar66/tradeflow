@@ -46,7 +46,7 @@ _$InvoiceImpl _$$InvoiceImplFromJson(Map<String, dynamic> json) =>
       originalInvoiceNumber: json['original_invoice_number'] as String?,
       originalInvoiceDate: json['original_invoice_date'] as String?,
       creditReason: json['credit_reason'] as String?,
-      restockItems: json['restock_items'] as String?,
+      restockItems: json['restock_items'] as bool?,
       einvoiceStatus: json['einvoice_status'] as String? ?? 'not_generated',
       irn: json['irn'] as String?,
       ackNumber: json['ack_number'] as String?,

@@ -49,6 +49,14 @@ class InvoiceDetailScreen extends ConsumerWidget {
                 icon: const Icon(Icons.receipt_long_outlined),
                 tooltip: 'Convert to Invoice',
                 onPressed: () => _convertToInvoice(context, ref, invoice)),
+          //credit note
+          if (invoice.documentType == kDocTypeInvoice &&
+              invoice.status != kStatusCancelled)
+            IconButton(
+                icon: Icon(Icons.assignment_return_outlined),
+                tooltip: 'Issue Credit Note',
+                onPressed: () =>
+                    context.push(AppRoutes.createCreditNote, extra: invoice)),
           //if eway bill is enabled
           if (biz?.ewayBillEnabled == true &&
               invoice.total >= (biz?.ewayBillThreshold ?? 5000000))
@@ -341,6 +349,14 @@ class _InvoiceDetailBody extends StatelessWidget {
     final fmt = (int v) => CurrencyFormatter.format(v, sym: sym, lakh: lakh);
 
     return ListView(padding: const EdgeInsets.all(16), children: [
+      if (invoice.documentType == kDocTypeCreditNote) ...[
+        Text('Against invoice ${invoice.originalInvoiceNumber ?? '-'}',
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        if (invoice.creditReason != null)
+          Text(invoice.creditReason!,
+              style: const TextStyle(color: Colors.grey)),
+        const SizedBox(height: 8),
+      ],
       Row(children: [
         InvoiceStatusBadge(status: invoice.status, overdue: invoice.isOverdue),
         const Spacer(),

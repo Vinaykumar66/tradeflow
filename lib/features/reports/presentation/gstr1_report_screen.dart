@@ -14,90 +14,156 @@ class Gstr1ReportScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final period = ref.watch(gstReportPeriodNotifierProvider);
     final invoicesAsync = ref.watch(outwardSuppliesProvider);
+    final notesAsync = ref.watch(creditNotesProvider);
 
     return Scaffold(
-      appBar: AppBar(
-          iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
-          backgroundColor: const Color(0xF0FFFFFF),
-          title: const Text(
-              style: TextStyle(color: Color(0xFF2F4F4F)),
-              'GSTR-1 - Outward Supplies')),
+      appBar: AppBar(title: const Text('GSTR-1 - Outward Supplies')),
       body: invoicesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
-        data: (invoices) {
-          final b2b = invoices.where((i) => i.customerGstin != null).toList();
-          final b2c = invoices.where((i) => i.customerGstin == null).toList();
+        data: (invoices) => notesAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Center(child: Text('Error: $e')),
+          data: (creditNotes) {
+            final b2b = invoices.where((i) => i.customerGstin != null).toList();
+            final b2c = invoices.where((i) => i.customerGstin == null).toList();
 
-          // B2C grouped by tax rate - matches the simplified B2Csummary table used for GSTR-1.
-          final b2cByRate = <double, int>{};
-          for (final inv in b2c) {
-            for (final item in inv.items) {
-              b2cByRate[item.taxRate] =
-                  (b2cByRate[item.taxRate] ?? 0) + item.lineTotal;
+            final b2cByRate = <double, int>{};
+            for (final inv in b2c) {
+              for (final item in inv.items) {
+                b2cByRate[item.taxRate] =
+                    (b2cByRate[item.taxRate] ?? 0) + item.lineTotal;
+              }
             }
-          }
 
-          return ListView(padding: const EdgeInsets.all(16), children: [
-            GstPeriodPicker(
-                label: period.label,
-                onPrevious: () => ref
-                    .read(gstReportPeriodNotifierProvider.notifier)
-                    .previous(),
-                onNext: () =>
-                    ref.read(gstReportPeriodNotifierProvider.notifier).next()),
-            const SizedBox(height: 16),
-            Row(children: [
-              Expanded(
-                  child: _summaryCard('B2B Invoices', '${b2b.length}',
-                      Icons.business_outlined)),
-              const SizedBox(width: 12),
-              Expanded(
-                  child: _summaryCard(
-                      'B2C Invoices', '${b2c.length}', Icons.person_outline)),
-            ]),
-            const SizedBox(height: 20),
-            Text('B2B - Invoice-wise',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            const SizedBox(height: 8),
-            if (b2b.isEmpty)
-              const Text('No B2B invoices this period',
-                  style: TextStyle(color: Colors.grey))
-            else
-              ...b2b.map((inv) => Card(
-                  margin: const EdgeInsets.only(bottom: 6),
-                  child: ListTile(
-                      title: Text(inv.invoiceNumber),
-                      subtitle: Text(
-                          'GSTIN: ${inv.customerGstin}  |  ${inv.customerName ?? ''}',
-                          style: const TextStyle(fontSize: 12)),
-                      trailing: Text(
-                          CurrencyFormatter.format(inv.total,
-                              sym: inv.currencySymbol, lakh: inv.useLakhFormat),
-                          style:
-                              const TextStyle(fontWeight: FontWeight.bold))))),
-            const SizedBox(height: 20),
-            Text('B2C - Summary by Tax Rate',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            const SizedBox(height: 8),
-            if (b2cByRate.isEmpty)
-              const Text('No B2C invoices this period',
-                  style: TextStyle(color: Colors.grey))
-            else
-              ...b2cByRate.entries.map((e) => ListTile(
-                  title: Text('${e.key}% rate'),
-                  trailing: Text('Rs.${(e.value / 100).toStringAsFixed(2)}'))),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-                icon: const Icon(Icons.download_outlined),
-                label: const Text('Export CSV'),
-                onPressed: () => _export(period.label, b2b, b2cByRate)),
-            const SizedBox(height: 32),
-          ]);
-        },
+            // CDNR — registered buyer, invoice-wise, matches GSTR-1's own shape
+            final cdnr =
+                creditNotes.where((c) => c.customerGstin != null).toList();
+            // CDNUR — unregistered buyer, aggregated by tax rate like B2C
+            final cdnur =
+                creditNotes.where((c) => c.customerGstin == null).toList();
+            final cdnurByRate = <double, int>{};
+            for (final note in cdnur) {
+              for (final item in note.items) {
+                cdnurByRate[item.taxRate] =
+                    (cdnurByRate[item.taxRate] ?? 0) + item.lineTotal;
+              }
+            }
+
+            return ListView(padding: const EdgeInsets.all(16), children: [
+              GstPeriodPicker(
+                  label: period.label,
+                  onPrevious: () => ref
+                      .read(gstReportPeriodNotifierProvider.notifier)
+                      .previous(),
+                  onNext: () => ref
+                      .read(gstReportPeriodNotifierProvider.notifier)
+                      .next()),
+              const SizedBox(height: 16),
+
+              Row(children: [
+                Expanded(
+                    child: _summaryCard('B2B Invoices', '${b2b.length}',
+                        Icons.business_outlined)),
+                const SizedBox(width: 12),
+                Expanded(
+                    child: _summaryCard(
+                        'B2C Invoices', '${b2c.length}', Icons.person_outline)),
+              ]),
+              const SizedBox(height: 12),
+              Row(children: [
+                Expanded(
+                    child: _summaryCard('CDNR Notes', '${cdnr.length}',
+                        Icons.assignment_return_outlined)),
+                const SizedBox(width: 12),
+                Expanded(
+                    child: _summaryCard('CDNUR Notes', '${cdnur.length}',
+                        Icons.assignment_return_outlined)),
+              ]),
+              const SizedBox(height: 20),
+
+              Text('B2B - Invoice-wise',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              const SizedBox(height: 8),
+              if (b2b.isEmpty)
+                const Text('No B2B invoices this period',
+                    style: TextStyle(color: Colors.grey))
+              else
+                ...b2b.map((inv) => _invoiceTile(inv)),
+              const SizedBox(height: 20),
+
+              Text('B2C - Summary by Tax Rate',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              const SizedBox(height: 8),
+              if (b2cByRate.isEmpty)
+                const Text('No B2C invoices this period',
+                    style: TextStyle(color: Colors.grey))
+              else
+                ...b2cByRate.entries.map((e) => ListTile(
+                    title: Text('${e.key}% rate'),
+                    trailing:
+                        Text('Rs.${(e.value / 100).toStringAsFixed(2)}'))),
+              const SizedBox(height: 20),
+
+              // ── NEW Day 73 ──────────────────────────────────────────────
+              Text('CDNR - Credit Notes (Registered)',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              const SizedBox(height: 8),
+              if (cdnr.isEmpty)
+                const Text('No registered credit notes this period',
+                    style: TextStyle(color: Colors.grey))
+              else
+                ...cdnr.map((note) => Card(
+                    margin: const EdgeInsets.only(bottom: 6),
+                    child: ListTile(
+                        title: Text(note.invoiceNumber),
+                        subtitle: Text(
+                            'Against ${note.originalInvoiceNumber ?? "-"}  |  GSTIN: ${note.customerGstin}',
+                            style: const TextStyle(fontSize: 12)),
+                        trailing: Text(
+                            '-Rs.${(note.total / 100).toStringAsFixed(2)}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red))))),
+              const SizedBox(height: 20),
+
+              Text('CDNUR - Credit Notes (Unregistered)',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              const SizedBox(height: 8),
+              if (cdnurByRate.isEmpty)
+                const Text('No unregistered credit notes this period',
+                    style: TextStyle(color: Colors.grey))
+              else
+                ...cdnurByRate.entries.map((e) => ListTile(
+                    title: Text('${e.key}% rate'),
+                    trailing: Text('-Rs.${(e.value / 100).toStringAsFixed(2)}',
+                        style: const TextStyle(color: Colors.red)))),
+              const SizedBox(height: 24),
+
+              ElevatedButton.icon(
+                  icon: const Icon(Icons.download_outlined),
+                  label: const Text('Export CSV'),
+                  onPressed: () =>
+                      _export(period.label, b2b, b2cByRate, cdnr, cdnurByRate)),
+              const SizedBox(height: 32),
+            ]);
+          },
+        ),
       ),
     );
   }
+
+  Widget _invoiceTile(Invoice inv) => Card(
+      margin: const EdgeInsets.only(bottom: 6),
+      child: ListTile(
+          title: Text(inv.invoiceNumber),
+          subtitle: Text(
+              'GSTIN: ${inv.customerGstin}  |  ${inv.customerName ?? ''}',
+              style: const TextStyle(fontSize: 12)),
+          trailing: Text(
+              CurrencyFormatter.format(inv.total,
+                  sym: inv.currencySymbol, lakh: inv.useLakhFormat),
+              style: const TextStyle(fontWeight: FontWeight.bold))));
 
   Widget _summaryCard(String label, String value, IconData icon) => Container(
       padding: const EdgeInsets.all(12),
@@ -113,11 +179,16 @@ class Gstr1ReportScreen extends ConsumerWidget {
       ]));
 
   Future<void> _export(
-      String periodLabel, List<Invoice> b2b, Map<double, int> b2cByRate) async {
+      String periodLabel,
+      List<Invoice> b2b,
+      Map<double, int> b2cByRate,
+      List<Invoice> cdnr,
+      Map<double, int> cdnurByRate) async {
     final rows = <List<String>>[
       [
         'Type',
-        'Invoice No',
+        'Invoice/Note No',
+        'Against',
         'GSTIN',
         'Customer',
         'Place of Supply',
@@ -131,6 +202,7 @@ class Gstr1ReportScreen extends ConsumerWidget {
       ...b2b.map((inv) => [
             'B2B',
             inv.invoiceNumber,
+            '-',
             inv.customerGstin ?? '',
             inv.customerName ?? '',
             inv.placeOfSupply ?? '',
@@ -147,12 +219,42 @@ class Gstr1ReportScreen extends ConsumerWidget {
             '-',
             '-',
             '-',
-            (e.value / 100).toStringAsFixed(2),
-            '-',
-            '-',
-            '-',
             '-',
             (e.value / 100).toStringAsFixed(2),
+            '-',
+            '-',
+            '-',
+            '-',
+            (e.value / 100).toStringAsFixed(2),
+          ]),
+      // Negative values — these reduce the period's total liability
+      ...cdnr.map((note) => [
+            'CDNR',
+            note.invoiceNumber,
+            note.originalInvoiceNumber ?? '-',
+            note.customerGstin ?? '',
+            note.customerName ?? '',
+            note.placeOfSupply ?? '',
+            '-${(note.subtotal / 100).toStringAsFixed(2)}',
+            '-${(note.cgstTotal / 100).toStringAsFixed(2)}',
+            '-${(note.sgstTotal / 100).toStringAsFixed(2)}',
+            '-${(note.igstTotal / 100).toStringAsFixed(2)}',
+            '-${(note.ugstTotal / 100).toStringAsFixed(2)}',
+            '-${(note.total / 100).toStringAsFixed(2)}',
+          ]),
+      ...cdnurByRate.entries.map((e) => [
+            'CDNUR',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-${(e.value / 100).toStringAsFixed(2)}',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-${(e.value / 100).toStringAsFixed(2)}',
           ]),
     ];
     await CsvExportService.exportAndShare(

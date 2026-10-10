@@ -62,7 +62,7 @@ abstract class Invoice with _$Invoice {
     @JsonKey(name: 'original_invoice_number') String? originalInvoiceNumber,
     @JsonKey(name: 'original_invoice_date') String? originalInvoiceDate,
     @JsonKey(name: 'credit_reason') String? creditReason,
-    @JsonKey(name: 'restock_items') String? restockItems,
+    @JsonKey(name: 'restock_items') bool? restockItems,
     @JsonKey(name: 'einvoice_status')
     @Default('not_generated')
     String einvoiceStatus,

@@ -91,104 +91,105 @@ class _CreateCreditNoteScreenState
               buyerState: india ? orig.placeOfSupply : null));
       return lines;
     }
-    void _snack(String msg) =>
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(msg),
-          backgroundColor: Colors.red,
-        ));
+    return lines;
+  }
 
-    Future<void> _save(Business biz) async {
-      final orig = _original!;
-      final lines = _creditLines(biz);
-      if (lines.isEmpty) {
-        _snack('Enter a return quantity for at least one item.');
-        return;
-      }
-      if (_hasOverReturn) {
-        _snack('One or more quantities exceed what can still be credited.');
-        return;
-      }
+  void _snack(String msg) =>
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(msg),
+        backgroundColor: Colors.red,
+      ));
 
-      int sum(int Function(InvoiceItem) f) => lines.fold(0, (s, i) => s + f(i));
-      final grand = sum((i) => i.lineTotal);
-      final tax = sum((i) => i.taxAmount);
-      final uid = ref.read(currentSupabaseUserProvider)?.id ?? '';
-
-      setState(() {
-        _saving = true;
-      });
-      try {
-        final note = Invoice(
-          id: '',
-          businessId: orig.businessId,
-          customerId: orig.customerId,
-          invoiceNumber: '', // generated from the CN series
-          documentType: kDocTypeCreditNote,
-          status: kStatusIssued,
-          issueDate: DateTime.now(),
-          subtotal: grand - tax,
-          taxAmount: tax,
-          total: grand,
-          cgstTotal: sum((i) => i.cgstAmount),
-          sgstTotal: sum((i) => i.sgstAmount),
-          igstTotal: sum((i) => i.igstAmount),
-          ugstTotal: sum((i) => i.ugstAmount),
-          // Currency and buyer details come from the ORIGINAL invoice,
-          // never from today's business settings.
-          currencyCode: orig.currencyCode,
-          currencySymbol: orig.currencySymbol,
-          useLakhFormat: orig.useLakhFormat,
-          customerGstin: orig.customerGstin,
-          customerName: orig.customerName,
-          placeOfSupply: orig.placeOfSupply,
-          originalInvoiceId: orig.id,
-          originalInvoiceNumber: orig.invoiceNumber,
-          originalInvoiceDate: orig.issueDate,
-          creditReason: _reason,
-          restockItems: _restock,
-          notes:
-              _detailCtrl.text.trim().isEmpty ? null : _detailCtrl.text.trim(),
-          createdBy: uid,
-        );
-
-        final saved = await ref
-            .read(saveInvoiceNotifierProvider.notifier)
-            .save(note, lines);
-        if (saved == null) {
-          final st = ref.read(saveInvoiceNotifierProvider);
-          _snack('Failed to issue credit note:'
-              '${st is AsyncError ? st.error : 'Unknown error'}');
-          return;
-        }
-        ref.invalidate(invoiceDetailProvider(orig.id));
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Credit note ${saved.invoiceNumber} issued.')));
-          context.pop();
-        }
-      } catch (e) {
-        _snack('Failed to issue credit note: $e');
-      } finally {
-        if (mounted)
-          setState(() {
-            _saving = false;
-          });
-      }
+  Future<void> _save(Business biz) async {
+    final orig = _original!;
+    final lines = _creditLines(biz);
+    if (lines.isEmpty) {
+      _snack('Enter a return quantity for at least one item.');
+      return;
+    }
+    if (_hasOverReturn) {
+      _snack('One or more quantities exceed what can still be credited.');
+      return;
     }
 
-    Widget _row(String label, String value, {bool bold = false}) => Padding(
-        padding: const EdgetInsets.symmetric(vertical: 4),
-        child: Row(children: [
-          Text(label,
-              style: TextStyle(
-                  fontWeight: bod ? FontWeight.bold : FontWeight.normal)),
-          const Spacer(),
-          Text(value,
-              style: TextStyle(
-                  fontWeight: bold ? FontWeight.bold : FontWeight.normal,
-                  fontSize: bold ? 16 : 14)),
-        ]));
+    int sum(int Function(InvoiceItem) f) => lines.fold(0, (s, i) => s + f(i));
+    final grand = sum((i) => i.lineTotal);
+    final tax = sum((i) => i.taxAmount);
+    final uid = ref.read(currentSupabaseUserProvider)?.id ?? '';
+
+    setState(() {
+      _saving = true;
+    });
+    try {
+      final note = Invoice(
+        id: '',
+        businessId: orig.businessId,
+        customerId: orig.customerId,
+        invoiceNumber: '', // generated from the CN series
+        documentType: kDocTypeCreditNote,
+        status: kStatusIssued,
+        issueDate: DateTime.now(),
+        subtotal: grand - tax,
+        taxAmount: tax,
+        total: grand,
+        cgstTotal: sum((i) => i.cgstAmount),
+        sgstTotal: sum((i) => i.sgstAmount),
+        igstTotal: sum((i) => i.igstAmount),
+        ugstTotal: sum((i) => i.ugstAmount),
+        // Currency and buyer details come from the ORIGINAL invoice,
+        // never from today's business settings.
+        currencyCode: orig.currencyCode,
+        currencySymbol: orig.currencySymbol,
+        useLakhFormat: orig.useLakhFormat,
+        customerGstin: orig.customerGstin,
+        customerName: orig.customerName,
+        placeOfSupply: orig.placeOfSupply,
+        originalInvoiceId: orig.id,
+        originalInvoiceNumber: orig.invoiceNumber,
+        originalInvoiceDate: orig.originalInvoiceDate,
+        creditReason: _reason,
+        restockItems: _restock,
+        notes: _detailCtrl.text.trim().isEmpty ? null : _detailCtrl.text.trim(),
+        createdBy: uid,
+      );
+
+      final saved = await ref
+          .read(saveInvoiceNotifierProvider.notifier)
+          .save(note, lines);
+      if (saved == null) {
+        final st = ref.read(saveInvoiceNotifierProvider);
+        _snack('Failed to issue credit note:'
+            '${st is AsyncError ? st.error : 'Unknown error'}');
+        return;
+      }
+      ref.invalidate(invoiceDetailProvider(orig.id));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Credit note ${saved.invoiceNumber} issued.')));
+        context.pop();
+      }
+    } catch (e) {
+      _snack('Failed to issue credit note: $e');
+    } finally {
+      if (mounted)
+        setState(() {
+          _saving = false;
+        });
+    }
   }
+
+  Widget _row(String label, String value, {bool bold = false}) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(children: [
+        Text(label,
+            style: TextStyle(
+                fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
+        const Spacer(),
+        Text(value,
+            style: TextStyle(
+                fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+                fontSize: bold ? 16 : 14)),
+      ]));
 
   @override
   Widget build(BuildContext context) {
@@ -204,5 +205,113 @@ class _CreateCreditNoteScreenState
           appBar: AppBar(title: const Text('Credit Note')),
           body: Center(child: Text(_loadError ?? 'Invoice not found')));
     }
+
+    final orig = _original!;
+    final lines = _creditLines(biz);
+    int sum(int Function(InvoiceItem) f) => lines.fold(0, (s, i) => s + f(i));
+    final grand = sum((i) => i.lineTotal);
+    final tax = sum((i) => i.taxAmount);
+    String fmt(int v) => CurrencyFormatter.format(v,
+        sym: orig.currencySymbol, lakh: orig.useLakhFormat);
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Credit Note - ${orig.invoiceNumber}')),
+      body: ListView(padding: const EdgeInsets.all(16), children: [
+        Text('Items to credit', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        ...orig.items.map((item) {
+          final remaining = _remaining(item);
+          final entered = _returnQty[item.id] ?? 0;
+          return Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.name,
+                            style:
+                                const TextStyle(fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 4),
+                        Text(
+                            'Sold ${_q(item.quantity)} | '
+                            'Already credited ${_q(_credited[item.id] ?? 0)} | '
+                            'Can return ${_q(remaining)}',
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.grey)),
+                        const SizedBox(height: 8),
+                        if (remaining <= 0)
+                          const Text('Fully credited',
+                              style: TextStyle(color: Colors.green))
+                        else
+                          TextFormField(
+                            key: ValueKey(item.id),
+                            initialValue: '0',
+                            keyboardType: const TextInputType.numberWithOptions(
+                                decimal: true),
+                            decoration: InputDecoration(
+                                labelText: 'Return quantity',
+                                isDense: true,
+                                errorText: entered > remaining
+                                    ? 'Maximum is ${_q(remaining)}'
+                                    : null),
+                            onChanged: (v) => setState(() {
+                              _returnQty[item.id] = double.tryParse(v) ?? 0;
+                            }),
+                          )
+                      ])));
+        }),
+        const SizedBox(height: 16),
+        DropdownButtonFormField(
+            value: _reason,
+            decoration: const InputDecoration(labelText: 'Reason'),
+            items: _kCreditReasons
+                .map((r) => DropdownMenuItem(value: r, child: Text(r)))
+                .toList(),
+            onChanged: (v) => setState(() {
+                  _reason = v ?? _reason;
+                  _restock = _reason == 'Sales return';
+                })),
+        const SizedBox(height: 8),
+        TextFormField(
+            controller: _detailCtrl,
+            decoration: const InputDecoration(labelText: 'Details(optional)')),
+        SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Return items to stock'),
+            subtitle:
+                const Text('Turn off for price corrections or damaged goods'),
+            value: _restock,
+            onChanged: (v) => setState(() => _restock = v)),
+        const Divider(height: 32),
+        _row('Taxable value', fmt(grand - tax)),
+        if (biz.countryCode == 'IN') ...[
+          if (sum((i) => i.cgstAmount) > 0)
+            _row('CGST', fmt(sum((i) => i.cgstAmount))),
+          if (sum((i) => i.sgstAmount) > 0)
+            _row('SGST', fmt(sum((i) => i.sgstAmount))),
+          if (sum((i) => i.ugstAmount) > 0)
+            _row('UGST', fmt(sum((i) => i.ugstAmount))),
+          if (sum((i) => i.igstAmount) > 0)
+            _row('IGST', fmt(sum((i) => i.igstAmount))),
+        ] else
+          _row('Tax', fmt(tax)),
+        const Divider(),
+        _row('Credit note total', fmt(grand), bold: true),
+        const SizedBox(height: 80),
+      ]),
+      bottomNavigationBar: SafeArea(
+          child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: ElevatedButton(
+                  onPressed: _saving || lines.isEmpty ? null : () => _save(biz),
+                  child: _saving
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white))
+                      : Text('Issue Credit Note ${fmt(grand)}')))),
+    );
   }
 }
