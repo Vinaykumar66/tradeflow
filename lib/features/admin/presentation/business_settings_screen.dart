@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tradeflow/core/di/repository_providers.dart';
 import 'package:tradeflow/core/router/app_router.dart';
+import 'package:tradeflow/features/admin/data/backup_export_service.dart';
 import 'package:tradeflow/shared/models/business.dart';
 import 'package:tradeflow/shared/models/license_tier.dart';
 import '../../../core/config/app_config.dart';
@@ -26,7 +27,7 @@ class _BusinessSettingsScreenState
     extends ConsumerState<BusinessSettingsScreen> {
   XFile? _pickedLogo;
   bool _uploading = false;
-
+  bool _exporting = false;
   Future<void> _pickAndUploadLogo() async {
     final picked = await ImagePicker().pickImage(
         source: ImageSource.gallery,
@@ -250,6 +251,41 @@ class _BusinessSettingsScreenState
                         .read(updateBusinessNotifierProvider.notifier)
                         .update(biz!.copyWith(showUpiQr: v)))
           ],
+          const SizedBox(height: 24),
+          Text('Data', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.download_outlined),
+              title: const Text('Export All Data'),
+              subtitle: const Text('Download a complete backup as JSON file'),
+              trailing: _exporting
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Icon(Icons.chevron_right),
+              onTap: _exporting
+                  ? null
+                  : () async {
+                      setState(() {
+                        _exporting = true;
+                      });
+                      try {
+                        await BackupExportService.exportAll(biz!.id, biz.name);
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Export failed: $e'),
+                              backgroundColor: Colors.red));
+                        }
+                      } finally {
+                        if (mounted)
+                          setState(() {
+                            _exporting = false;
+                          });
+                      }
+                    }),
         ],
       ),
     );

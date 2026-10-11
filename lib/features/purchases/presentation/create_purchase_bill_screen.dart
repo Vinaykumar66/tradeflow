@@ -7,6 +7,7 @@ import '../../../shared/models/purchase_bill.dart';
 import '../../../shared/models/vendor.dart';
 import '../../invoices/presentation/widgets/product_picker_sheet.dart';
 import '../data/purchase_bill_repository.dart';
+import '../../vendors/application/vendor_providers.dart';
 
 class CreatePurchaseBillScreen extends ConsumerStatefulWidget {
   const CreatePurchaseBillScreen({super.key});
@@ -93,6 +94,33 @@ class _CreatePurchaseBillScreenState
     }
   }
 
+  void _pickVendor(BuildContext context, List<Vendor> vendors) {
+    showModalBottomSheet(
+        context: context,
+        builder: (ctx) => SafeArea(
+                child: ListView(shrinkWrap: true, children: [
+              const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text('Select Vendor',
+                      style: TextStyle(fontWeight: FontWeight.bold))),
+              ...vendors.map((v) => ListTile(
+                  title: Text(v.name),
+                  subtitle: v.phone != null ? Text(v.phone!) : null,
+                  onTap: () {
+                    setState(() {
+                      _vendor = v;
+                    });
+                    Navigator.pop(ctx);
+                  })),
+              if (vendors.isEmpty)
+                const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                        'No Vendors yet. Add one from the Vendors screen first.',
+                        style: TextStyle(color: Colors.grey))),
+            ])));
+  }
+
   @override
   Widget build(BuildContext context) {
     final biz = ref.watch(activeBusinessProvider).asData?.value;
@@ -111,6 +139,35 @@ class _CreatePurchaseBillScreenState
             decoration: const InputDecoration(
                 labelText: "Vendor's Bill Number *",
                 hintText: 'e.g. INV-4521 as printed on their bill')),
+        const SizedBox(height: 20),
+        Text('Vendor', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        Consumer(
+          builder: ((context, ref, _) {
+            final vendorsAsync = ref.watch(vendorListProvider);
+            final vendors = vendorsAsync.asData?.value ?? [];
+            return InkWell(
+                onTap: () => _pickVendor(context, vendors),
+                child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Row(children: [
+                      const Icon(Icons.local_shipping_outlined,
+                          color: Colors.grey),
+                      const SizedBox(width: 8),
+                      Expanded(
+                          child: Text(
+                              _vendor?.name ?? 'Select Vendor(optional)',
+                              style: TextStyle(
+                                  color: _vendor == null
+                                      ? Colors.grey
+                                      : Colors.black87))),
+                      const Icon(Icons.chevron_right, color: Colors.grey),
+                    ])));
+          }),
+        ),
         const SizedBox(height: 20),
         TextButton.icon(
             icon: const Icon(Icons.add),

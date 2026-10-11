@@ -67,11 +67,15 @@ Future<DashboardStats> dashboardStats(DashboardStatsRef ref) async {
     _countDrafts(bizId),
     //Vendor payables
     _sumVendorPayables(bizId),
+    //credit notes
+    _sumCreditNotes(bizId, todayStart, null),
+    _sumCreditNotes(bizId, weekStart, null),
+    _sumCreditNotes(bizId, monthStart, null),
   ]);
   return DashboardStats(
-    revenueToday: results[0],
-    revenueWeek: results[1],
-    revenueMonth: results[2],
+    revenueToday: results[0] - results[10],
+    revenueWeek: results[1] - results[11],
+    revenueMonth: results[2] - results[12],
     totalOutstanding: results[3],
     overdueAmount: results[4],
     invoiceCountMonth: results[5],
@@ -173,4 +177,17 @@ Future<int> _sumVendorPayables(String bizId) async {
       .gt('outstanding', 0);
   return rows.fold<int>(
       0, (s, r) => s + ((r['outstanding'] as num?)?.toInt() ?? 0));
+}
+
+Future<int> _sumCreditNotes(String bizId, String from, String? to) async {
+  var q = supabase
+      .from('invoices')
+      .select('total')
+      .eq('business_id', bizId)
+      .eq('document_type', kDocTypeCreditNote)
+      .neq('status', kStatusCancelled)
+      .gte('issue_date', from);
+  if (to != null) q = q.lte('issue_date', to);
+  final rows = await q;
+  return rows.fold<int>(0, (s, r) => s + ((r['total'] as num?)?.toInt() ?? 0));
 }

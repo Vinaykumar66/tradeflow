@@ -21,6 +21,7 @@ class HsnSummaryScreen extends ConsumerWidget {
     final period = ref.watch(gstReportPeriodNotifierProvider);
     final invoicesAsync = ref.watch(outwardSuppliesProvider);
 
+    final notesAsync = ref.watch(creditNotesProvider);
     return Scaffold(
       appBar: AppBar(
           iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
@@ -30,91 +31,122 @@ class HsnSummaryScreen extends ConsumerWidget {
       body: invoicesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
-        data: (invoices) {
-          final byHsn = <String, _HsnRow>{};
-          var missingCount = 0;
-
-          for (final inv in invoices) {
-            for (final item in inv.items) {
-              final key = item.hsnSacCode ?? 'Not Specified';
-              if (item.hsnSacCode == null) {
-                missingCount++;
+        data: (invoices) => notesAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Center(child: Text('Error: $e')),
+          data: (creditNotes) {
+            final byHsn = <String, _HsnRow>{};
+            var missingCount = 0;
+//sales add to the totl
+            for (final inv in invoices) {
+              for (final item in inv.items) {
+                final key = item.hsnSacCode ?? 'Not Specified';
+                if (item.hsnSacCode == null) {
+                  missingCount++;
+                }
+                final r = byHsn.putIfAbsent(key, () => _HsnRow());
+                r.quantity += item.quantity;
+                r.taxable += (item.lineTotal - item.taxAmount);
+                r.cgst += item.cgstAmount;
+                r.sgst += item.sgstAmount;
+                r.igst += item.igstAmount;
+                r.ugst += item.ugstAmount;
               }
-              final r = byHsn.putIfAbsent(key, () => _HsnRow());
-              r.quantity += item.quantity;
-              r.taxable += (item.lineTotal - item.taxAmount);
-              r.cgst += item.cgstAmount;
-              r.sgst += item.sgstAmount;
-              r.igst += item.igstAmount;
-              r.ugst += item.ugstAmount;
             }
-          }
 
-          return ListView(padding: const EdgeInsets.all(16), children: [
-            GstPeriodPicker(
-                label: period.label,
-                onPrevious: () => ref
-                    .read(gstReportPeriodNotifierProvider.notifier)
-                    .previous(),
-                onNext: () =>
-                    ref.read(gstReportPeriodNotifierProvider.notifier).next()),
-            const SizedBox(height: 16),
-            if (missingCount > 0)
-              Container(
-                  padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                      color: Colors.orange.shade50,
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Row(children: [
-                    const Icon(Icons.warning_amber_outlined,
-                        color: Colors.orange),
-                    const SizedBox(width: 8),
-                    Expanded(
-                        child: Text(
-                            '$missingCount line item(s) have no HSN/SAC code set.'
-                            'Add codes in Catalog for an accurate filing.',
-                            style: const TextStyle(fontSize: 12))),
-                  ])),
-            ...byHsn.entries.map((e) => Card(
-                margin: const EdgeInsets.only(bottom: 8),
-                child: Padding(
+            //credit notes subtract - net qty/value actually moved
+
+            for (final note in creditNotes) {
+              for (final item in note.items) {
+                final key = item.hsnSacCode ?? 'Not Specified';
+                final r = byHsn.putIfAbsent(key, () => _HsnRow());
+                r.quantity -= item.quantity;
+                r.taxable -= (item.lineTotal - item.taxAmount);
+                r.cgst -= item.cgstAmount;
+                r.sgst -= item.sgstAmount;
+                r.igst -= item.igstAmount;
+                r.ugst -= item.ugstAmount;
+              }
+            }
+
+            return ListView(padding: const EdgeInsets.all(16), children: [
+              GstPeriodPicker(
+                  label: period.label,
+                  onPrevious: () => ref
+                      .read(gstReportPeriodNotifierProvider.notifier)
+                      .previous(),
+                  onNext: () => ref
+                      .read(gstReportPeriodNotifierProvider.notifier)
+                      .next()),
+              const SizedBox(height: 16),
+              if (missingCount > 0)
+                Container(
                     padding: const EdgeInsets.all(12),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(e.key,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 4),
-                          Text(
-                              'Qty: ${e.value.quantity.toStringAsFixed(0)}  |'
-                              'Taxable: Rs.  ${(e.value.taxable / 100).toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.grey)),
-                          Text(
-                              'CGST:  ${(e.value.cgst / 100).toStringAsFixed(2)} '
-                              'SGST:  ${(e.value.sgst / 100).toStringAsFixed(2)} '
-                              'IGST:  ${(e.value.igst / 100).toStringAsFixed(2)} '
-                              'UGST:  ${(e.value.ugst / 100).toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.grey)),
-                        ])))),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-                icon: const Icon(Icons.download_outlined),
-                label: const Text('Export CSV'),
-                onPressed: () => _export(period.label, byHsn)),
-            const SizedBox(height: 32),
-          ]);
-        },
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                        color: Colors.orange.shade50,
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Row(children: [
+                      const Icon(
+                        Icons.warning_amber_outlined,
+                        color: Colors.orange,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                          child: Text(
+                              '$missingCount line item(s) have no HSN/SAC code set.'
+                              'Add codes in Catalog for an accurate filing.',
+                              style: const TextStyle(fontSize: 12))),
+                    ])),
+              ...byHsn.entries.map((e) => Card(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(e.key,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 4),
+                            Text(
+                                'Net Qty: ${e.value.quantity.toStringAsFixed(0)}  |'
+                                'Net Taxable: Rs.  ${(e.value.taxable / 100).toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.grey)),
+                            Text(
+                                'CGST:  ${(e.value.cgst / 100).toStringAsFixed(2)} '
+                                'SGST:  ${(e.value.sgst / 100).toStringAsFixed(2)} '
+                                'IGST:  ${(e.value.igst / 100).toStringAsFixed(2)} '
+                                'UGST:  ${(e.value.ugst / 100).toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.grey)),
+                          ])))),
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
+                  icon: const Icon(Icons.download_outlined),
+                  label: const Text('Export CSV'),
+                  onPressed: () => _export(period.label, byHsn)),
+              const SizedBox(height: 32),
+            ]);
+          },
+        ),
       ),
     );
   }
 
   Future<void> _export(String periodLabel, Map<String, _HsnRow> byHsn) async {
     final rows = <List<String>>[
-      ['HSN/SAC', 'Quantity', 'Taxable Value', 'CGST', 'SGST', 'IGST', 'UGST'],
+      [
+        'HSN/SAC',
+        'Net Quantity',
+        'Net Taxable Value',
+        'CGST',
+        'SGST',
+        'IGST',
+        'UGST'
+      ],
       ...byHsn.entries.map((e) => [
             e.key,
             e.value.quantity.toStringAsFixed(0),
