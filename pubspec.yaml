@@ -35,6 +35,7 @@ dependencies:
   path_provider: ^2.1.0   # temp directory to write the CSV before sharing
   barcode: ^2.2.7 # QR code widget, used by pw.BarcodeWidget in the PDF
   qr_flutter: ^4.1.0   #on screnn QR widget(the pdf uses the barcode)
+  window_manager: ^0.4.0  #macOs entitlements (required for gallery picking to work thre)
 dev_dependencies:
   flutter_test:
     sdk: flutter

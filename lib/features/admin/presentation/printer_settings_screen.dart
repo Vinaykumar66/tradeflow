@@ -3,30 +3,58 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/interfaces/i_invoice_printer.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../features/business/application/business_providers.dart';
+import '../../../core/utils/platform_capabilities.dart';
 
 class PrinterSettingsScreen extends ConsumerWidget {
   const PrinterSettingsScreen({super.key});
 
-  static const _formats = [
-    (
-      key: kPrintFormatLaser,
-      label: 'Laser / Inkjet',
-      desc: 'Full A4 page. Best for offices with a standard printer.',
-      icon: Icons.print_outlined
-    ),
-    (
-      key: kPrintFormatThermal,
-      label: 'Thermal Receipt',
-      desc: 'Narrow roll paper. Best for counters with a handheld printer.',
-      icon: Icons.receipt_long_outlined
-    ),
-    (
-      key: kPrintFormatDotMatrix,
-      label: 'Dot Matrix',
-      desc: 'Continuous stationery with pre-printed boxes.',
-      icon: Icons.table_rows_outlined
-    ),
-  ];
+  static List<({String key, String label, String desc, IconData icon})>
+      get _formats => [
+            (
+              key: kPrintFormatLaser,
+              label: 'Laser / Inkjet',
+              desc: 'Full A4 page. Best for offices with a standard printer.',
+              icon: Icons.print_outlined
+            ),
+            if (PlatformCapabilities.supportsThermalPrinter)
+              (
+                key: kPrintFormatThermal,
+                label: 'Thermal Receipt',
+                desc:
+                    'Narrow roll paper. Best for counters with a handheld printer.',
+                icon: Icons.receipt_long_outlined
+              ),
+            (
+              key: kPrintFormatDotMatrix,
+              label: 'Dot Matrix',
+              desc: 'Continuous stationery with pre-printed boxes.',
+              icon: Icons.table_rows_outlined
+            ),
+          ];
+
+//commented on 12.10.2026 to implement platform capabilities
+  // static const _formats = [
+
+  //   // (
+  //   //   key: kPrintFormatLaser,
+  //   //   label: 'Laser / Inkjet',
+  //   //   desc: 'Full A4 page. Best for offices with a standard printer.',
+  //   //   icon: Icons.print_outlined
+  //   // ),
+  //   // (
+  //   //   key: kPrintFormatThermal,
+  //   //   label: 'Thermal Receipt',
+  //   //   desc: 'Narrow roll paper. Best for counters with a handheld printer.',
+  //   //   icon: Icons.receipt_long_outlined
+  //   // ),
+  //   // (
+  //   //   key: kPrintFormatDotMatrix,
+  //   //   label: 'Dot Matrix',
+  //   //   desc: 'Continuous stationery with pre-printed boxes.',
+  //   //   icon: Icons.table_rows_outlined
+  //   // ),
+  // ];
+//commented on 12.10.2026 to implement platform capabilities
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

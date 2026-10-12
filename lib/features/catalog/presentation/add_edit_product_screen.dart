@@ -21,6 +21,7 @@ import '../../../shared/widgets/storage_guard.dart';
 import '../application/catalog_providers.dart';
 import 'package:go_router/go_router.dart';
 import '../../admin/application/tax_code_providers.dart';
+import '../../../core/utils/platform_capabilities.dart';
 
 class AddEditProductScreen extends ConsumerStatefulWidget {
   final Product? product;
@@ -351,13 +352,14 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
                   builder: (_) => SafeArea(
                           child:
                               Column(mainAxisSize: MainAxisSize.min, children: [
-                        ListTile(
-                            leading: const Icon(Icons.camera_alt_outlined),
-                            title: const Text('Take a photo'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              _pickImage(ImageSource.camera);
-                            }),
+                        if (PlatformCapabilities.supportsCameraCapture)
+                          ListTile(
+                              leading: const Icon(Icons.camera_alt_outlined),
+                              title: const Text('Take a photo'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                _pickImage(ImageSource.camera);
+                              }),
                         ListTile(
                             leading: const Icon(Icons.photo_library_outlined),
                             title: const Text('Choose from gallery'),

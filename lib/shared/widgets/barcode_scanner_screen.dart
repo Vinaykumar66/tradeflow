@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../core/theme/app_colors.dart';
+import '../../../core/utils/platform_capabilities.dart';
 
 class BarcodeScannerScreen extends ConsumerStatefulWidget {
   final String title;
@@ -63,6 +64,11 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
       });
     } else {
       _requestPermission();
+    }
+
+    if (!PlatformCapabilities.supportsBarcodeCameraScan) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _tabCtrl.animateTo(1));
     }
   }
 
