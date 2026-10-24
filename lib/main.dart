@@ -165,3 +165,5 @@ The short answer: do it now before you have real users and real uploaded files. 
 
 //to open supabase send reminder email index.ts
 //open supabase/functions/send-reminder-email
+
+// grep -rn "signUp(" lib/

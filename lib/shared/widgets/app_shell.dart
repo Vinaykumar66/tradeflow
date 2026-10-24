@@ -11,6 +11,7 @@ import '../../core/theme/app_colors.dart';
 import '../../features/auth/application/auth_providers.dart';
 import '../../features/business/application/business_providers.dart';
 import '../../features/admin/application/permission_providers.dart';
+import '../../features/help/presentation/help_chat_screen.dart';
 
 // ── NAVIGATION LAYOUT PREFERENCE ─────────────────────────────────────────────
 // Remembers whether user prefers drawer or bottom tabs on mobile
@@ -235,6 +236,13 @@ class _DrawerLayout extends ConsumerWidget {
                     icon: const Icon(Icons.logout),
                     tooltip: 'Log out',
                     onPressed: () => _logout(context, ref)),
+                IconButton(
+                    icon: const Icon(Icons.help_outline),
+                    tooltip: 'Help',
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const HelpChatScreen()))),
               ],
             ),
 

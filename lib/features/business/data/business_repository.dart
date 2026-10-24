@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 import '../../../core/constants/table_constants.dart';
 import '../../../core/interfaces/i_business_repository.dart';
 import '../../../core/supabase/supabase_client.dart';
@@ -14,28 +16,36 @@ class BusinessRepository implements IBusinessRepository {
       required String businessName,
       String? phone,
       String? gstin}) async {
-    final d = await supabase
-        .from(SupabaseTables.businesses)
-        .insert({
-          'name': businessName,
-          'owner_uid': ownerUid,
-          'email': ownerEmail,
-          'phone': phone,
-          'gstin': gstin
-        })
-        .select()
-        .single();
-    final b = BusinessX.fromMap(d);
-    await supabase.from(SupabaseTables.businessMembers).insert({
-      'uid': ownerUid,
-      'business_id': b.id,
-      'name': ownerName,
+    final user = supabase.auth.currentUser;
+    final _uuid = const Uuid();
+    final bizId = _uuid.v4();
+    final d = await supabase.from(SupabaseTables.businesses).insert({
+      'id': bizId,
+      'owner_uid': user!.id,
+      'name': businessName,
+      // 'owner_uid': ownerUid,
       'email': ownerEmail,
-      'role_value': 'owner'
+      'phone': phone,
+      'gstin': gstin
     });
-
-    // Seed default permissions for all 3 roles
-    await PermissionRepository().seedDefaultPermissions(b.id);
+    // .select()
+    // .single();
+    final b = BusinessX.fromMap(d);
+    try {
+      await supabase.from('business_members').insert({
+        'uid': user.id,
+        'business_id': bizId,
+        'role_value': 'owner',
+        'is_active': true,
+        'name': '${user.userMetadata?['name'] ?? ''}',
+        'email': user.email,
+      });
+    } catch (e) {
+      try {
+        await supabase.from('businesses').delete().eq('id', bizId);
+      } catch (_) {}
+      rethrow;
+    }
     return b;
   }
 
@@ -106,3 +116,17 @@ class BusinessRepository implements IBusinessRepository {
         .eq('uid', uid);
   }
 }
+
+
+/* placed in create business after await supabase.from('businesses').insert({'id': bizId, 'owner_uid': user.id
+await supabase.from(SupabaseTables.businessMembers).insert({
+      'uid': ownerUid,
+      'business_id': b.id,
+      'name': ownerName,
+      'email': ownerEmail,
+      'role_value': 'owner'
+    });
+
+    // Seed default permissions for all 3 roles
+    await PermissionRepository().seedDefaultPermissions(b.id);
+    */

@@ -6,7 +6,7 @@ import '../../../core/di/repository_providers.dart';
 import '../../../core/supabase/supabase_client.dart';
 import '../../../shared/models/app_user.dart';
 import '../../../shared/models/business_member.dart';
-
+import 'package:flutter/material.dart';
 part 'auth_providers.g.dart';
 
 @riverpod
@@ -46,11 +46,11 @@ Future<BusinessMember?> currentMember(CurrentMemberRef ref) async {
 class SignUpNotifier extends _$SignUpNotifier {
   @override
   AsyncValue<AppUser?> build() => const AsyncValue.data(null);
-  Future<void> signUp({
+  Future<bool> signUp({
     required String name,
     required String email,
     required String password,
-    required String businessName,
+    // required String businessName,
   }) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard<AppUser?>(() async {
@@ -58,10 +58,13 @@ class SignUpNotifier extends _$SignUpNotifier {
             name: name,
             email: email,
             password: password,
-            businessName: businessName,
+            // businessName: businessName,
           );
+
+      // debugPrint('SIGNUP data=$state');
       return null;
     });
+    return !state.hasError;
   }
 }
 

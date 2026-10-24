@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../core/constants/permission_keys.dart';
+import '../../../core/debug/permission_debug.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -40,6 +41,14 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
     final bizId = ref.watch(activeBusinessIdProvider) ?? '';
 
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.bug_report_outlined),
+              onPressed: () => debugPermissions(
+                  ref, AppScreenKeys.customers, PermissionAction.create)),
+        ],
+      ),
       body: Column(children: [
         // Overdue alert banner
         if (overdueList.isNotEmpty)

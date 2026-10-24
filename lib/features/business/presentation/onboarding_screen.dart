@@ -18,7 +18,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // ConsumerStatefulWidget, WidgetRef
 import 'package:go_router/go_router.dart'; // context.go() for navigation
+import 'package:tradeflow/core/supabase/supabase_client.dart';
 
+import '../../../core/di/repository_providers.dart';
 import '../../../core/router/app_router.dart'; // AppRoutes.dashboard constant
 import '../../../core/theme/app_colors.dart'; // AppColors constants
 import '../../../core/theme/app_text_styles.dart'; // AppTextStyles constants
@@ -124,6 +126,30 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return null;
   }
 
+  // Future<void> ensureBusinessForCurrentUser(Ref ref) async {
+  //   final user = supabase.auth.currentUser;
+  //   if (user == null) return;
+  //   final has = await supabase
+  //       .from('business_members')
+  //       .select('business_id')
+  //       .eq('uid', user.id)
+  //       .eq('is_active', true)
+  //       .limit(1);
+  //   if (has.isNotEmpty) return;
+
+  //   final meta = user.userMetadata ?? {};
+  //   final bizName = '${meta['businessName'] ?? ''}'.trim();
+  //   if (bizName.isEmpty) return; // let the onboarding screen ask for it
+
+  //   await ref.read(businessRepositoryProvider).createBusiness(
+  //       ownerUid: user.id,
+  //       ownerName: '${meta['name'] ?? ''}',
+  //       ownerEmail: user.email ?? '',
+  //       businessName: bizName);
+  //   ref.invalidate(activeBusinessProvider);
+  //   ref.invalidate(userBusinessListProvider);
+  // }
+
   // ── SAVE HANDLER ──────────────────────────────────────────────────────────
 
   Future<void> _onSave() async {
@@ -137,6 +163,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     // Guard: if somehow no business exists, just navigate to dashboard
     if (list.isEmpty) {
+      // ensureBusinessForCurrentUser(ref as Ref<Object?>);
       _navigateToDashboard(null);
       return;
     }

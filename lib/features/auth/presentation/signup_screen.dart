@@ -18,7 +18,7 @@ class SignupScreen extends ConsumerStatefulWidget {
 class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
-  final _bizCtrl = TextEditingController();
+  // final _bizCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confCtrl = TextEditingController();
@@ -28,7 +28,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   @override
   void dispose() {
     _nameCtrl.dispose();
-    _bizCtrl.dispose();
+    // _bizCtrl.dispose();
     _emailCtrl.dispose();
     _passCtrl.dispose();
     _confCtrl.dispose();
@@ -37,11 +37,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   Future<void> _onSubmit() async {
     if (!_formKey.currentState!.validate()) return;
-    await ref.read(signUpNotifierProvider.notifier).signUp(
-        name: _nameCtrl.text.trim(),
-        email: _emailCtrl.text.trim(),
-        password: _passCtrl.text,
-        businessName: _bizCtrl.text.trim());
+    final ok = await ref.read(signUpNotifierProvider.notifier).signUp(
+          name: _nameCtrl.text.trim(),
+          email: _emailCtrl.text.trim(),
+          password: _passCtrl.text,
+        );
+    if (ok && mounted)
+      context.go(AppRoutes.verifyEmail, extra: _emailCtrl.text.trim());
+    // businessName: _bizCtrl.text.trim());
   }
 
   @override
@@ -109,10 +112,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 field(_nameCtrl, 'Your Name',
                     validator: (v) =>
                         v == null || v.trim().isEmpty ? 'Name required' : null),
-                field(_bizCtrl, 'Business Name',
-                    validator: (v) => v == null || v.trim().isEmpty
-                        ? 'Business name required'
-                        : null),
+                // field(_bizCtrl, 'Business Name',
+                //     validator: (v) => v == null || v.trim().isEmpty
+                //         ? 'Business name required'
+                //         : null),
                 field(_emailCtrl, 'Email Address',
                     type: TextInputType.emailAddress, validator: (v) {
                   if (v == null || v.trim().isEmpty) return 'Email required';

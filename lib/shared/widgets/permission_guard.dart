@@ -20,6 +20,7 @@ class PermissionGuard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final hasPermission =
         ref.watch(hasScreenPermissionProvider(screenKey, action));
+
     if (hasPermission) return child;
     return fallback ?? const SizedBox.shrink();
   }

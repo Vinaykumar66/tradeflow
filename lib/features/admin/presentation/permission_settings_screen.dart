@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/supabase/supabase_client.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../features/auth/application/auth_providers.dart';
 import '../../../features/business/application/business_providers.dart';
+import '../../../core/di/repository_providers.dart';
+import '../application/permission_providers.dart';
 
 const _screens = [
   'dashboard',
@@ -40,7 +41,7 @@ class _PermissionSettingsScreenState
   //TAB CONTROLLER
   // length MUST match the number of Tab() widgets in TabBar exactly
   late TabController _tabController;
-
+  int _reload = 0;
   static const _roles = ['admin', 'salesperson', 'accountant'];
 
   @override
@@ -60,6 +61,7 @@ class _PermissionSettingsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final biz = ref.watch(activeBusinessProvider).asData?.value;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xF0FFFFFF),
@@ -79,18 +81,57 @@ class _PermissionSettingsScreenState
         ),
       ),
       // ── TAB BAR VIEW ───────────────────────────────────────────────────────
-      body: TabBarView(
-        controller: _tabController, // ← same controller as TabBar
-        children: _roles.map((role) => _RolePermissionTab(role: role)).toList(),
-      ),
+      body: Column(children: [
+        if (biz != null)
+          _RolesSetupBanner(
+              bizId: biz.id, onCreated: () => setState(() => _reload++)),
+        Expanded(
+            child: TabBarView(
+          controller: _tabController,
+          children: _roles
+              .map((role) => _RolePermissionTab(
+                  key: ValueKey('$role-$_reload'), role: role))
+              .toList(),
+        )),
+      ]),
     );
+  }
+}
+
+class _RolesSetupBanner extends ConsumerWidget {
+  final String bizId;
+  final VoidCallback onCreated;
+  const _RolesSetupBanner({required this.bizId, required this.onCreated});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final admin = ref.watch(rolePermissionsProvider(bizId, 'admin'));
+    if (!(admin.hasValue && admin.value == null))
+      return const SizedBox.shrink();
+    return Card(
+        margin: const EdgeInsets.all(12),
+        child: ListTile(
+            title: const Text('Roles are not set up yet'),
+            subtitle: const Text(
+                'Create the default Admin, Salesperson and Accountant permissions. You can edit them afterwards.'),
+            trailing: ElevatedButton(
+                child: const Text('Create'),
+                onPressed: () async {
+                  await ref
+                      .read(permissionRepositoryProvider)
+                      .seedDefaultPermissions(bizId);
+                  for (final r in ['admin', 'salesperson', 'accountant']) {
+                    ref.invalidate(rolePermissionsProvider(bizId, r));
+                  }
+                  onCreated();
+                })));
   }
 }
 
 // ── PER-ROLE PERMISSION TAB ───────────────────────────────────────────────────
 class _RolePermissionTab extends ConsumerStatefulWidget {
   final String role;
-  const _RolePermissionTab({required this.role});
+  const _RolePermissionTab({super.key, required this.role});
 
   @override
   ConsumerState<_RolePermissionTab> createState() => _RolePermissionTabState();
