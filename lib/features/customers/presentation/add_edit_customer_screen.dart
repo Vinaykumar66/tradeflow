@@ -67,11 +67,11 @@ class _AddEditCustomerScreenState extends ConsumerState<AddEditCustomerScreen> {
 
   Future<void> _onSubmit() async {
     if (!_formKey.currentState!.validate()) return;
-    final bizId = ref.read(activeBusinessIdProvider) ?? '';
+    final biz = ref.read(activeBusinessProvider).asData?.value;
     final credit = ((double.tryParse(_creditCtrl.text) ?? 0) * 100).toInt();
     final customer = Customer(
       id: _isEditing ? widget.customer!.id : '',
-      businessId: bizId,
+      businessId: biz?.id ?? '',
       name: _nameCtrl.text.trim(),
       phone: _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
       email: _emailCtrl.text.trim().isEmpty ? null : _emailCtrl.text.trim(),
