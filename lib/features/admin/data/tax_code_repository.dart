@@ -7,7 +7,7 @@ class TaxCodeRepository implements ITaxCodeRepository {
   final _uuid = const Uuid();
   @override
   Stream<List<TaxCode>> streamTaxCodes(String businessId) {
-    return supabase
+    final taxCodeList = supabase
         .from('tax_codes')
         .stream(primaryKey: ['id'])
         .eq('business_id', businessId)
@@ -16,6 +16,7 @@ class TaxCodeRepository implements ITaxCodeRepository {
             .where((r) => r['is_active'] == true)
             .map((r) => TaxCode.fromJson(r))
             .toList());
+    return taxCodeList;
   }
 
   @override

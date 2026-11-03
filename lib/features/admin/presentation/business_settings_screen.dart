@@ -11,10 +11,12 @@ import 'package:tradeflow/shared/models/business.dart';
 import 'package:tradeflow/shared/models/license_tier.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/config/country_tax_config.dart';
+import '../../../core/supabase/supabase_client.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../features/business/application/business_providers.dart';
 import '../../../shared/widgets/storage_guard.dart';
 import '../../../core/utils/upi_qr_builder.dart';
+import '../../auth/application/auth_providers.dart';
 
 class BusinessSettingsScreen extends ConsumerStatefulWidget {
   const BusinessSettingsScreen({super.key});
@@ -136,13 +138,22 @@ class _BusinessSettingsScreenState
   Widget build(BuildContext context) {
     final biz = ref.watch(activeBusinessProvider).asData?.value;
     final taxCfg = CountryTaxRegistry.forCountry(biz?.countryCode);
+    // ref.watch(supabaseAuthStateProvider);
 
+    // final currentUser = supabase.auth.currentUser;
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color(0xF0FFFFFF),
-          iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
-          title: const Text(
-              style: TextStyle(color: Color(0xFF2F4F4F)), 'Business Settings')),
+        backgroundColor: Color(0xF0FFFFFF),
+        iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
+        title: const Text(
+            style: TextStyle(color: Color(0xFF2F4F4F)), 'Business Settings'),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.add_business_rounded),
+              tooltip: 'Add Business',
+              onPressed: () => context.go(AppRoutes.onboarding)),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

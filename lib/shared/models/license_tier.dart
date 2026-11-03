@@ -20,7 +20,7 @@ extension LicenseTierX on LicenseTier {
       };
 
   String get storageLimitLabel => switch (this) {
-        LicenseTier.starter => 'No Storage',
+        LicenseTier.starter => 'free',
         LicenseTier.basic => '500 MB',
         LicenseTier.pro => '2 GB (+ Rs.99/GB extra)',
       };

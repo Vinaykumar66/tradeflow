@@ -76,7 +76,7 @@ extension ProductX on Product {
         'tax_rate': taxRate,
         'tax_type': taxType,
         'tax_inclusive': taxInclusive,
-        'tax_Code_Id': taxCodeId,
+        'tax_code_id': taxCodeId,
         'stock_qty': stockQty,
         'reorder_level': reorderLevel,
         'reorder_qty': reorderQty,

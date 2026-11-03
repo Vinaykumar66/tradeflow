@@ -27,6 +27,8 @@ import '../../../core/theme/app_text_styles.dart'; // AppTextStyles constants
 import '../../../core/utils/country_data.dart'; // CountryData, kSupportedCountries
 // import '../../auth/application/auth_providers.dart'; // activeBusinessIdProvider
 import '../application/business_providers.dart'; // userBusinessListProvider, updateBusinessNotifierProvider
+import '../../../shared/models/business.dart';
+import '../../../shared/utils/session_actions.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -45,6 +47,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   // Tax ID field: GSTIN for India, TRN for UAE, VAT Reg No for others (optional)
   final _taxIdCtrl = TextEditingController();
+  final _nameCtrl = TextEditingController(); // business name (new, required)
+  Business?
+      _created; // set once the business exists, so a retry never creates a second one
+  bool _saving = false;
 
   // final _gstinCtrl = TextEditingController();
 
@@ -75,11 +81,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     // _gstinCtrl.dispose();
     _taxIdCtrl.dispose();
+    _nameCtrl.dispose();
     _phoneCtrl.dispose();
     _addressCtrl.dispose();
     _cityCtrl.dispose();
     _stateCtrl.dispose();
     _pincodeCtrl.dispose();
+
     super.dispose();
   }
 
@@ -152,121 +160,183 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   // ── SAVE HANDLER ──────────────────────────────────────────────────────────
 
+  void _snack(String m) => ScaffoldMessenger.of(context)
+      .showSnackBar(SnackBar(content: Text(m), backgroundColor: Colors.red));
+
   Future<void> _onSave() async {
-    // Validate all form fields before saving
-    // _formKey.currentState!.validate() triggers all validator functions
     if (!_formKey.currentState!.validate()) return;
-
-    // Load the list of businesses this user owns
-    // userBusinessListProvider is a FutureProvider from business_providers.dart
-    final list = await ref.read(userBusinessListProvider.future);
-
-    // Guard: if somehow no business exists, just navigate to dashboard
-    if (list.isEmpty) {
-      // ensureBusinessForCurrentUser(ref as Ref<Object?>);
-      _navigateToDashboard(null);
+    final user = supabase.auth.currentUser;
+    if (user == null) {
+      _snack('Your session has expired. Please log in again.');
       return;
     }
 
-    // Get the first (and usually only) business this user owns
-    // This is the business created automatically during sign-up in SignUpNotifier
-    final business = list.first;
+    setState(() => _saving = true);
+    try {
+      // 1. Create the business and the owner membership. Only the first time.
+      _created ??= await ref.read(businessRepositoryProvider).createBusiness(
+          ownerUid: user.id,
+          ownerName: '${user.userMetadata?['name'] ?? ''}',
+          ownerEmail: user.email ?? '',
+          businessName: _nameCtrl.text.trim());
 
-    // Build the tax ID value - convert to uppercase for India GSTIN
-    final taxId = _taxIdCtrl.text.trim().isEmpty
-        ? null // null if empty
-        : _selectedCountry.countryCode == 'IN'
-            ? _taxIdCtrl.text.trim().toUpperCase() // GSTIN must be uppercase
-            : _taxIdCtrl.text.trim(); // other countries: as-is
+      // 2. Fill in the profile with the same fields as before
+      final taxId = _taxIdCtrl.text.trim().isEmpty
+          ? null
+          : _selectedCountry.countryCode == 'IN'
+              ? _taxIdCtrl.text.trim().toUpperCase()
+              : _taxIdCtrl.text.trim();
+      String? opt(TextEditingController c) =>
+          c.text.trim().isEmpty ? null : c.text.trim();
 
-    // Update the business with all fields using Freezed copyWith
-    // copyWith creates a new Business object with the specified fields changed
-    await ref.read(updateBusinessNotifierProvider.notifier).update(
-          business.copyWith(
-            // ── TAX ID (country-specific) ────────────────────────────────────
-            // Store in gstin column for India, or a general tax_id column for others
-            // For India: this is the GSTIN field
-            // For other countries: this is stored in a general tax ID field
+      await ref
+          .read(updateBusinessNotifierProvider.notifier)
+          .update(_created!.copyWith(
             gstin: _selectedCountry.countryCode == 'IN' ? taxId : null,
-
-            // ── CONTACT ─────────────────────────────────────────────────────
-            // phone from _phoneCtrl, null if empty
-            phone:
-                _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
-
-            // ── ADDRESS ─────────────────────────────────────────────────────
-            address: _addressCtrl.text.trim().isEmpty
-                ? null
-                : _addressCtrl.text.trim(),
-
-            city: _cityCtrl.text.trim().isEmpty ? null : _cityCtrl.text.trim(),
-
-            // state is the state/province/emirate field
-            state:
-                _stateCtrl.text.trim().isEmpty ? null : _stateCtrl.text.trim(),
-
-            // country stored as full name e.g. 'India', 'UAE'
+            phone: opt(_phoneCtrl),
+            address: opt(_addressCtrl),
+            city: opt(_cityCtrl),
+            state: opt(_stateCtrl),
+            pincode: opt(_pincodeCtrl),
             country: _selectedCountry.countryName,
-
-            pincode: _pincodeCtrl.text.trim().isEmpty
-                ? null
-                : _pincodeCtrl.text.trim(),
-
-            // ── INTERNATIONALISATION FIELDS ──────────────────────────────────
-            // These come from the CountryData object the user selected
-            // They drive CurrencyFormatter and invoice PDF generation throughout the app
-
-            // currencyCode: ISO 4217 e.g. 'INR', 'AED', 'NGN', 'BDT', 'LKR'
             currencyCode: _selectedCountry.currencyCode,
-
-            // currencySymbol: display symbol e.g. 'Rs.', 'AED', '₦', '৳'
             currencySymbol: _selectedCountry.currencySymbol,
-
-            // countryCode: ISO 3166-1 alpha-2 e.g. 'IN', 'AE', 'NG'
             countryCode: _selectedCountry.countryCode,
-
-            // taxLabel: shown on invoices and reports e.g. 'GST', 'VAT', 'Tax'
             taxLabel: _selectedCountry.taxLabel,
-
-            // defaultTaxRate: percentage applied to new products by default
-            // e.g. 18.0 for India, 5.0 for UAE, 7.5 for Nigeria
             defaultTaxRate: _selectedCountry.defaultTaxRate,
-
-            // useLakhFormat: true = 1,00,000 style (India/Bangladesh)
-            //               false = 100,000 style (UAE, Nigeria etc.)
             useLakhFormat: _selectedCountry.useLakhFormat,
-          ),
-        );
+          ));
+      // update() swallows errors into its state (AsyncValue.guard), so check it
+      final st = ref.read(updateBusinessNotifierProvider);
+      if (st.hasError) throw st.error!;
 
-    // Check mounted before any context operations (widget may have been disposed)
-    if (mounted) {
-      // Navigate to dashboard and set activeBusinessId
-      _navigateToDashboard(business.id);
+      // Last, so the gate doesn't remove this screen before the update has run
+      ref.invalidate(activeBusinessProvider);
+      ref.invalidate(userBusinessListProvider);
+      if (mounted) context.go(AppRoutes.dashboard);
+    } catch (e, s) {
+      debugPrint('ONBOARDING save failed: $e\n$s');
+      if (mounted) _snack('Could not save: $e');
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
+
+  // Future<void> _onSave() async {
+  //   // Validate all form fields before saving
+  //   // _formKey.currentState!.validate() triggers all validator functions
+  //   if (!_formKey.currentState!.validate()) return;
+
+  //   // Load the list of businesses this user owns
+  //   // userBusinessListProvider is a FutureProvider from business_providers.dart
+  //   final list = await ref.read(userBusinessListProvider.future);
+
+  //   // Guard: if somehow no business exists, just navigate to dashboard
+  //   if (list.isEmpty) {
+  //     // ensureBusinessForCurrentUser(ref as Ref<Object?>);
+  //     _navigateToDashboard(null);
+  //     return;
+  //   }
+
+  //   // Get the first (and usually only) business this user owns
+  //   // This is the business created automatically during sign-up in SignUpNotifier
+  //   final business = list.first;
+
+  //   // Build the tax ID value - convert to uppercase for India GSTIN
+  //   final taxId = _taxIdCtrl.text.trim().isEmpty
+  //       ? null // null if empty
+  //       : _selectedCountry.countryCode == 'IN'
+  //           ? _taxIdCtrl.text.trim().toUpperCase() // GSTIN must be uppercase
+  //           : _taxIdCtrl.text.trim(); // other countries: as-is
+
+  //   // Update the business with all fields using Freezed copyWith
+  //   // copyWith creates a new Business object with the specified fields changed
+  //   await ref.read(updateBusinessNotifierProvider.notifier).update(
+  //         business.copyWith(
+  //           // ── TAX ID (country-specific) ────────────────────────────────────
+  //           // Store in gstin column for India, or a general tax_id column for others
+  //           // For India: this is the GSTIN field
+  //           // For other countries: this is stored in a general tax ID field
+  //           gstin: _selectedCountry.countryCode == 'IN' ? taxId : null,
+
+  //           // ── CONTACT ─────────────────────────────────────────────────────
+  //           // phone from _phoneCtrl, null if empty
+  //           phone:
+  //               _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
+
+  //           // ── ADDRESS ─────────────────────────────────────────────────────
+  //           address: _addressCtrl.text.trim().isEmpty
+  //               ? null
+  //               : _addressCtrl.text.trim(),
+
+  //           city: _cityCtrl.text.trim().isEmpty ? null : _cityCtrl.text.trim(),
+
+  //           // state is the state/province/emirate field
+  //           state:
+  //               _stateCtrl.text.trim().isEmpty ? null : _stateCtrl.text.trim(),
+
+  //           // country stored as full name e.g. 'India', 'UAE'
+  //           country: _selectedCountry.countryName,
+
+  //           pincode: _pincodeCtrl.text.trim().isEmpty
+  //               ? null
+  //               : _pincodeCtrl.text.trim(),
+
+  //           // ── INTERNATIONALISATION FIELDS ──────────────────────────────────
+  //           // These come from the CountryData object the user selected
+  //           // They drive CurrencyFormatter and invoice PDF generation throughout the app
+
+  //           // currencyCode: ISO 4217 e.g. 'INR', 'AED', 'NGN', 'BDT', 'LKR'
+  //           currencyCode: _selectedCountry.currencyCode,
+
+  //           // currencySymbol: display symbol e.g. 'Rs.', 'AED', '₦', '৳'
+  //           currencySymbol: _selectedCountry.currencySymbol,
+
+  //           // countryCode: ISO 3166-1 alpha-2 e.g. 'IN', 'AE', 'NG'
+  //           countryCode: _selectedCountry.countryCode,
+
+  //           // taxLabel: shown on invoices and reports e.g. 'GST', 'VAT', 'Tax'
+  //           taxLabel: _selectedCountry.taxLabel,
+
+  //           // defaultTaxRate: percentage applied to new products by default
+  //           // e.g. 18.0 for India, 5.0 for UAE, 7.5 for Nigeria
+  //           defaultTaxRate: _selectedCountry.defaultTaxRate,
+
+  //           // useLakhFormat: true = 1,00,000 style (India/Bangladesh)
+  //           //               false = 100,000 style (UAE, Nigeria etc.)
+  //           useLakhFormat: _selectedCountry.useLakhFormat,
+  //         ),
+  //       );
+
+  //   // Check mounted before any context operations (widget may have been disposed)
+  //   if (mounted) {
+  //     // Navigate to dashboard and set activeBusinessId
+  //     _navigateToDashboard(business.id);
+  //   }
+  // }
 
   // ── SKIP HANDLER ──────────────────────────────────────────────────────────
 
-  Future<void> _onSkip() async {
-    // Load business list even on skip so we can set activeBusinessId
-    final list = await ref.read(userBusinessListProvider.future);
-    // Navigate with business id if available, null if no business found
-    _navigateToDashboard(list.isEmpty ? null : list.first.id);
-  }
+  // Future<void> _onSkip() async {
+  //   // Load business list even on skip so we can set activeBusinessId
+  //   final list = await ref.read(userBusinessListProvider.future);
+  //   // Navigate with business id if available, null if no business found
+  //   _navigateToDashboard(list.isEmpty ? null : list.first.id);
+  // }
 
   // ── NAVIGATION HELPER ─────────────────────────────────────────────────────
 
-  void _navigateToDashboard(String? businessId) {
-    // Set the active business ID in Riverpod state
-    // activeBusinessIdProvider is a StateNotifier from auth_providers.dart
-    if (businessId != null) {
-      // ref.read(activeBusinessIdProvider.notifier).set(businessId); commented on 04.08.2026
-      ref.invalidate(activeBusinessProvider);
-    }
-    // Navigate to dashboard using GoRouter
-    // context.go() replaces the current route (cannot go back to onboarding)
-    context.go(AppRoutes.dashboard);
-  }
+  // void _navigateToDashboard(String? businessId) {
+  //   // Set the active business ID in Riverpod state
+  //   // activeBusinessIdProvider is a StateNotifier from auth_providers.dart
+  //   if (businessId != null) {
+  //     // ref.read(activeBusinessIdProvider.notifier).set(businessId); commented on 04.08.2026
+  //     ref.invalidate(activeBusinessProvider);
+  //   }
+  //   // Navigate to dashboard using GoRouter
+  //   // context.go() replaces the current route (cannot go back to onboarding)
+  //   context.go(AppRoutes.dashboard);
+  // }
 
   // ── BUILD ─────────────────────────────────────────────────────────────────
 
@@ -274,7 +344,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     // Watch the update notifier to know when a save is in progress
     // AsyncLoading state = save is running (show spinner on button)
-    final isSaving = ref.watch(updateBusinessNotifierProvider) is AsyncLoading;
+    //commented on 24.10.2026 to fix business creation
+    // final isSaving = ref.watch(updateBusinessNotifierProvider) is AsyncLoading;
 
     return Scaffold(
       appBar: AppBar(
@@ -285,14 +356,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         actions: [
           // Skip button in AppBar top-right
           TextButton(
-            onPressed:
-                _onSkip, // _onSkip sets activeBusinessId and goes to dashboard
-            child: const Text(
-              'Skip',
-              style: TextStyle(
-                  color: Colors.white), // white text on primary AppBar
-            ),
-          ),
+              onPressed: () => signOutWithAudit(ref),
+              child: const Text('Sign out',
+                  style: TextStyle(color: Colors.white))),
         ],
       ),
       body: SingleChildScrollView(
@@ -306,7 +372,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             children: [
               // ── HEADER ────────────────────────────────────────────────────
               const Text(
-                'Tell us about your business',
+                'Create Your Business',
                 style: AppTextStyles.h2, // from app_text_styles.dart
               ),
               const SizedBox(height: 8),
@@ -315,6 +381,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 'You can update these anytime from Settings.',
                 style: AppTextStyles.bodyMedium,
               ),
+
+              TextFormField(
+                controller: _nameCtrl,
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.next,
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? 'Enter your business name'
+                    : null,
+                decoration: const InputDecoration(
+                    labelText: 'Business name',
+                    prefixIcon: Icon(Icons.storefront_outlined)),
+              ),
+              const SizedBox(height: 20),
+
               const SizedBox(height: 32),
 
               // ── COUNTRY PICKER ────────────────────────────────────────────
@@ -544,8 +624,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 width: double.infinity, // full-width button
                 child: ElevatedButton(
                   // Disable button while save is in progress
-                  onPressed: isSaving ? null : _onSave,
-                  child: isSaving
+                  onPressed: _saving ? null : _onSave,
+                  child: _saving
                       // Show spinner while Supabase update is in progress
                       ? const SizedBox(
                           height: 22,
@@ -568,15 +648,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               const SizedBox(height: 12),
 
               // ── SKIP LINK (duplicate at bottom for visibility) ─────────────
-              Center(
-                child: TextButton(
-                  onPressed: _onSkip,
-                  child: Text(
-                    'Skip for now',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                ),
-              ),
+              // Center(
+              //   child: TextButton(
+              //     onPressed: _onSkip,
+              //     child: Text(
+              //       'Skip for now',
+              //       style: TextStyle(color: Colors.grey.shade600),
+              //     ),
+              //   ),
+              // ),
               const SizedBox(height: 32), // bottom padding for scroll
             ],
           ),

@@ -58,7 +58,7 @@ final currentAppUserProvider = AutoDisposeFutureProvider<AppUser?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CurrentAppUserRef = AutoDisposeFutureProviderRef<AppUser?>;
-String _$currentMemberHash() => r'55b2ec740d494b99140812cccaf9aa97cb047a63';
+String _$currentMemberHash() => r'd9b4b79a77beda28f82c05620f3f5c9c186c2ed0';
 
 /// See also [currentMember].
 @ProviderFor(currentMember)
@@ -92,7 +92,7 @@ final activeBusinessIdProvider =
 );
 
 typedef _$ActiveBusinessId = AutoDisposeNotifier<String?>;
-String _$signUpNotifierHash() => r'5c852f4330ed5b09283f3328829a132860aa38c0';
+String _$signUpNotifierHash() => r'0f0710a292242043913b17fd313ffe62339971c2';
 
 /// See also [SignUpNotifier].
 @ProviderFor(SignUpNotifier)

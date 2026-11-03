@@ -106,6 +106,7 @@ class _RolesSetupBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final admin = ref.watch(rolePermissionsProvider(bizId, 'admin'));
+
     if (!(admin.hasValue && admin.value == null))
       return const SizedBox.shrink();
     return Card(

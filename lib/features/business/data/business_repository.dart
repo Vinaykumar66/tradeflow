@@ -14,22 +14,30 @@ class BusinessRepository implements IBusinessRepository {
       required String ownerName,
       required String ownerEmail,
       required String businessName,
+      String? city,
       String? phone,
+      String? state,
+      String? pin,
       String? gstin}) async {
     final user = supabase.auth.currentUser;
     final _uuid = const Uuid();
     final bizId = _uuid.v4();
-    final d = await supabase.from(SupabaseTables.businesses).insert({
-      'id': bizId,
-      'owner_uid': user!.id,
-      'name': businessName,
-      // 'owner_uid': ownerUid,
-      'email': ownerEmail,
-      'phone': phone,
-      'gstin': gstin
-    });
-    // .select()
-    // .single();
+    final d = await supabase
+        .from(SupabaseTables.businesses)
+        .insert({
+          'id': bizId,
+          'owner_uid': user!.id,
+          'name': businessName,
+          // 'owner_uid': ownerUid,
+          'email': ownerEmail,
+          'phone': phone,
+          'city': city,
+          'state': state,
+          'pincode': pin,
+          'gstin': gstin
+        })
+        .select()
+        .single();
     final b = BusinessX.fromMap(d);
     try {
       await supabase.from('business_members').insert({

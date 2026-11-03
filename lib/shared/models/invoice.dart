@@ -139,8 +139,10 @@ extension InvoiceItemX on InvoiceItem {
     final discAmt = (gross * discountPct / 100).round();
     final afterDisc = gross - discAmt;
     final int tax;
-    if (taxInclusive) {
-      tax = (afterDisc - (afterDisc * 100 / (100 + taxRate)).round());
+    // if (taxInclusive) {
+    if (discAmt > 0) {
+      // tax = (afterDisc - (afterDisc * 100 / (100 + taxRate)).round());
+      tax = ((afterDisc * taxRate) / 100).round();
     } else {
       tax = (afterDisc * taxRate / 100).round();
     }

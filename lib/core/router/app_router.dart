@@ -23,6 +23,7 @@ import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/invoices/presentation/create_credit_note_screen.dart';
 import '../../features/invoices/presentation/invoices_screen.dart';
 import '../../features/invoices/presentation/thermal_printer_pairing_screen.dart';
+import '../../features/payments/presentation/payment_page.dart';
 import '../../features/purchases/presentation/create_purchase_bill_screen.dart'
     show CreatePurchaseBillScreen;
 import '../../features/purchases/presentation/purchase_bill_detail_screen.dart'
@@ -103,6 +104,7 @@ abstract class AppRoutes {
   static const String purchases = '/purchases';
   static const String createPurchaseBill = '/purchases/create';
   static const String vendorLedger = '/vendors/ledger';
+  static const String paymentscreen = '/paymentscreen';
   static const String createCreditNote = '/invoices/credit-note';
   static const String termsAcceptance = '/terms-acceptance';
   static const String verifyEmail = '/verify-email';
@@ -332,7 +334,10 @@ GoRouter appRouter(Ref ref) {
             path: AppRoutes.vendorLedger,
             builder: (_, s) => VendorLedgerScreen(vendor: s.extra as Vendor),
           ),
-
+          GoRoute(
+            path: AppRoutes.paymentscreen,
+            builder: (_, __) => const PaymentPage(),
+          ),
           GoRoute(
               path: AppRoutes.termsAcceptance,
               builder: (_, __) => const TermsAcceptanceScreen()),

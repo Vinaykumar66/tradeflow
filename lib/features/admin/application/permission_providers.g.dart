@@ -177,7 +177,7 @@ class _RolePermissionsProviderElement
 }
 
 String _$currentRolePermissionsHash() =>
-    r'99fe5884b6f15c844a585a4ed130d0262be98dc7';
+    r'693f8526d965a02ecb2df5e0831e8bffdcb96044';
 
 /// See also [currentRolePermissions].
 @ProviderFor(currentRolePermissions)

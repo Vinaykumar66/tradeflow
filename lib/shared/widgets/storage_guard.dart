@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tradeflow/core/router/app_router.dart';
 import 'package:tradeflow/shared/models/business.dart';
 import '../../core/di/repository_providers.dart';
 import '../../core/theme/app_colors.dart';
@@ -115,9 +117,11 @@ class _UpgradePrompt extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 // Navigate to upgrade screen (built Day 71-75)
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content:
-                        Text('Contact support to upgrade your storage plan.')));
+                // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                //     content:
+                //         Text('Contact support to upgrade your storage plan.')));
+
+                context.go(AppRoutes.paymentscreen);
               },
               style:
                   ElevatedButton.styleFrom(backgroundColor: AppColors.alertRed),

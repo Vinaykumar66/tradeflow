@@ -16,6 +16,9 @@ class AppExceptions {
     if (m.contains('weak password')) {
       return 'Password must be at least 8 characters';
     }
+    if (m.contains('failed to fetch')) {
+      return 'Check your internet connection';
+    }
     return 'Something went wrong. Please try again.';
   }
 

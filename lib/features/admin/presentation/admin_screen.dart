@@ -43,7 +43,7 @@ class AdminScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.image_outlined),
+            leading: const Icon(Icons.business_outlined),
             title: const Text('Manage Business Logo'),
             subtitle: const Text('Upload Business Logo'),
             trailing: const Icon(Icons.chevron_right),
@@ -51,7 +51,7 @@ class AdminScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.image_outlined),
+            leading: const Icon(Icons.print_rounded),
             title: const Text('Configure printer'),
             subtitle: const Text('Set up printer settings'),
             trailing: const Icon(Icons.chevron_right),
@@ -59,13 +59,21 @@ class AdminScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.image_outlined),
+            leading: const Icon(Icons.group_outlined),
             title: const Text('Manage Team members'),
             subtitle: const Text('Modify team member roles and permissions'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(AppRoutes.manageTeamMembers),
           ),
           const Divider(),
+          // ListTile(
+          //   leading: const Icon(Icons.add_business_outlined),
+          //   title: const Text('Add or Modify businesses'),
+          //   subtitle: const Text('Add or Modify Businesses'),
+          //   trailing: const Icon(Icons.chevron_right),
+          //   onTap: () => context.push(AppRoutes.businessSettings),
+          // ),
+          // const Divider(),
         ],
       ),
     );

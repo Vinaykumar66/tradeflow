@@ -39,6 +39,21 @@ class InvoiceDetailScreen extends ConsumerWidget {
     final fullAsync = ref.watch(invoiceDetailProvider(invoice.id));
     final biz = ref.watch(activeBusinessProvider).asData?.value;
 
+    // return PopScope(
+    //   canPop: fullAsync.asData?.value != null,
+    //   onPopInvokedWithResult: (didPop, result) async {
+    //     if (didPop) return;
+
+    //     // Trigger your dialog confirmation check
+    //     final bool shouldNavigate = await _onWillPop(context);
+
+    //     if (shouldNavigate && context.mounted) {
+    //       // If "Okay" was pressed, navigate back or use context.go() / context.pop()
+    //       context.pop();
+    //       // Or if using standard navigator: Navigator.of(context).pop();
+    //     }
+    //   },
+    // child:
     return Scaffold(
       appBar: AppBar(
         title: Text(invoice.invoiceNumber),
@@ -139,6 +154,7 @@ class InvoiceDetailScreen extends ConsumerWidget {
       ),
       bottomNavigationBar:
           _paymentButton(context, fullAsync.asData?.value, biz),
+      // ),
     );
   }
 

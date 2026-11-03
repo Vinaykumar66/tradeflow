@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tradeflow/core/router/app_router.dart';
 import 'package:tradeflow/features/business/application/business_providers.dart'
     as activeBusinessProvider;
+import 'package:tradeflow/features/inventory/presentation/widgets/product_tax_preview.dart';
 import 'package:tradeflow/shared/models/business.dart';
 import 'package:tradeflow/shared/models/license_tier.dart';
 import '../../../core/config/app_config.dart';
@@ -22,6 +23,7 @@ import '../application/catalog_providers.dart';
 import 'package:go_router/go_router.dart';
 import '../../admin/application/tax_code_providers.dart';
 import '../../../core/utils/platform_capabilities.dart';
+import '../../../core/utils/currency_formatter.dart';
 
 class AddEditProductScreen extends ConsumerStatefulWidget {
   final Product? product;
@@ -69,6 +71,7 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
     // widget.initialBarcode comes from extra: code in BarcodeHandler
     if (widget.initialBarcode != null)
       _barcodeCtrl.text = widget.initialBarcode!;
+    _taxInclusive = widget.product?.taxInclusive ?? false;
   }
 
   void _prefill(Product p) {
@@ -253,6 +256,16 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
     }
   }
 
+  String priceLabel(Product p, String sym, bool lakh, String taxLabel) {
+    final amt = CurrencyFormatter.format(p.sellingPrice, sym: sym, lakh: lakh)
+        .trim(); // your price field name
+    if (p.taxRate <= 0) return amt;
+    final r = p.taxRate == p.taxRate.roundToDouble()
+        ? p.taxRate.toStringAsFixed(0)
+        : '${p.taxRate}';
+    return p.taxInclusive ? '$amt incl. $r% $taxLabel' : '$amt + $r% $taxLabel';
+  }
+
   // Future<void> _onSubmit() async {
   //   if (!_formKey.currentState!.validate()) {
   //     return;
@@ -308,37 +321,47 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
             ?.value
             ?.currencySymbol ??
         'Rs.';
+    final codes = ref.watch(taxCodeListProvider).asData?.value ?? [];
+    final biz =
+        ref.watch(activeBusinessProvider.activeBusinessProvider).asData?.value;
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Color(0xFF0E4375), // Changes only the back button color
         ),
         // foregroundColor:  ,
-        backgroundColor: Color(0xF0FFFFFF),
+        backgroundColor: Theme.of(context).appBarTheme.foregroundColor,
         title: Text(
             // style: TextStyle(color: Color(0xFF0E4375)),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.primary,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
             _isEditing ? 'Edit Product' : 'Add Product'),
         actions: [
-          TextButton(
-              onPressed: (isSaving || _uploading) ? null : _onSubmit,
-              child: (isSaving || _uploading)
-                  ? const SizedBox(
-                      height: 18,
-                      width: 18,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white))
-                  : Text('SAVE',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(color: AppColors.primary))
-              // style: TextStyle(
-              //     color: ., fontWeight: FontWeight.bold)),
-              )
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextButton(
+                onPressed: (isSaving || _uploading) ? null : _onSubmit,
+                child: (isSaving || _uploading)
+                    ? const SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white))
+                    : Text(
+                        'SAVE',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.bold),
+                      )
+                // style: TextStyle(
+                //     color: ., fontWeight: FontWeight.bold)),
+                ),
+          )
         ],
       ),
       body: Form(
@@ -405,7 +428,7 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
           const SizedBox(height: 20),
 
           // Basic fields
-          Text('Basic Details', style: AppTextStyles.h3),
+          const Text('Basic Details', style: AppTextStyles.h3),
           const SizedBox(height: 12),
           _f(_nameCtrl, 'Product Name *',
               validator: (v) => v!.trim().isEmpty ? 'Name required' : null),
@@ -466,7 +489,7 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
               validator: (v) =>
                   v!.trim().isEmpty ? 'Selling price required' : null),
           _f(_mrpCtrl, 'MRP ($sym.)', type: TextInputType.number),
-          const SizedBox(height: 20),
+          const SizedBox(height: 8),
 
           // Tax
           //commenting to fetch the available tax code in the data base configured by the admin
@@ -486,43 +509,62 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
           //commenting to fetch the available tax code in the data base configured by the admin
 
           Consumer(builder: (context, ref, _) {
-            final codes = ref.watch(taxCodeListProvider).asData?.value ?? [];
-            final biz = ref
-                .watch(activeBusinessProvider.activeBusinessProvider)
-                .asData
-                ?.value;
-            if (codes.isEmpty) {
+            if (!codes.isEmpty) {
               //No tax codes configured - keep the original manual field
-
+              return Padding(
+                padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                child: DropdownButtonFormField<String>(
+                    initialValue: _selectedTaxCodeId,
+                    decoration: const InputDecoration(labelText: 'Tax Code'),
+                    items: codes
+                        .map((c) => DropdownMenuItem(
+                            value: c.id, child: Text(c.displayLabel)))
+                        .toList(),
+                    onChanged: (id) {
+                      final c = codes.firstWhere((c) => c.id == id);
+                      setState(() {
+                        _selectedTaxCodeId = id;
+                        _taxCtrl.text = c.rate.toString();
+                        _taxInclusive = c.isInclusive;
+                      });
+                    }),
+              );
+            } else if (codes.isEmpty) {
               return _f(_taxCtrl, 'Tax Rate % (0/5/12/18/28)',
                   type: TextInputType.number);
             }
 
-            if (biz?.countryCode != 'IN') {
-              return _f(_commodityCtrl, 'Commodity Code', validator: null);
-            }
-
             if (biz?.countryCode == 'IN') {
               return _f(_hsnSacCtrl, 'HSN/SAC Code', validator: null);
+            } else //(biz?.countryCode != 'IN') {
+            {
+              return _f(_commodityCtrl, 'Commodity Code', validator: null);
             }
-
-            return DropdownButtonFormField<String>(
-                initialValue: _selectedTaxCodeId,
-                decoration: const InputDecoration(labelText: 'Tax Code'),
-                items: codes
-                    .map((c) => DropdownMenuItem(
-                        value: c.id, child: Text(c.displayLabel)))
-                    .toList(),
-                onChanged: (id) {
-                  final c = codes.firstWhere((c) => c.id == id);
-                  setState(() {
-                    _selectedTaxCodeId = id;
-                    _taxCtrl.text = c.rate.toString();
-                    _taxInclusive = c.isInclusive;
-                  });
-                });
           }),
 
+          const SizedBox(height: 20),
+          SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Selling price includes tax'),
+              subtitle: Text(_taxInclusive
+                  ? ' Customers pay exactly this price. The tax is included in it.'
+                  : 'Tax is added on top of this price.'),
+              value: _taxInclusive,
+              onChanged: (v) => setState(() => _taxInclusive = v)),
+
+          ListenableBuilder(
+              listenable: Listenable.merge(
+                  [_costCtrl, _taxCtrl]), // your two controllers
+              builder: (_, __) => ProductTaxPreview(
+                  pricePaise:
+                      ((double.tryParse(_costCtrl.text) ?? 0) * 100).round(),
+                  rate: double.tryParse(_taxCtrl.text) ?? 0,
+                  inclusive: _taxInclusive,
+                  sym: biz!.currencySymbol,
+                  taxLabel: biz.taxLabel,
+                  lakh: biz.useLakhFormat,
+                  india: biz.countryCode == 'IN',
+                  businessState: biz.state)),
           const SizedBox(height: 20),
 
           // Inventory
@@ -533,6 +575,7 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
               subtitle: const Text('Turn off for services'),
               value: _trackInventory,
               onChanged: (v) => setState(() => _trackInventory = v)),
+          const SizedBox(height: 20),
           if (_trackInventory) ...[
             _f(_stockCtrl, 'Current Stock Quantity',
                 type: TextInputType.number),
@@ -577,7 +620,7 @@ class _AddEditProductScreenState extends ConsumerState<AddEditProductScreen> {
           {TextInputType type = TextInputType.text,
           String? Function(String?)? validator}) =>
       Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
           child: TextFormField(
               controller: ctrl,
               keyboardType: type,

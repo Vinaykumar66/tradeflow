@@ -50,7 +50,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   final _notesCtrl = TextEditingController();
 
   // Inline payment (Invoice type only)
-  bool _recordPaymentLater = false;
+  bool _recordPaymentLater = true;
   final _paymentAmountCtrl = TextEditingController();
   final _paymentRefCtrl = TextEditingController();
   String _paymentMethod = 'cash';
@@ -95,7 +95,9 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
             quantity: 1,
             hsnSacCode: p.hsnSacCode,
             commodityCode: p.commodityCode)
-        .recalculate(sellerState: biz?.state, buyerState: _customer?.state);
+        .recalculate(
+            sellerState: biz?.state,
+            buyerState: _customer?.state ?? biz?.state);
     // setState(() => _items = [..._items, item]);
 
     setState(() {
@@ -119,7 +121,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
 
     final list = [..._items];
     list[idx] = updated.recalculate(
-        sellerState: biz?.state, buyerState: _customer?.state);
+        sellerState: biz?.state, buyerState: _customer?.state ?? biz?.state);
     // setState(() => );
     setState(() {
       _items = list;
@@ -130,6 +132,18 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   void _removeItem(int idx) {
     final list = [..._items]..removeAt(idx);
     setState(() => _items = list);
+  }
+
+  void _setCustomer(Customer? c) {
+    final biz = ref.read(activeBusinessProvider).asData?.value;
+    setState(() {
+      _customer = c;
+      _items = [
+        for (final i in _items)
+          i.recalculate(
+              sellerState: biz?.state, buyerState: c?.state ?? biz?.state)
+      ];
+    });
   }
 
   Future<String?> _checkStockAvailability() async {
@@ -300,6 +314,32 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
             onProductScanned: _addOrIncrementProduct)));
   }
 
+  Future<bool> _onWillPop(BuildContext context) async {
+    final shouldLeave = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Discard Changes?'),
+        content: const Text(
+            'Are you sure you want to go back? Any unsaved changes will be lost.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context)
+                .pop(false), // Returns false (stay on page)
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () =>
+                Navigator.of(context).pop(true), // Returns true (allow pop)
+            child: const Text('Okay'),
+          ),
+        ],
+      ),
+    );
+
+    // If the user taps outside the dialog, shouldLeave will be null. Fall back to false.
+    return shouldLeave ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final biz = ref.watch(activeBusinessProvider).asData?.value;
@@ -312,19 +352,42 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
         CurrencyFormatter.format(amt, sym: sym, lakh: lakh);
 
     return Scaffold(
-      appBar: AppBar(title: Text('New ${_docLabel(_docType)}'), actions: [
-        TextButton(
-            onPressed: saving ? null : _save,
-            child: saving
-                ? const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.white))
-                : Text(!_recordPaymentLater ? 'SAVE & UPDATE PAYMENT' : 'SAVE',
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold))),
-      ]),
+      appBar: AppBar(
+          title: Text(
+            'New ${_docLabel(_docType)}',
+            style: TextStyle(color: Color(0xFF2F4F4F)),
+          ),
+          backgroundColor: Color(0xF0FFFFFF),
+          iconTheme: const IconThemeData(color: Color(0xFF2F4F4F)),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2F4F4F)),
+            onPressed: () async {
+              final shouldNavigate = await _onWillPop(context);
+              if (shouldNavigate && context.mounted) {
+                context.pop();
+              }
+            },
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextButton(
+                  onPressed: saving ? null : _save,
+                  child: saving
+                      ? const SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white))
+                      : Text(
+                          !_recordPaymentLater
+                              ? 'SAVE & UPDATE PAYMENT'
+                              : 'SAVE',
+                          style: const TextStyle(
+                              color: Color(0xFF2F4F4F),
+                              fontWeight: FontWeight.bold))),
+            ),
+          ]),
       body: ListView(padding: const EdgeInsets.all(16), children: [
         // Document type
         SizedBox(

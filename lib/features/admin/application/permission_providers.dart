@@ -3,6 +3,7 @@ import '../../../core/constants/permission_keys.dart';
 import '../../../core/di/repository_providers.dart';
 import '../../../features/auth/application/auth_providers.dart';
 import '../../../shared/models/permission.dart';
+import '../../business/application/business_providers.dart';
 
 part 'permission_providers.g.dart';
 
@@ -17,13 +18,29 @@ Stream<RolePermissionSet?> rolePermissions(
 // Stream the CURRENT logged-in user's permissions
 // This is what all guard widgets use
 
+//commented on 24 oct 2026
+// @riverpod
+// Stream<RolePermissionSet?> currentRolePermissions(
+//     CurrentRolePermissionsRef ref) {
+//   final member = ref.watch(currentMemberProvider).asData?.value;
+//   final businessId = ref.watch(activeBusinessIdProvider);
+//   if (member == null || businessId == null) return const Stream.empty();
+//   return ref
+//       .watch(permissionRepositoryProvider)
+//       .streamPermissions(businessId, member.roleValue);
+// }
+// commented on 24 oct 2025 to fix customer screen FAB
+
 @riverpod
 Stream<RolePermissionSet?> currentRolePermissions(
-    CurrentRolePermissionsRef ref) {
+    CurrentRolePermissionsRef ref) async* {
   final member = ref.watch(currentMemberProvider).asData?.value;
-  final businessId = ref.watch(activeBusinessIdProvider);
-  if (member == null || businessId == null) return const Stream.empty();
-  return ref
+  final businessId = ref.watch(activeBusinessProvider).asData?.value?.id;
+  if (member == null || businessId == null) {
+    yield null;
+    return;
+  } // Stream.empty() never emits
+  yield* ref
       .watch(permissionRepositoryProvider)
       .streamPermissions(businessId, member.roleValue);
 }
@@ -31,8 +48,9 @@ Stream<RolePermissionSet?> currentRolePermissions(
 @riverpod
 bool hasScreenPermission(
     HasScreenPermissionRef ref, String screenKey, PermissionAction action) {
+  final role = ref.watch(currentMemberProvider).asData?.value?.roleValue;
   final perms = ref.watch(currentRolePermissionsProvider).asData?.value;
-
+  if (role == 'owner') return true;
   if (perms == null) return false;
   return switch (action) {
     PermissionAction.view => perms.canView(screenKey),
@@ -47,6 +65,9 @@ bool hasScreenPermission(
 
 @riverpod
 bool canViewField(CanViewFieldRef ref, String fieldKey) {
+  final role = ref.watch(currentMemberProvider).asData?.value?.roleValue;
+
+  if (role == 'owner') return true;
   final perms = ref.watch(currentRolePermissionsProvider).asData?.value;
   if (perms == null) return false;
   return perms.canViewField(fieldKey);
@@ -55,6 +76,8 @@ bool canViewField(CanViewFieldRef ref, String fieldKey) {
 // Quick check: can current user edit a sensitive field?
 @riverpod
 bool canEditField(CanEditFieldRef ref, String fieldKey) {
+  final role = ref.watch(currentMemberProvider).asData?.value?.roleValue;
+  if (role == 'owner') return true;
   final perms = ref.watch(currentRolePermissionsProvider).asData?.value;
   if (perms == null) return false;
   return perms.canEditField(fieldKey);

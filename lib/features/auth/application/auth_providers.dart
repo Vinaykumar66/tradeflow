@@ -7,6 +7,8 @@ import '../../../core/supabase/supabase_client.dart';
 import '../../../shared/models/app_user.dart';
 import '../../../shared/models/business_member.dart';
 import 'package:flutter/material.dart';
+
+import '../../business/application/business_providers.dart';
 part 'auth_providers.g.dart';
 
 @riverpod
@@ -37,9 +39,10 @@ class ActiveBusinessId extends _$ActiveBusinessId {
 @riverpod
 Future<BusinessMember?> currentMember(CurrentMemberRef ref) async {
   final u = ref.watch(currentSupabaseUserProvider);
-  final biz = ref.watch(activeBusinessIdProvider);
+  // final biz = ref.watch(activeBusinessIdProvider); //commented on 24 oct 2026
+  final biz = ref.watch(activeBusinessProvider).asData?.value;
   if (u == null || biz == null) return null;
-  return ref.read(businessRepositoryProvider).getMember(biz, u.id);
+  return ref.read(businessRepositoryProvider).getMember(biz.id, u.id);
 }
 
 @riverpod
